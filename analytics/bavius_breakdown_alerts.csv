@@ -1,0 +1,711 @@
+Timestamp,Machine,EquipmentID,Category,BreakdownType,OEMAlarmCode,Severity,PastIncidents,PastIncidentsCount,LastOccurred,ProbableReason,TelemetryLeadingIndicators,SuggestedFix,ActionToFix,TimeToBreakdown,DowntimeHrs
+2026-09-22 09:45:00,Bavius 4mtr N01-02,11000452,Pneumatic System,Compressed Air Supply Pressure Low (< 6.0 Bar),700121 / 700122,Medium,12 times in last 6 months (Last: 2026-09-22),12,2026-09-22,"Central pneumatic shop air supply dropped below minimum machine threshold (6.0 bar), or internal distribution line ruptured/leaked, disabling pneumatic tool clamps, sealing air, and axis scales purge.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.","1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.",XX:XX hrs,0.5
+2026-09-20 07:15:29,Bavius 4mtr N01-02,11000452,Spindle System,Main Spindle Bearing / Stator Over-Temperature,700810 / 700811 / 700500,Critical,3 times in last 6 months (Last: 2026-09-20),3,2026-09-20,"Continuous high-speed operation (up to 26,000-28,000 RPM) causing thermal saturation in Fischer MFW-1920 hybrid spindle bearings, coupled with inadequate recooler heat dissipation or cooling jacket flow restriction. Stator winding PTC sensors tripped. Sensor telemetry recorded spindle motor temp peaking at 61.0C.","Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 61.0C (Warning threshold: 50C). | Spindle current surging to 29.0A (normal idle: 0-2A, normal cut: 7-12A). | Axis Y11 torque sustained high at 48.6 Nm against mechanical drag/brake.","1. Switch on / verify spindle recooler (Rittal/Bavius KRA150) flow and setpoint (nominal 20-22C).
+2. Inspect recooler air-cooled condenser fins for dust clogging and clean filter mat.
+3. Check spindle cooling circuit flow monitor switch (Bavius alarm 700501/700528).
+4. Measure PTC sensor resistance across connector pins (must be < 3000 Ohm at 25C; if > 3000 Ohm or open circuit, replace/service spindle per Fischer manual Chap 7.2).
+5. Allow 30 min cooling cycle and restart under graduated warm-up program.","1. Switch on / verify spindle recooler (Rittal/Bavius KRA150) flow and setpoint (nominal 20-22C).
+2. Inspect recooler air-cooled condenser fins for dust clogging and clean filter mat.
+3. Check spindle cooling circuit flow monitor switch (Bavius alarm 700501/700528).
+4. Measure PTC sensor resistance across connector pins (must be < 3000 Ohm at 25C; if > 3000 Ohm or open circuit, replace/service spindle per Fischer manual Chap 7.2).
+5. Allow 30 min cooling cycle and restart under graduated warm-up program.",XX:XX hrs,0.28
+2026-09-19 15:30:00,Bavius 4mtr N01-02,11000452,Axis Drives & Motion,Axis Clamping / Hydraulic Holding Brake / Standstill Fault,700112 / 700531 / 700109,Medium,6 times in last 6 months (Last: 2026-09-19),6,2026-09-19,"Rotary axis (C11/A11) or linear axis (Y11) hydraulic line clamp/brake failed to release before axis motion, or axis drifted beyond permissible standstill tolerance window under cutting load.",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 62.0C (Warning threshold: 50C). | Axis Y11 torque sustained high at 52.7 Nm against mechanical drag/brake.,"1. Inspect hydraulic brake release pressure (check pressure switches and solenoid valve spools).
+2. Verify optical linear scale / rotary encoder purge air pressure (Bavius alarm 700216).
+3. Check guideway lubrication pressure and verify grease distributor metering valves.
+4. Execute axis test stop and brake test sequence in SINUMERIK JOG mode channel 02.","1. Inspect hydraulic brake release pressure (check pressure switches and solenoid valve spools).
+2. Verify optical linear scale / rotary encoder purge air pressure (Bavius alarm 700216).
+3. Check guideway lubrication pressure and verify grease distributor metering valves.
+4. Execute axis test stop and brake test sequence in SINUMERIK JOG mode channel 02.",XX:XX hrs,0.5
+2026-09-16 14:12:49,Bavius 4mtr N01-02,11000452,General Mechanical / Electrical,Machine Subsystem Interruption: DRIVE FAULT ISSUE..,700100,Medium,1 times in last 6 months (Last: 2026-09-16),1,2026-09-16,Operational cycle halted due to safety interlock trip or sensor feedback disagreement during automated processing.,Pre-warning: 2 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 62.0C (Warning threshold: 50C). | High Drive Load spike observed up to 29.3% under heavy cutting. | Axis Y11 torque sustained high at 49.3 Nm against mechanical drag/brake.,"1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.","1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.",XX:XX hrs,0.3
+2026-09-11 08:53:44,Bavius 4mtr N01-02,11000452,Cooling & Recooler,Recooler Tank Liquid Level Below Minimum Limit,700503 / 700703,Medium,1 times in last 6 months (Last: 2026-09-11),1,2026-09-11,Chiller tank liquid level switch (LE/AQ) tripped due to fluid evaporation or minor coupling leakage in the spindle closed cooling circuit.,No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Inspect cooling hoses, fittings, and spindle rotary union for external leaks.
+2. Top up reservoir with approved distilled water/antifreeze blend to upper sight glass mark.
+3. Bleed air from the pump using air bleed valve (JO); verify alarm resets automatically.","1. Inspect cooling hoses, fittings, and spindle rotary union for external leaks.
+2. Top up reservoir with approved distilled water/antifreeze blend to upper sight glass mark.
+3. Bleed air from the pump using air bleed valve (JO); verify alarm resets automatically.",XX:XX hrs,1.12
+2026-09-08 17:07:44,Bavius 4mtr N01-02,11000452,Pneumatic System,Compressed Air Supply Pressure Low (< 6.0 Bar),700121 / 700122,Medium,12 times in last 6 months (Last: 2026-09-22),12,2026-09-22,"Central pneumatic shop air supply dropped below minimum machine threshold (6.0 bar), or internal distribution line ruptured/leaked, disabling pneumatic tool clamps, sealing air, and axis scales purge.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.","1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.",XX:XX hrs,0.5
+2026-09-08 00:17:20,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,0.71
+2026-09-07 15:05:11,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,2.49
+2026-09-07 08:13:55,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,0.0
+2026-09-06 14:35:00,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,0.42
+2026-09-05 02:40:00,Bavius 4mtr N01-02,11000452,Tool Changer (ATC) & Clamping,Tool Magazine Rotary Axis TM11 Positioning Malfunction,700114 / TM11,Medium,1 times in last 6 months (Last: 2026-09-05),1,2026-09-05,"Tool magazine servo chain drive TM11 positioning lag, mechanical jamming from foreign object, or encoder communication glitch during pocket indexing.",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 58.0C (Warning threshold: 50C). | Axis Y11 torque sustained high at 49.3 Nm against mechanical drag/brake.,"1. Inspect tool magazine chain tension, drive sprocket, and pockets for foreign debris or tilted toolholder.
+2. Check TM11 servo motor thermal trip and power cable connection.
+3. Re-reference TM11 axis in JOG mode and execute test indexing for pockets 1 through 60.","1. Inspect tool magazine chain tension, drive sprocket, and pockets for foreign debris or tilted toolholder.
+2. Check TM11 servo motor thermal trip and power cable connection.
+3. Re-reference TM11 axis in JOG mode and execute test indexing for pockets 1 through 60.",XX:XX hrs,0.5
+2026-08-30 11:04:45,Bavius 4mtr N01-02,11000452,Tool Changer (ATC) & Clamping,ATC Tool Magazine Flap Cover / Door Open Fault,700126 / 700904,Medium,5 times in last 6 months (Last: 2026-08-30),5,2026-08-30,"Pneumatic cylinder operating the magazine shutter flap failed to open/close within time limit, or magnetic reed sensor failed to detect end position due to chip accumulation in guide tracks.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Remove chips and accumulated swarf from ATC shutter slide rails and pneumatic cylinder rod.
+2. Verify pneumatic cylinder operating pressure (min 5.5 bar) and flow control throttle valves.
+3. Check magnetic reed sensors on cylinder body; verify green LED triggers at full stroke.
+4. Manually exercise flap open/close via operator panel softkeys before resuming automatic cycle.","1. Remove chips and accumulated swarf from ATC shutter slide rails and pneumatic cylinder rod.
+2. Verify pneumatic cylinder operating pressure (min 5.5 bar) and flow control throttle valves.
+3. Check magnetic reed sensors on cylinder body; verify green LED triggers at full stroke.
+4. Manually exercise flap open/close via operator panel softkeys before resuming automatic cycle.",XX:XX hrs,2.42
+2026-08-24 12:58:41,Bavius 4mtr N01-02,11000452,General Mechanical / Electrical,Machine Subsystem Interruption: AIR PRESURES DROP ISSUE,700100,Medium,1 times in last 6 months (Last: 2026-08-24),1,2026-08-24,Operational cycle halted due to safety interlock trip or sensor feedback disagreement during automated processing.,No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.","1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.",XX:XX hrs,1.0
+2026-08-21 10:00:00,Bavius 4mtr N01-02,11000452,Pneumatic System,Compressed Air Supply Pressure Low (< 6.0 Bar),700121 / 700122,Medium,12 times in last 6 months (Last: 2026-09-22),12,2026-09-22,"Central pneumatic shop air supply dropped below minimum machine threshold (6.0 bar), or internal distribution line ruptured/leaked, disabling pneumatic tool clamps, sealing air, and axis scales purge.",Pre-warning: 4 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 58.0C (Warning threshold: 50C). | Axis Y11 torque sustained high at 49.5 Nm against mechanical drag/brake.,"1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.","1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.",XX:XX hrs,2.5
+2026-08-19 04:30:00,Bavius 4mtr N01-02,11000452,Coolant & Filtration,Coolant Soil Tank High Level / Sludge Overflow,701338 / 701342,Medium,4 times in last 6 months (Last: 2026-08-19),4,2026-08-19,Knoll KF 200 compact filter soil tank level reached high alarm float switch due to high aluminum chip extraction volume and delayed filter fleece indexing.,Pre-warning: 2 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 63.0C (Warning threshold: 50C). | Axis Y11 torque sustained high at 48.7 Nm against mechanical drag/brake.,"1. Empty chip sediment and sludge from dirty coolant soil tank compartment.
+2. Clean float level switches and optical level probes from fine aluminum paste build-up.
+3. Check filter fleece roll advance drive motor and ensure fleece is advancing smoothly without tears.","1. Empty chip sediment and sludge from dirty coolant soil tank compartment.
+2. Clean float level switches and optical level probes from fine aluminum paste build-up.
+3. Check filter fleece roll advance drive motor and ensure fleece is advancing smoothly without tears.",XX:XX hrs,0.75
+2026-08-18 08:30:00,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,0.5
+2026-08-17 20:00:00,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,1.5
+2026-08-16 14:03:00,Bavius 4mtr N01-02,11000452,CNC Controller & Panel,CNC Control Panel Blinking / CPU Ready Watchdog Interruption,700425 / Siemens NCU,Medium,10 times in last 6 months (Last: 2026-08-16),10,2026-08-16,"24V DC auxiliary power line transient, safety door interlock oscillation, or Sinumerik NCU / PLC CPU watchdog timeout during auto mode transition.",Axis Y11 torque sustained high at 45.6 Nm against mechanical drag/brake.,"1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.","1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.",XX:XX hrs,0.62
+2026-08-12 12:20:00,Bavius 4mtr N01-02,11000452,Spindle System,Main Spindle Emergency Stop Interruption,700123 / 700120,High,3 times in last 6 months (Last: 2026-08-12),3,2026-08-12,"Safety Integrated circuit or process limit trip (excessive drive torque spike, enclosure door interlock switch chatter, or tool monitoring collision sensor).","Pre-warning: 2 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 60.0C (Warning threshold: 50C). | High Drive Load spike observed up to 66.8% under heavy cutting. | Spindle current surging to 46.9A (normal idle: 0-2A, normal cut: 7-12A). | Axis Y11 torque sustained high at 49.5 Nm against mechanical drag/brake.","1. Check Safety Integrated diagnostic screen on SINUMERIK Operate for initiating channel.
+2. Verify enclosure door guard interlocks and magnetic safety switches (Bavius alarm 700124/700128).
+3. Inspect cutting tool and workpiece for tool breakage or jamming.
+4. Reset safety circuit, cycle E-stop pushbutton, and test in JOG mode.","1. Check Safety Integrated diagnostic screen on SINUMERIK Operate for initiating channel.
+2. Verify enclosure door guard interlocks and magnetic safety switches (Bavius alarm 700124/700128).
+3. Inspect cutting tool and workpiece for tool breakage or jamming.
+4. Reset safety circuit, cycle E-stop pushbutton, and test in JOG mode.",XX:XX hrs,1.33
+2026-08-08 10:00:00,Bavius 4mtr N01-02,11000452,General Mechanical / Electrical,Machine Subsystem Interruption: c axis drive fault issue,700100,Medium,1 times in last 6 months (Last: 2026-08-08),1,2026-08-08,Operational cycle halted due to safety interlock trip or sensor feedback disagreement during automated processing.,No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.","1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.",XX:XX hrs,2.0
+2026-08-08 02:10:00,Bavius 4mtr N01-02,11000452,Axis Drives & Motion,Safety Integrated Stop A/B / Safe Velocity Limit Breach,Safety Integrated Stop A/B,High,5 times in last 6 months (Last: 2026-08-08),5,2026-08-08,Siemens Safety Integrated triggered emergency stop due to velocity cross-check discrepancy between dual-channel encoder signals or unreferenced safe axis position.,No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Inspect safety encoder cables on A/B/SP1 axes for noise interference or loose shielding.
+2. Perform safe axis referencing procedure for all kinematics axes in JOG mode.
+3. Perform SI test stop routine (Channel 01 & 02) to verify safety shutdown path.
+4. Clear CNC alarms and verify Safety Integrated status displays 'OK' in SINUMERIK Operate.","1. Inspect safety encoder cables on A/B/SP1 axes for noise interference or loose shielding.
+2. Perform safe axis referencing procedure for all kinematics axes in JOG mode.
+3. Perform SI test stop routine (Channel 01 & 02) to verify safety shutdown path.
+4. Clear CNC alarms and verify Safety Integrated status displays 'OK' in SINUMERIK Operate.",XX:XX hrs,0.5
+2026-08-06 16:00:00,Bavius 4mtr N01-02,11000452,CNC Controller & Panel,CNC Control Panel Blinking / CPU Ready Watchdog Interruption,700425 / Siemens NCU,Medium,10 times in last 6 months (Last: 2026-08-16),10,2026-08-16,"24V DC auxiliary power line transient, safety door interlock oscillation, or Sinumerik NCU / PLC CPU watchdog timeout during auto mode transition.","Pre-warning: 2 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 61.0C (Warning threshold: 50C). | High Drive Load spike observed up to 29.9% under heavy cutting. | Spindle current surging to 54.2A (normal idle: 0-2A, normal cut: 7-12A). | Axis Y11 torque sustained high at 73.4 Nm against mechanical drag/brake.","1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.","1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.",XX:XX hrs,0.5
+2026-08-02 04:00:00,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 61.0C (Warning threshold: 50C). | High Drive Load spike observed up to 47.2% under heavy cutting. | Axis Y11 torque sustained high at 48.2 Nm against mechanical drag/brake.,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,0.83
+2026-07-28 18:50:20,Bavius 4mtr N01-02,11000452,Axis Drives & Motion,Safety Integrated Stop A/B / Safe Velocity Limit Breach,Safety Integrated Stop A/B,High,5 times in last 6 months (Last: 2026-08-08),5,2026-08-08,Siemens Safety Integrated triggered emergency stop due to velocity cross-check discrepancy between dual-channel encoder signals or unreferenced safe axis position.,Axis Y11 torque sustained high at 46.5 Nm against mechanical drag/brake.,"1. Inspect safety encoder cables on A/B/SP1 axes for noise interference or loose shielding.
+2. Perform safe axis referencing procedure for all kinematics axes in JOG mode.
+3. Perform SI test stop routine (Channel 01 & 02) to verify safety shutdown path.
+4. Clear CNC alarms and verify Safety Integrated status displays 'OK' in SINUMERIK Operate.","1. Inspect safety encoder cables on A/B/SP1 axes for noise interference or loose shielding.
+2. Perform safe axis referencing procedure for all kinematics axes in JOG mode.
+3. Perform SI test stop routine (Channel 01 & 02) to verify safety shutdown path.
+4. Clear CNC alarms and verify Safety Integrated status displays 'OK' in SINUMERIK Operate.",XX:XX hrs,0.0
+2026-07-28 17:40:40,Bavius 4mtr N01-02,11000452,General Mechanical / Electrical,Machine Subsystem Interruption: Least one axis is not safety referenced.,700100,Medium,1 times in last 6 months (Last: 2026-07-28),1,2026-07-28,Operational cycle halted due to safety interlock trip or sensor feedback disagreement during automated processing.,Axis Y11 torque sustained high at 46.5 Nm against mechanical drag/brake.,"1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.","1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.",XX:XX hrs,0.0
+2026-07-25 16:26:20,Bavius 4mtr N01-02,11000452,Axis Drives & Motion,Axis Clamping / Hydraulic Holding Brake / Standstill Fault,700112 / 700531 / 700109,Medium,6 times in last 6 months (Last: 2026-09-19),6,2026-09-19,"Rotary axis (C11/A11) or linear axis (Y11) hydraulic line clamp/brake failed to release before axis motion, or axis drifted beyond permissible standstill tolerance window under cutting load.",Pre-warning: 2 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 61.0C (Warning threshold: 50C). | Axis Y11 torque sustained high at 48.4 Nm against mechanical drag/brake.,"1. Inspect hydraulic brake release pressure (check pressure switches and solenoid valve spools).
+2. Verify optical linear scale / rotary encoder purge air pressure (Bavius alarm 700216).
+3. Check guideway lubrication pressure and verify grease distributor metering valves.
+4. Execute axis test stop and brake test sequence in SINUMERIK JOG mode channel 02.","1. Inspect hydraulic brake release pressure (check pressure switches and solenoid valve spools).
+2. Verify optical linear scale / rotary encoder purge air pressure (Bavius alarm 700216).
+3. Check guideway lubrication pressure and verify grease distributor metering valves.
+4. Execute axis test stop and brake test sequence in SINUMERIK JOG mode channel 02.",XX:XX hrs,0.91
+2026-07-16 00:35:00,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",Pre-warning: 2 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Axis Y11 torque sustained high at 48.5 Nm against mechanical drag/brake.,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,0.42
+2026-07-14 18:14:33,Bavius 4mtr N01-02,11000452,Spindle System,Main Spindle Bearing / Stator Over-Temperature,700810 / 700811 / 700500,Critical,3 times in last 6 months (Last: 2026-09-20),3,2026-09-20,"Continuous high-speed operation (up to 26,000-28,000 RPM) causing thermal saturation in Fischer MFW-1920 hybrid spindle bearings, coupled with inadequate recooler heat dissipation or cooling jacket flow restriction. Stator winding PTC sensors tripped. Sensor telemetry recorded spindle motor temp peaking at 58.0C.",Pre-warning: 2 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 58.0C (Warning threshold: 50C). | Axis Y11 torque sustained high at 49.4 Nm against mechanical drag/brake.,"1. Switch on / verify spindle recooler (Rittal/Bavius KRA150) flow and setpoint (nominal 20-22C).
+2. Inspect recooler air-cooled condenser fins for dust clogging and clean filter mat.
+3. Check spindle cooling circuit flow monitor switch (Bavius alarm 700501/700528).
+4. Measure PTC sensor resistance across connector pins (must be < 3000 Ohm at 25C; if > 3000 Ohm or open circuit, replace/service spindle per Fischer manual Chap 7.2).
+5. Allow 30 min cooling cycle and restart under graduated warm-up program.","1. Switch on / verify spindle recooler (Rittal/Bavius KRA150) flow and setpoint (nominal 20-22C).
+2. Inspect recooler air-cooled condenser fins for dust clogging and clean filter mat.
+3. Check spindle cooling circuit flow monitor switch (Bavius alarm 700501/700528).
+4. Measure PTC sensor resistance across connector pins (must be < 3000 Ohm at 25C; if > 3000 Ohm or open circuit, replace/service spindle per Fischer manual Chap 7.2).
+5. Allow 30 min cooling cycle and restart under graduated warm-up program.",XX:XX hrs,0.0
+2026-07-13 16:47:05,Bavius 4mtr N01-02,11000452,Spindle System,Main Spindle Bearing / Stator Over-Temperature,700810 / 700811 / 700500,Critical,3 times in last 6 months (Last: 2026-09-20),3,2026-09-20,"Continuous high-speed operation (up to 26,000-28,000 RPM) causing thermal saturation in Fischer MFW-1920 hybrid spindle bearings, coupled with inadequate recooler heat dissipation or cooling jacket flow restriction. Stator winding PTC sensors tripped. Sensor telemetry recorded spindle motor temp peaking at 58.0C.",Elevated Spindle Motor Temperature reached 58.0C (Warning threshold: 50C). | Axis Y11 torque sustained high at 48.9 Nm against mechanical drag/brake.,"1. Switch on / verify spindle recooler (Rittal/Bavius KRA150) flow and setpoint (nominal 20-22C).
+2. Inspect recooler air-cooled condenser fins for dust clogging and clean filter mat.
+3. Check spindle cooling circuit flow monitor switch (Bavius alarm 700501/700528).
+4. Measure PTC sensor resistance across connector pins (must be < 3000 Ohm at 25C; if > 3000 Ohm or open circuit, replace/service spindle per Fischer manual Chap 7.2).
+5. Allow 30 min cooling cycle and restart under graduated warm-up program.","1. Switch on / verify spindle recooler (Rittal/Bavius KRA150) flow and setpoint (nominal 20-22C).
+2. Inspect recooler air-cooled condenser fins for dust clogging and clean filter mat.
+3. Check spindle cooling circuit flow monitor switch (Bavius alarm 700501/700528).
+4. Measure PTC sensor resistance across connector pins (must be < 3000 Ohm at 25C; if > 3000 Ohm or open circuit, replace/service spindle per Fischer manual Chap 7.2).
+5. Allow 30 min cooling cycle and restart under graduated warm-up program.",XX:XX hrs,0.0
+2026-07-13 14:45:57,Bavius 4mtr N01-02,11000452,Spindle System,Main Spindle SP1 Drive Controller Fault,700113 / Siemens 25201,High,3 times in last 6 months (Last: 2026-07-13),3,2026-07-13,"Siemens Sinumerik drive controller fault on SP1 axis due to following error, speed controller saturation, or encoder signal loss during rapid acceleration.",Pre-warning: 3 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 58.0C (Warning threshold: 50C). | Axis Y11 torque sustained high at 64.1 Nm against mechanical drag/brake.,"1. Check encoder signal cable and clean optical pulse connector on spindle rear.
+2. Inspect motor power terminal block for loose lugs or thermal discoloration.
+3. Verify spindle drive heat sink fan operation and clean ventilation grilles.
+4. Acknowledge alarm via NC-Reset and perform slow spindle spin-up test (500 -> 3000 -> 10000 RPM).","1. Check encoder signal cable and clean optical pulse connector on spindle rear.
+2. Inspect motor power terminal block for loose lugs or thermal discoloration.
+3. Verify spindle drive heat sink fan operation and clean ventilation grilles.
+4. Acknowledge alarm via NC-Reset and perform slow spindle spin-up test (500 -> 3000 -> 10000 RPM).",XX:XX hrs,0.0
+2026-07-12 15:00:00,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",Elevated Spindle Motor Temperature reached 59.0C (Warning threshold: 50C). | Axis Y11 torque sustained high at 48.6 Nm against mechanical drag/brake.,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,1.0
+2026-07-12 06:54:53,Bavius 4mtr N01-02,11000452,General Mechanical / Electrical,Machine Subsystem Interruption: Bavius 4M1 Axis software limited coming,700100,Medium,1 times in last 6 months (Last: 2026-07-12),1,2026-07-12,Operational cycle halted due to safety interlock trip or sensor feedback disagreement during automated processing.,Axis Y11 torque sustained high at 45.3 Nm against mechanical drag/brake.,"1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.","1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.",XX:XX hrs,0.0
+2026-07-11 15:30:00,Bavius 4mtr N01-02,11000452,Tool Changer (ATC) & Clamping,ATC Tool Magazine Flap Cover / Door Open Fault,700126 / 700904,Medium,5 times in last 6 months (Last: 2026-08-30),5,2026-08-30,"Pneumatic cylinder operating the magazine shutter flap failed to open/close within time limit, or magnetic reed sensor failed to detect end position due to chip accumulation in guide tracks.",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Axis Y11 torque sustained high at 46.6 Nm against mechanical drag/brake.,"1. Remove chips and accumulated swarf from ATC shutter slide rails and pneumatic cylinder rod.
+2. Verify pneumatic cylinder operating pressure (min 5.5 bar) and flow control throttle valves.
+3. Check magnetic reed sensors on cylinder body; verify green LED triggers at full stroke.
+4. Manually exercise flap open/close via operator panel softkeys before resuming automatic cycle.","1. Remove chips and accumulated swarf from ATC shutter slide rails and pneumatic cylinder rod.
+2. Verify pneumatic cylinder operating pressure (min 5.5 bar) and flow control throttle valves.
+3. Check magnetic reed sensors on cylinder body; verify green LED triggers at full stroke.
+4. Manually exercise flap open/close via operator panel softkeys before resuming automatic cycle.",XX:XX hrs,1.0
+2026-07-11 07:20:00,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",High Drive Load spike observed up to 77.8% under heavy cutting. | Axis Y11 torque sustained high at 57.3 Nm against mechanical drag/brake.,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,0.67
+2026-07-07 04:36:25,Bavius 4mtr N01-02,11000452,General Mechanical / Electrical,Machine Subsystem Interruption: AXIS A&B TRIGGERED,700100,Medium,1 times in last 6 months (Last: 2026-07-07),1,2026-07-07,Operational cycle halted due to safety interlock trip or sensor feedback disagreement during automated processing.,No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.","1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.",XX:XX hrs,0.39
+2026-07-07 16:52:49,Bavius 4mtr N01-02,11000452,Spindle System & Clamping,Catastrophic Spindle Drive Trip & Hydraulic Line Clamping Lockup,700113 / 700120 / Siemens 21612,Critical,1 times in last 6 months (Last: 2026-07-07),1,2026-07-07,"High spindle current overload (55.2A) and drive load surge (59.9%) during high-speed cutting triggered Siemens SINUMERIK drive power module shutdown and emergency clamp engagement, locking axes.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Electrically isolate machine; inspect Siemens drive converter module (Motor Module / Infeed) for DC link faults or blown fuses.
+2. Measure spindle phase winding resistance (difference must not exceed 0.1 Ohm) and megohmmeter insulation resistance (> 50 MOhm to ground).
+3. Inspect hydraulic line clamping proportional relief valve and manifold pressure gauges (check 120 bar clamping / unclamp circuit).
+4. Bleed hydraulic line clamp circuit; verify smooth disengagement under manual jog.
+5. Reset drive parameters, clear Sinumerik drive alarms, and run uncoupled motor test.","1. Electrically isolate machine; inspect Siemens drive converter module (Motor Module / Infeed) for DC link faults or blown fuses.
+2. Measure spindle phase winding resistance (difference must not exceed 0.1 Ohm) and megohmmeter insulation resistance (> 50 MOhm to ground).
+3. Inspect hydraulic line clamping proportional relief valve and manifold pressure gauges (check 120 bar clamping / unclamp circuit).
+4. Bleed hydraulic line clamp circuit; verify smooth disengagement under manual jog.
+5. Reset drive parameters, clear Sinumerik drive alarms, and run uncoupled motor test.",XX:XX hrs,71.99
+2026-07-06 15:30:04,Bavius 4mtr N01-02,11000452,Axis Drives & Motion,Axis Clamping / Hydraulic Holding Brake / Standstill Fault,700112 / 700531 / 700109,High,6 times in last 6 months (Last: 2026-09-19),6,2026-09-19,"Rotary axis (C11/A11) or linear axis (Y11) hydraulic line clamp/brake failed to release before axis motion, or axis drifted beyond permissible standstill tolerance window under cutting load.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Inspect hydraulic brake release pressure (check pressure switches and solenoid valve spools).
+2. Verify optical linear scale / rotary encoder purge air pressure (Bavius alarm 700216).
+3. Check guideway lubrication pressure and verify grease distributor metering valves.
+4. Execute axis test stop and brake test sequence in SINUMERIK JOG mode channel 02.","1. Inspect hydraulic brake release pressure (check pressure switches and solenoid valve spools).
+2. Verify optical linear scale / rotary encoder purge air pressure (Bavius alarm 700216).
+3. Check guideway lubrication pressure and verify grease distributor metering valves.
+4. Execute axis test stop and brake test sequence in SINUMERIK JOG mode channel 02.",XX:XX hrs,1.0
+2026-07-06 20:30:00,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,1.0
+2026-07-04 04:48:00,Bavius 4mtr N01-02,11000452,Vacuum Workholding,Vacuum Clamping Failure (Level Below -600 mbar),700748 / 700750,High,3 times in last 6 months (Last: 2026-07-04),3,2026-07-04,"VOC-AD-S-63/100 vacuum station dropped below required -600 mbar safe clamping limit. Causes: Damaged foam sealing cord on vacuum table fixture, liquid separator overflow, or clogged suction filter.",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 57.0C (Warning threshold: 50C). | High Drive Load spike observed up to 66.6% under heavy cutting. | Axis Y11 torque sustained high at 56.5 Nm against mechanical drag/brake.,"1. Inspect vacuum fixture rubber sealing gasket for cuts, displacement, or swarf contamination.
+2. Drain liquid feedback separator container [glass tank item 13] by opening drain valve 2V2.
+3. Clean vacuum station pre-filter and fine-filter mesh from machining sludge.
+4. Check vacuum pump oil level and verify pressure switch 1Z2 reads <= -600 mbar before NC Start.","1. Inspect vacuum fixture rubber sealing gasket for cuts, displacement, or swarf contamination.
+2. Drain liquid feedback separator container [glass tank item 13] by opening drain valve 2V2.
+3. Clean vacuum station pre-filter and fine-filter mesh from machining sludge.
+4. Check vacuum pump oil level and verify pressure switch 1Z2 reads <= -600 mbar before NC Start.",XX:XX hrs,0.2
+2026-07-03 18:30:00,Bavius 4mtr N01-02,11000452,CNC Controller & Panel,CNC Control Panel Blinking / CPU Ready Watchdog Interruption,700425 / Siemens NCU,Medium,10 times in last 6 months (Last: 2026-08-16),10,2026-08-16,"24V DC auxiliary power line transient, safety door interlock oscillation, or Sinumerik NCU / PLC CPU watchdog timeout during auto mode transition.","High Drive Load spike observed up to 37.0% under heavy cutting. | Spindle current surging to 46.5A (normal idle: 0-2A, normal cut: 7-12A). | Axis Y11 torque sustained high at 95.2 Nm against mechanical drag/brake.","1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.","1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.",XX:XX hrs,0.5
+2026-07-01 19:00:00,Bavius 4mtr N01-02,11000452,Axis Drives & Motion,Axis Clamping / Hydraulic Holding Brake / Standstill Fault,700112 / 700531 / 700109,Medium,6 times in last 6 months (Last: 2026-09-19),6,2026-09-19,"Rotary axis (C11/A11) or linear axis (Y11) hydraulic line clamp/brake failed to release before axis motion, or axis drifted beyond permissible standstill tolerance window under cutting load.",Pre-warning: 2 intermittent FAULT signal pulses detected within 2h prior to stoppage. | High Drive Load spike observed up to 26.4% under heavy cutting. | Axis Y11 torque sustained high at 60.4 Nm against mechanical drag/brake.,"1. Inspect hydraulic brake release pressure (check pressure switches and solenoid valve spools).
+2. Verify optical linear scale / rotary encoder purge air pressure (Bavius alarm 700216).
+3. Check guideway lubrication pressure and verify grease distributor metering valves.
+4. Execute axis test stop and brake test sequence in SINUMERIK JOG mode channel 02.","1. Inspect hydraulic brake release pressure (check pressure switches and solenoid valve spools).
+2. Verify optical linear scale / rotary encoder purge air pressure (Bavius alarm 700216).
+3. Check guideway lubrication pressure and verify grease distributor metering valves.
+4. Execute axis test stop and brake test sequence in SINUMERIK JOG mode channel 02.",XX:XX hrs,0.75
+2026-06-30 03:00:00,Bavius 4mtr N01-02,11000452,Spindle System,Main Spindle Emergency Stop Interruption,700123 / 700120,High,3 times in last 6 months (Last: 2026-08-12),3,2026-08-12,"Safety Integrated circuit or process limit trip (excessive drive torque spike, enclosure door interlock switch chatter, or tool monitoring collision sensor).",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Axis Y11 torque sustained high at 45.8 Nm against mechanical drag/brake.,"1. Check Safety Integrated diagnostic screen on SINUMERIK Operate for initiating channel.
+2. Verify enclosure door guard interlocks and magnetic safety switches (Bavius alarm 700124/700128).
+3. Inspect cutting tool and workpiece for tool breakage or jamming.
+4. Reset safety circuit, cycle E-stop pushbutton, and test in JOG mode.","1. Check Safety Integrated diagnostic screen on SINUMERIK Operate for initiating channel.
+2. Verify enclosure door guard interlocks and magnetic safety switches (Bavius alarm 700124/700128).
+3. Inspect cutting tool and workpiece for tool breakage or jamming.
+4. Reset safety circuit, cycle E-stop pushbutton, and test in JOG mode.",XX:XX hrs,0.5
+2026-06-29 11:15:00,Bavius 4mtr N01-02,11000452,General Mechanical / Electrical,Machine Subsystem Interruption: ATC flap door open autocycle,700100,Medium,1 times in last 6 months (Last: 2026-06-29),1,2026-06-29,Operational cycle halted due to safety interlock trip or sensor feedback disagreement during automated processing.,Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Axis Y11 torque sustained high at 47.8 Nm against mechanical drag/brake.,"1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.","1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.",XX:XX hrs,3.75
+2026-06-28 01:40:00,Bavius 4mtr N01-02,11000452,Axis Drives & Motion,Safety Integrated Stop A/B / Safe Velocity Limit Breach,Safety Integrated Stop A/B,High,5 times in last 6 months (Last: 2026-08-08),5,2026-08-08,Siemens Safety Integrated triggered emergency stop due to velocity cross-check discrepancy between dual-channel encoder signals or unreferenced safe axis position.,"Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 56.0C (Warning threshold: 50C). | High Drive Load spike observed up to 56.1% under heavy cutting. | Spindle current surging to 37.1A (normal idle: 0-2A, normal cut: 7-12A). | Axis Y11 torque sustained high at 66.9 Nm against mechanical drag/brake.","1. Inspect safety encoder cables on A/B/SP1 axes for noise interference or loose shielding.
+2. Perform safe axis referencing procedure for all kinematics axes in JOG mode.
+3. Perform SI test stop routine (Channel 01 & 02) to verify safety shutdown path.
+4. Clear CNC alarms and verify Safety Integrated status displays 'OK' in SINUMERIK Operate.","1. Inspect safety encoder cables on A/B/SP1 axes for noise interference or loose shielding.
+2. Perform safe axis referencing procedure for all kinematics axes in JOG mode.
+3. Perform SI test stop routine (Channel 01 & 02) to verify safety shutdown path.
+4. Clear CNC alarms and verify Safety Integrated status displays 'OK' in SINUMERIK Operate.",XX:XX hrs,0.5
+2026-06-28 11:15:00,Bavius 4mtr N01-02,11000452,Tool Changer (ATC) & Clamping,ATC Tool Magazine Flap Cover / Door Open Fault,700126 / 700904,Medium,5 times in last 6 months (Last: 2026-08-30),5,2026-08-30,"Pneumatic cylinder operating the magazine shutter flap failed to open/close within time limit, or magnetic reed sensor failed to detect end position due to chip accumulation in guide tracks.",High Drive Load spike observed up to 38.2% under heavy cutting. | Axis Y11 torque sustained high at 100.2 Nm against mechanical drag/brake.,"1. Remove chips and accumulated swarf from ATC shutter slide rails and pneumatic cylinder rod.
+2. Verify pneumatic cylinder operating pressure (min 5.5 bar) and flow control throttle valves.
+3. Check magnetic reed sensors on cylinder body; verify green LED triggers at full stroke.
+4. Manually exercise flap open/close via operator panel softkeys before resuming automatic cycle.","1. Remove chips and accumulated swarf from ATC shutter slide rails and pneumatic cylinder rod.
+2. Verify pneumatic cylinder operating pressure (min 5.5 bar) and flow control throttle valves.
+3. Check magnetic reed sensors on cylinder body; verify green LED triggers at full stroke.
+4. Manually exercise flap open/close via operator panel softkeys before resuming automatic cycle.",XX:XX hrs,3.75
+2026-06-27 11:07:54,Bavius 4mtr N01-02,11000452,Tool Changer (ATC) & Clamping,ATC Tool Magazine Flap Cover / Door Open Fault,700126 / 700904,Medium,5 times in last 6 months (Last: 2026-08-30),5,2026-08-30,"Pneumatic cylinder operating the magazine shutter flap failed to open/close within time limit, or magnetic reed sensor failed to detect end position due to chip accumulation in guide tracks.","Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Spindle current surging to 31.9A (normal idle: 0-2A, normal cut: 7-12A). | Axis Y11 torque sustained high at 55.9 Nm against mechanical drag/brake.","1. Remove chips and accumulated swarf from ATC shutter slide rails and pneumatic cylinder rod.
+2. Verify pneumatic cylinder operating pressure (min 5.5 bar) and flow control throttle valves.
+3. Check magnetic reed sensors on cylinder body; verify green LED triggers at full stroke.
+4. Manually exercise flap open/close via operator panel softkeys before resuming automatic cycle.","1. Remove chips and accumulated swarf from ATC shutter slide rails and pneumatic cylinder rod.
+2. Verify pneumatic cylinder operating pressure (min 5.5 bar) and flow control throttle valves.
+3. Check magnetic reed sensors on cylinder body; verify green LED triggers at full stroke.
+4. Manually exercise flap open/close via operator panel softkeys before resuming automatic cycle.",XX:XX hrs,1.22
+2026-06-25 16:32:30,Bavius 4mtr N01-02,11000452,Pneumatic System,Compressed Air Supply Pressure Low (< 6.0 Bar),700121 / 700122,Medium,12 times in last 6 months (Last: 2026-09-22),12,2026-09-22,"Central pneumatic shop air supply dropped below minimum machine threshold (6.0 bar), or internal distribution line ruptured/leaked, disabling pneumatic tool clamps, sealing air, and axis scales purge.",Elevated Spindle Motor Temperature reached 56.0C (Warning threshold: 50C). | High Drive Load spike observed up to 25.9% under heavy cutting. | Axis Y11 torque sustained high at 61.7 Nm against mechanical drag/brake.,"1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.","1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.",XX:XX hrs,0.5
+2026-06-24 05:30:00,Bavius 4mtr N01-02,11000452,Vacuum Workholding,Vacuum Clamping Failure (Level Below -600 mbar),700748 / 700750,High,3 times in last 6 months (Last: 2026-07-04),3,2026-07-04,"VOC-AD-S-63/100 vacuum station dropped below required -600 mbar safe clamping limit. Causes: Damaged foam sealing cord on vacuum table fixture, liquid separator overflow, or clogged suction filter.",Pre-warning: 2 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 56.0C (Warning threshold: 50C). | High Drive Load spike observed up to 49.8% under heavy cutting. | Axis Y11 torque sustained high at 51.2 Nm against mechanical drag/brake.,"1. Inspect vacuum fixture rubber sealing gasket for cuts, displacement, or swarf contamination.
+2. Drain liquid feedback separator container [glass tank item 13] by opening drain valve 2V2.
+3. Clean vacuum station pre-filter and fine-filter mesh from machining sludge.
+4. Check vacuum pump oil level and verify pressure switch 1Z2 reads <= -600 mbar before NC Start.","1. Inspect vacuum fixture rubber sealing gasket for cuts, displacement, or swarf contamination.
+2. Drain liquid feedback separator container [glass tank item 13] by opening drain valve 2V2.
+3. Clean vacuum station pre-filter and fine-filter mesh from machining sludge.
+4. Check vacuum pump oil level and verify pressure switch 1Z2 reads <= -600 mbar before NC Start.",XX:XX hrs,1.0
+2026-06-10 06:36:59,Bavius 4mtr N01-02,11000452,Spindle System,Spindle Excessive Vibration / Bearing Acoustic Deterioration,700730 / 700731,Critical,3 times in last 6 months (Last: 2026-06-10),3,2026-06-10,"SiViB Record 31 spindle vibration monitor exceeded Warning/Alarm threshold (> 2.5 pc / 4.5 mm/s RMS). Root cause: Toolholder unbalance (quality grade worse than ISO 1940 G2.5), spindle bearing cage wear/micro-spalling, or loose HSK-63 clamping segment causing centrifugal flutter.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Remove current tool and inspect HSK-63 clamping taper for fretting corrosion or chips.
+2. Measure dynamic balancing of tool assembly on balancing machine; rebalance to G2.5 at 24,000 RPM.
+3. Check spindle radial/axial runout using dial indicator (< 0.003 mm at spindle nose taper).
+4. Connect SiViB Record Control software via RS-232/Ethernet to export FFT vibration spectrum and identify bearing defect frequencies (BPFO/BPFI/BSF).
+5. If vibration persists in uncoupled idle test (> 2.0 mm/s), replace spindle bearing cartridge.","1. Remove current tool and inspect HSK-63 clamping taper for fretting corrosion or chips.
+2. Measure dynamic balancing of tool assembly on balancing machine; rebalance to G2.5 at 24,000 RPM.
+3. Check spindle radial/axial runout using dial indicator (< 0.003 mm at spindle nose taper).
+4. Connect SiViB Record Control software via RS-232/Ethernet to export FFT vibration spectrum and identify bearing defect frequencies (BPFO/BPFI/BSF).
+5. If vibration persists in uncoupled idle test (> 2.0 mm/s), replace spindle bearing cartridge.",XX:XX hrs,3.88
+2026-06-08 07:08:57,Bavius 4mtr N01-02,11000452,Spindle System,Spindle Excessive Vibration / Bearing Acoustic Deterioration,700730 / 700731,Critical,3 times in last 6 months (Last: 2026-06-10),3,2026-06-10,"SiViB Record 31 spindle vibration monitor exceeded Warning/Alarm threshold (> 2.5 pc / 4.5 mm/s RMS). Root cause: Toolholder unbalance (quality grade worse than ISO 1940 G2.5), spindle bearing cage wear/micro-spalling, or loose HSK-63 clamping segment causing centrifugal flutter.",Axis Y11 torque sustained high at 47.0 Nm against mechanical drag/brake.,"1. Remove current tool and inspect HSK-63 clamping taper for fretting corrosion or chips.
+2. Measure dynamic balancing of tool assembly on balancing machine; rebalance to G2.5 at 24,000 RPM.
+3. Check spindle radial/axial runout using dial indicator (< 0.003 mm at spindle nose taper).
+4. Connect SiViB Record Control software via RS-232/Ethernet to export FFT vibration spectrum and identify bearing defect frequencies (BPFO/BPFI/BSF).
+5. If vibration persists in uncoupled idle test (> 2.0 mm/s), replace spindle bearing cartridge.","1. Remove current tool and inspect HSK-63 clamping taper for fretting corrosion or chips.
+2. Measure dynamic balancing of tool assembly on balancing machine; rebalance to G2.5 at 24,000 RPM.
+3. Check spindle radial/axial runout using dial indicator (< 0.003 mm at spindle nose taper).
+4. Connect SiViB Record Control software via RS-232/Ethernet to export FFT vibration spectrum and identify bearing defect frequencies (BPFO/BPFI/BSF).
+5. If vibration persists in uncoupled idle test (> 2.0 mm/s), replace spindle bearing cartridge.",XX:XX hrs,0.0
+2026-06-07 22:59:17,Bavius 4mtr N01-02,11000452,General Mechanical / Electrical,Machine Subsystem Interruption: Baviu 4M1 Axis Drive Fault.,700100,Medium,1 times in last 6 months (Last: 2026-06-07),1,2026-06-07,Operational cycle halted due to safety interlock trip or sensor feedback disagreement during automated processing.,Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Axis Y11 torque sustained high at 48.6 Nm against mechanical drag/brake.,"1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.","1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.",XX:XX hrs,0.0
+2026-06-06 14:53:12,Bavius 4mtr N01-02,11000452,General Mechanical / Electrical,Machine Subsystem Interruption: B11-AXIS (MAIN SPINDAL)MOVEMENT NOT ALLO,700100,Medium,1 times in last 6 months (Last: 2026-06-06),1,2026-06-06,Operational cycle halted due to safety interlock trip or sensor feedback disagreement during automated processing.,Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Axis Y11 torque sustained high at 48.4 Nm against mechanical drag/brake.,"1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.","1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.",XX:XX hrs,1.0
+2026-06-06 23:56:39,Bavius 4mtr N01-02,11000452,General Mechanical / Electrical,Machine Subsystem Interruption: Bavius 4M1 Drive Fault Issue.,700100,Medium,1 times in last 6 months (Last: 2026-06-06),1,2026-06-06,Operational cycle halted due to safety interlock trip or sensor feedback disagreement during automated processing.,"Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Spindle current surging to 26.7A (normal idle: 0-2A, normal cut: 7-12A). | Axis Y11 torque sustained high at 49.0 Nm against mechanical drag/brake.","1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.","1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.",XX:XX hrs,0.0
+2026-06-05 12:48:09,Bavius 4mtr N01-02,11000452,Spindle System,Main Spindle Emergency Stop Interruption,700123 / 700120,High,3 times in last 6 months (Last: 2026-08-12),3,2026-08-12,"Safety Integrated circuit or process limit trip (excessive drive torque spike, enclosure door interlock switch chatter, or tool monitoring collision sensor).",Axis Y11 torque sustained high at 51.9 Nm against mechanical drag/brake.,"1. Check Safety Integrated diagnostic screen on SINUMERIK Operate for initiating channel.
+2. Verify enclosure door guard interlocks and magnetic safety switches (Bavius alarm 700124/700128).
+3. Inspect cutting tool and workpiece for tool breakage or jamming.
+4. Reset safety circuit, cycle E-stop pushbutton, and test in JOG mode.","1. Check Safety Integrated diagnostic screen on SINUMERIK Operate for initiating channel.
+2. Verify enclosure door guard interlocks and magnetic safety switches (Bavius alarm 700124/700128).
+3. Inspect cutting tool and workpiece for tool breakage or jamming.
+4. Reset safety circuit, cycle E-stop pushbutton, and test in JOG mode.",XX:XX hrs,1.0
+2026-06-01 15:48:50,Bavius 4mtr N01-02,11000452,Tool Changer (ATC) & Clamping,ATC Tool Magazine Flap Cover / Door Open Fault,700126 / 700904,Medium,5 times in last 6 months (Last: 2026-08-30),5,2026-08-30,"Pneumatic cylinder operating the magazine shutter flap failed to open/close within time limit, or magnetic reed sensor failed to detect end position due to chip accumulation in guide tracks.",Axis Y11 torque sustained high at 51.7 Nm against mechanical drag/brake.,"1. Remove chips and accumulated swarf from ATC shutter slide rails and pneumatic cylinder rod.
+2. Verify pneumatic cylinder operating pressure (min 5.5 bar) and flow control throttle valves.
+3. Check magnetic reed sensors on cylinder body; verify green LED triggers at full stroke.
+4. Manually exercise flap open/close via operator panel softkeys before resuming automatic cycle.","1. Remove chips and accumulated swarf from ATC shutter slide rails and pneumatic cylinder rod.
+2. Verify pneumatic cylinder operating pressure (min 5.5 bar) and flow control throttle valves.
+3. Check magnetic reed sensors on cylinder body; verify green LED triggers at full stroke.
+4. Manually exercise flap open/close via operator panel softkeys before resuming automatic cycle.",XX:XX hrs,0.0
+2026-05-26 20:00:00,Bavius 4mtr N01-02,11000452,Tool Changer (ATC) & Clamping,Main Spindle Tool Clamping / Gripper Mechanism Fault,700300 / 700905,High,4 times in last 6 months (Last: 2026-05-26),4,2026-05-26,"Tool clamp proximity switch S4 (tool clamped) failed to confirm within time limit, or clamping force deficient due to swarf buildup in HSK taper or worn disc springs.",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 58.0C (Warning threshold: 50C). | High Drive Load spike observed up to 27.7% under heavy cutting. | Axis Y11 torque sustained high at 82.4 Nm against mechanical drag/brake.,"1. Clean spindle internal HSK taper socket and gripper collet segments using specialized cleaning cone.
+2. Measure pull-in force with Ott-Jakob POWER-CHECK instrument (verify against specification table in Chap 7.3.2).
+3. Disassemble gripper segments, lubricate with Klüber paste, inspect Belleville springs for cracks.
+4. Readjust proximity switch S4 switching gap (1.0 mm +/- 0.2 mm); test tool clamp/unclamp in JOG.","1. Clean spindle internal HSK taper socket and gripper collet segments using specialized cleaning cone.
+2. Measure pull-in force with Ott-Jakob POWER-CHECK instrument (verify against specification table in Chap 7.3.2).
+3. Disassemble gripper segments, lubricate with Klüber paste, inspect Belleville springs for cracks.
+4. Readjust proximity switch S4 switching gap (1.0 mm +/- 0.2 mm); test tool clamp/unclamp in JOG.",XX:XX hrs,1.0
+2026-05-25 10:21:00,Bavius 4mtr N01-02,11000452,Pneumatic System,Compressed Air Supply Pressure Low (< 6.0 Bar),700121 / 700122,Medium,12 times in last 6 months (Last: 2026-09-22),12,2026-09-22,"Central pneumatic shop air supply dropped below minimum machine threshold (6.0 bar), or internal distribution line ruptured/leaked, disabling pneumatic tool clamps, sealing air, and axis scales purge.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.","1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.",XX:XX hrs,0.0
+2026-05-22 16:50:20,Bavius 4mtr N01-02,11000452,Pneumatic System,Compressed Air Supply Pressure Low (< 6.0 Bar),700121 / 700122,Medium,12 times in last 6 months (Last: 2026-09-22),12,2026-09-22,"Central pneumatic shop air supply dropped below minimum machine threshold (6.0 bar), or internal distribution line ruptured/leaked, disabling pneumatic tool clamps, sealing air, and axis scales purge.","Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 55.0C (Warning threshold: 50C). | High Drive Load spike observed up to 34.7% under heavy cutting. | Spindle current surging to 142.3A (normal idle: 0-2A, normal cut: 7-12A). | Axis Y11 torque sustained high at 75.6 Nm against mechanical drag/brake.","1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.","1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.",XX:XX hrs,0.33
+2026-05-17 10:12:38,Bavius 4mtr N01-02,11000452,Coolant & Filtration,Chip Conveyor Motor Overload / Mechanical Jam,701305 / 701349,Medium,1 times in last 6 months (Last: 2026-05-17),1,2026-05-17,"Conveyor hinged belt jammed by clustered aluminum chips or stringy swarf, causing motor bimetallic thermal overload relay to trip.",Elevated Spindle Motor Temperature reached 58.0C (Warning threshold: 50C). | High Drive Load spike observed up to 38.1% under heavy cutting. | Axis Y11 torque sustained high at 59.2 Nm against mechanical drag/brake.,"1. Press Conveyor Reverse jog button to dislodge swarf bunching at discharge chute.
+2. Inspect conveyor belt hinges and remove jammed chips with safety rake.
+3. Reset motor circuit breaker in electrical control cabinet upstream of MS.
+4. Verify conveyor drive chain lubrication and adjust torque limiter clutch tension.","1. Press Conveyor Reverse jog button to dislodge swarf bunching at discharge chute.
+2. Inspect conveyor belt hinges and remove jammed chips with safety rake.
+3. Reset motor circuit breaker in electrical control cabinet upstream of MS.
+4. Verify conveyor drive chain lubrication and adjust torque limiter clutch tension.",XX:XX hrs,1.0
+2026-05-13 12:39:27,Bavius 4mtr N01-02,11000452,General Mechanical / Electrical,Machine Subsystem Interruption: Bavius 4M1 Pllet Changing Issue.,700100,Medium,1 times in last 6 months (Last: 2026-05-13),1,2026-05-13,Operational cycle halted due to safety interlock trip or sensor feedback disagreement during automated processing.,Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 57.0C (Warning threshold: 50C). | High Drive Load spike observed up to 26.6% under heavy cutting. | Axis Y11 torque sustained high at 55.4 Nm against mechanical drag/brake.,"1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.","1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.",XX:XX hrs,0.32
+2026-05-13 15:29:03,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.","Elevated Spindle Motor Temperature reached 55.0C (Warning threshold: 50C). | High Drive Load spike observed up to 49.2% under heavy cutting. | Spindle current surging to 22.7A (normal idle: 0-2A, normal cut: 7-12A). | Axis Y11 torque sustained high at 61.2 Nm against mechanical drag/brake.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,1.0
+2026-05-12 09:46:43,Bavius 4mtr N01-02,11000452,General Mechanical / Electrical,Machine Subsystem Interruption: Bavius 4M1 Axis Clamping active Alaram.,700100,Medium,1 times in last 6 months (Last: 2026-05-12),1,2026-05-12,Operational cycle halted due to safety interlock trip or sensor feedback disagreement during automated processing.,Axis Y11 torque sustained high at 49.4 Nm against mechanical drag/brake.,"1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.","1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.",XX:XX hrs,0.32
+2026-05-12 12:43:07,Bavius 4mtr N01-02,11000452,CNC Controller & Panel,CNC Control Panel Blinking / CPU Ready Watchdog Interruption,700425 / Siemens NCU,Medium,10 times in last 6 months (Last: 2026-08-16),10,2026-08-16,"24V DC auxiliary power line transient, safety door interlock oscillation, or Sinumerik NCU / PLC CPU watchdog timeout during auto mode transition.",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 60.0C (Warning threshold: 50C). | Axis Y11 torque sustained high at 48.8 Nm against mechanical drag/brake.,"1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.","1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.",XX:XX hrs,1.0
+2026-05-10 12:59:49,Bavius 4mtr N01-02,11000452,Spindle System,Main Spindle SP1 Drive Controller Fault,700113 / Siemens 25201,High,3 times in last 6 months (Last: 2026-07-13),3,2026-07-13,"Siemens Sinumerik drive controller fault on SP1 axis due to following error, speed controller saturation, or encoder signal loss during rapid acceleration.",Pre-warning: 2 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Axis Y11 torque sustained high at 49.2 Nm against mechanical drag/brake.,"1. Check encoder signal cable and clean optical pulse connector on spindle rear.
+2. Inspect motor power terminal block for loose lugs or thermal discoloration.
+3. Verify spindle drive heat sink fan operation and clean ventilation grilles.
+4. Acknowledge alarm via NC-Reset and perform slow spindle spin-up test (500 -> 3000 -> 10000 RPM).","1. Check encoder signal cable and clean optical pulse connector on spindle rear.
+2. Inspect motor power terminal block for loose lugs or thermal discoloration.
+3. Verify spindle drive heat sink fan operation and clean ventilation grilles.
+4. Acknowledge alarm via NC-Reset and perform slow spindle spin-up test (500 -> 3000 -> 10000 RPM).",XX:XX hrs,1.0
+2026-05-08 16:45:16,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",Elevated Spindle Motor Temperature reached 59.0C (Warning threshold: 50C). | High Drive Load spike observed up to 27.5% under heavy cutting. | Axis Y11 torque sustained high at 50.4 Nm against mechanical drag/brake.,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,0.23
+2026-05-06 03:36:13,Bavius 4mtr N01-02,11000452,Vacuum Workholding,Vacuum Clamping Failure (Level Below -600 mbar),700748 / 700750,High,3 times in last 6 months (Last: 2026-07-04),3,2026-07-04,"VOC-AD-S-63/100 vacuum station dropped below required -600 mbar safe clamping limit. Causes: Damaged foam sealing cord on vacuum table fixture, liquid separator overflow, or clogged suction filter.",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Axis Y11 torque sustained high at 48.5 Nm against mechanical drag/brake.,"1. Inspect vacuum fixture rubber sealing gasket for cuts, displacement, or swarf contamination.
+2. Drain liquid feedback separator container [glass tank item 13] by opening drain valve 2V2.
+3. Clean vacuum station pre-filter and fine-filter mesh from machining sludge.
+4. Check vacuum pump oil level and verify pressure switch 1Z2 reads <= -600 mbar before NC Start.","1. Inspect vacuum fixture rubber sealing gasket for cuts, displacement, or swarf contamination.
+2. Drain liquid feedback separator container [glass tank item 13] by opening drain valve 2V2.
+3. Clean vacuum station pre-filter and fine-filter mesh from machining sludge.
+4. Check vacuum pump oil level and verify pressure switch 1Z2 reads <= -600 mbar before NC Start.",XX:XX hrs,3.9
+2026-05-03 11:30:12,Bavius 4mtr N01-02,11000452,Cooling & Recooler,Spindle Chiller Collective Fault (CLS Recooler),700502 / 700702,High,1 times in last 6 months (Last: 2026-05-03),1,2026-05-03,Rittal/Bavius KRA150 spindle recooler tripped high refrigerant pressure switch PA or compressor thermal overload due to clogged condenser filter mat or high ambient shop temperature.,Axis Y11 torque sustained high at 48.8 Nm against mechanical drag/brake.,"1. Clean air-cooled condenser fins and wash/replace air intake filter mat (FAC).
+2. Inspect recooler tank fluid level on level gauge (LI); refill distilled water-glycol mixture (acc. to VGB-R 455 P).
+3. Verify circulation pump (CO) is spinning freely and cooling flow indicator (AS) shows positive flow.
+4. Allow compressor to cool down for 30 minutes; reset high-pressure limiter switch.","1. Clean air-cooled condenser fins and wash/replace air intake filter mat (FAC).
+2. Inspect recooler tank fluid level on level gauge (LI); refill distilled water-glycol mixture (acc. to VGB-R 455 P).
+3. Verify circulation pump (CO) is spinning freely and cooling flow indicator (AS) shows positive flow.
+4. Allow compressor to cool down for 30 minutes; reset high-pressure limiter switch.",XX:XX hrs,0.75
+2026-05-02 21:29:16,Bavius 4mtr N01-02,11000452,Axis Drives & Motion,Safety Integrated Stop A/B / Safe Velocity Limit Breach,Safety Integrated Stop A/B,High,5 times in last 6 months (Last: 2026-08-08),5,2026-08-08,Siemens Safety Integrated triggered emergency stop due to velocity cross-check discrepancy between dual-channel encoder signals or unreferenced safe axis position.,Pre-warning: 2 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 56.0C (Warning threshold: 50C). | Axis Y11 torque sustained high at 51.7 Nm against mechanical drag/brake.,"1. Inspect safety encoder cables on A/B/SP1 axes for noise interference or loose shielding.
+2. Perform safe axis referencing procedure for all kinematics axes in JOG mode.
+3. Perform SI test stop routine (Channel 01 & 02) to verify safety shutdown path.
+4. Clear CNC alarms and verify Safety Integrated status displays 'OK' in SINUMERIK Operate.","1. Inspect safety encoder cables on A/B/SP1 axes for noise interference or loose shielding.
+2. Perform safe axis referencing procedure for all kinematics axes in JOG mode.
+3. Perform SI test stop routine (Channel 01 & 02) to verify safety shutdown path.
+4. Clear CNC alarms and verify Safety Integrated status displays 'OK' in SINUMERIK Operate.",XX:XX hrs,0.52
+2026-05-02 07:07:36,Bavius 4mtr N01-02,11000452,Axis Drives & Motion,Axis Clamping / Hydraulic Holding Brake / Standstill Fault,700112 / 700531 / 700109,Medium,6 times in last 6 months (Last: 2026-09-19),6,2026-09-19,"Rotary axis (C11/A11) or linear axis (Y11) hydraulic line clamp/brake failed to release before axis motion, or axis drifted beyond permissible standstill tolerance window under cutting load.",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Axis Y11 torque sustained high at 77.6 Nm against mechanical drag/brake.,"1. Inspect hydraulic brake release pressure (check pressure switches and solenoid valve spools).
+2. Verify optical linear scale / rotary encoder purge air pressure (Bavius alarm 700216).
+3. Check guideway lubrication pressure and verify grease distributor metering valves.
+4. Execute axis test stop and brake test sequence in SINUMERIK JOG mode channel 02.","1. Inspect hydraulic brake release pressure (check pressure switches and solenoid valve spools).
+2. Verify optical linear scale / rotary encoder purge air pressure (Bavius alarm 700216).
+3. Check guideway lubrication pressure and verify grease distributor metering valves.
+4. Execute axis test stop and brake test sequence in SINUMERIK JOG mode channel 02.",XX:XX hrs,0.5
+2026-04-30 07:15:20,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,0.58
+2026-04-30 01:05:42,Bavius 4mtr N01-02,11000452,Tool Changer (ATC) & Clamping,Main Spindle Tool Clamping / Gripper Mechanism Fault,700300 / 700905,High,4 times in last 6 months (Last: 2026-05-26),4,2026-05-26,"Tool clamp proximity switch S4 (tool clamped) failed to confirm within time limit, or clamping force deficient due to swarf buildup in HSK taper or worn disc springs.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Clean spindle internal HSK taper socket and gripper collet segments using specialized cleaning cone.
+2. Measure pull-in force with Ott-Jakob POWER-CHECK instrument (verify against specification table in Chap 7.3.2).
+3. Disassemble gripper segments, lubricate with Klüber paste, inspect Belleville springs for cracks.
+4. Readjust proximity switch S4 switching gap (1.0 mm +/- 0.2 mm); test tool clamp/unclamp in JOG.","1. Clean spindle internal HSK taper socket and gripper collet segments using specialized cleaning cone.
+2. Measure pull-in force with Ott-Jakob POWER-CHECK instrument (verify against specification table in Chap 7.3.2).
+3. Disassemble gripper segments, lubricate with Klüber paste, inspect Belleville springs for cracks.
+4. Readjust proximity switch S4 switching gap (1.0 mm +/- 0.2 mm); test tool clamp/unclamp in JOG.",XX:XX hrs,0.41
+2026-04-26 23:42:17,Bavius 4mtr N01-02,11000452,Pneumatic System,Compressed Air Supply Pressure Low (< 6.0 Bar),700121 / 700122,Medium,12 times in last 6 months (Last: 2026-09-22),12,2026-09-22,"Central pneumatic shop air supply dropped below minimum machine threshold (6.0 bar), or internal distribution line ruptured/leaked, disabling pneumatic tool clamps, sealing air, and axis scales purge.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.","1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.",XX:XX hrs,4.0
+2026-04-25 23:34:14,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 58.0C (Warning threshold: 50C). | Axis Y11 torque sustained high at 49.3 Nm against mechanical drag/brake.,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,0.43
+2026-04-24 23:17:33,Bavius 4mtr N01-02,11000452,CNC Controller & Panel,CNC Control Panel Blinking / CPU Ready Watchdog Interruption,700425 / Siemens NCU,Medium,10 times in last 6 months (Last: 2026-08-16),10,2026-08-16,"24V DC auxiliary power line transient, safety door interlock oscillation, or Sinumerik NCU / PLC CPU watchdog timeout during auto mode transition.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.","1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.",XX:XX hrs,0.39
+2026-04-24 11:50:25,Bavius 4mtr N01-02,11000452,Axis Drives & Motion,Safety Integrated Stop A/B / Safe Velocity Limit Breach,Safety Integrated Stop A/B,High,5 times in last 6 months (Last: 2026-08-08),5,2026-08-08,Siemens Safety Integrated triggered emergency stop due to velocity cross-check discrepancy between dual-channel encoder signals or unreferenced safe axis position.,Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 57.0C (Warning threshold: 50C). | High Drive Load spike observed up to 25.4% under heavy cutting. | Axis Y11 torque sustained high at 53.3 Nm against mechanical drag/brake.,"1. Inspect safety encoder cables on A/B/SP1 axes for noise interference or loose shielding.
+2. Perform safe axis referencing procedure for all kinematics axes in JOG mode.
+3. Perform SI test stop routine (Channel 01 & 02) to verify safety shutdown path.
+4. Clear CNC alarms and verify Safety Integrated status displays 'OK' in SINUMERIK Operate.","1. Inspect safety encoder cables on A/B/SP1 axes for noise interference or loose shielding.
+2. Perform safe axis referencing procedure for all kinematics axes in JOG mode.
+3. Perform SI test stop routine (Channel 01 & 02) to verify safety shutdown path.
+4. Clear CNC alarms and verify Safety Integrated status displays 'OK' in SINUMERIK Operate.",XX:XX hrs,0.5
+2026-04-18 05:14:44,Bavius 4mtr N01-02,11000452,CNC Controller & Panel,CNC Control Panel Blinking / CPU Ready Watchdog Interruption,700425 / Siemens NCU,Medium,10 times in last 6 months (Last: 2026-08-16),10,2026-08-16,"24V DC auxiliary power line transient, safety door interlock oscillation, or Sinumerik NCU / PLC CPU watchdog timeout during auto mode transition.",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | High Drive Load spike observed up to 54.7% under heavy cutting. | Axis Y11 torque sustained high at 57.7 Nm against mechanical drag/brake.,"1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.","1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.",XX:XX hrs,0.27
+2026-04-17 20:29:34,Bavius 4mtr N01-02,11000452,CNC Controller & Panel,CNC Control Panel Blinking / CPU Ready Watchdog Interruption,700425 / Siemens NCU,Medium,10 times in last 6 months (Last: 2026-08-16),10,2026-08-16,"24V DC auxiliary power line transient, safety door interlock oscillation, or Sinumerik NCU / PLC CPU watchdog timeout during auto mode transition.",Elevated Spindle Motor Temperature reached 55.0C (Warning threshold: 50C). | Axis Y11 torque sustained high at 48.7 Nm against mechanical drag/brake.,"1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.","1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.",XX:XX hrs,0.51
+2026-04-15 08:40:44,Bavius 4mtr N01-02,11000452,Coolant & Filtration,Coolant Soil Tank High Level / Sludge Overflow,701338 / 701342,Medium,4 times in last 6 months (Last: 2026-08-19),4,2026-08-19,Knoll KF 200 compact filter soil tank level reached high alarm float switch due to high aluminum chip extraction volume and delayed filter fleece indexing.,"Pre-warning: 2 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 57.0C (Warning threshold: 50C). | Spindle current surging to 130.8A (normal idle: 0-2A, normal cut: 7-12A). | Axis Y11 torque sustained high at 49.1 Nm against mechanical drag/brake.","1. Empty chip sediment and sludge from dirty coolant soil tank compartment.
+2. Clean float level switches and optical level probes from fine aluminum paste build-up.
+3. Check filter fleece roll advance drive motor and ensure fleece is advancing smoothly without tears.","1. Empty chip sediment and sludge from dirty coolant soil tank compartment.
+2. Clean float level switches and optical level probes from fine aluminum paste build-up.
+3. Check filter fleece roll advance drive motor and ensure fleece is advancing smoothly without tears.",XX:XX hrs,0.29
+2026-04-13 19:34:20,Bavius 4mtr N01-02,11000452,CNC Controller & Panel,CNC Control Panel Blinking / CPU Ready Watchdog Interruption,700425 / Siemens NCU,Medium,10 times in last 6 months (Last: 2026-08-16),10,2026-08-16,"24V DC auxiliary power line transient, safety door interlock oscillation, or Sinumerik NCU / PLC CPU watchdog timeout during auto mode transition.",Pre-warning: 4 intermittent FAULT signal pulses detected within 2h prior to stoppage. | High Drive Load spike observed up to 70.0% under heavy cutting. | Axis Y11 torque sustained high at 47.0 Nm against mechanical drag/brake.,"1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.","1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.",XX:XX hrs,0.3
+2026-04-10 09:42:34,Bavius 4mtr N01-02,11000452,General Mechanical / Electrical,Machine Subsystem Interruption: B11-AXIS (MAIN SPINDAL)MOMENT NOT ALLOW,700100,Medium,1 times in last 6 months (Last: 2026-04-10),1,2026-04-10,Operational cycle halted due to safety interlock trip or sensor feedback disagreement during automated processing.,"Pre-warning: 3 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 56.0C (Warning threshold: 50C). | High Drive Load spike observed up to 56.9% under heavy cutting. | Spindle current surging to 20.1A (normal idle: 0-2A, normal cut: 7-12A). | Axis Y11 torque sustained high at 64.2 Nm against mechanical drag/brake.","1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.","1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.",XX:XX hrs,2.0
+2026-04-09 22:30:41,Bavius 4mtr N01-02,11000452,Coolant & Filtration,Coolant Soil Tank High Level / Sludge Overflow,701338 / 701342,Medium,4 times in last 6 months (Last: 2026-08-19),4,2026-08-19,Knoll KF 200 compact filter soil tank level reached high alarm float switch due to high aluminum chip extraction volume and delayed filter fleece indexing.,High Drive Load spike observed up to 37.7% under heavy cutting. | Axis Y11 torque sustained high at 66.2 Nm against mechanical drag/brake.,"1. Empty chip sediment and sludge from dirty coolant soil tank compartment.
+2. Clean float level switches and optical level probes from fine aluminum paste build-up.
+3. Check filter fleece roll advance drive motor and ensure fleece is advancing smoothly without tears.","1. Empty chip sediment and sludge from dirty coolant soil tank compartment.
+2. Clean float level switches and optical level probes from fine aluminum paste build-up.
+3. Check filter fleece roll advance drive motor and ensure fleece is advancing smoothly without tears.",XX:XX hrs,0.31
+2026-04-08 16:53:05,Bavius 4mtr N01-02,11000452,Pneumatic System,Compressed Air Supply Pressure Low (< 6.0 Bar),700121 / 700122,Medium,12 times in last 6 months (Last: 2026-09-22),12,2026-09-22,"Central pneumatic shop air supply dropped below minimum machine threshold (6.0 bar), or internal distribution line ruptured/leaked, disabling pneumatic tool clamps, sealing air, and axis scales purge.",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 56.0C (Warning threshold: 50C). | Axis Y11 torque sustained high at 53.4 Nm against mechanical drag/brake.,"1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.","1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.",XX:XX hrs,0.28
+2026-04-05 23:37:47,Bavius 4mtr N01-02,11000452,Tool Changer (ATC) & Clamping,Main Spindle Tool Clamping / Gripper Mechanism Fault,700300 / 700905,High,4 times in last 6 months (Last: 2026-05-26),4,2026-05-26,"Tool clamp proximity switch S4 (tool clamped) failed to confirm within time limit, or clamping force deficient due to swarf buildup in HSK taper or worn disc springs.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Clean spindle internal HSK taper socket and gripper collet segments using specialized cleaning cone.
+2. Measure pull-in force with Ott-Jakob POWER-CHECK instrument (verify against specification table in Chap 7.3.2).
+3. Disassemble gripper segments, lubricate with Klüber paste, inspect Belleville springs for cracks.
+4. Readjust proximity switch S4 switching gap (1.0 mm +/- 0.2 mm); test tool clamp/unclamp in JOG.","1. Clean spindle internal HSK taper socket and gripper collet segments using specialized cleaning cone.
+2. Measure pull-in force with Ott-Jakob POWER-CHECK instrument (verify against specification table in Chap 7.3.2).
+3. Disassemble gripper segments, lubricate with Klüber paste, inspect Belleville springs for cracks.
+4. Readjust proximity switch S4 switching gap (1.0 mm +/- 0.2 mm); test tool clamp/unclamp in JOG.",XX:XX hrs,5.0
+2026-04-05 02:10:22,Bavius 4mtr N01-02,11000452,Pneumatic System,Compressed Air Supply Pressure Low (< 6.0 Bar),700121 / 700122,Medium,12 times in last 6 months (Last: 2026-09-22),12,2026-09-22,"Central pneumatic shop air supply dropped below minimum machine threshold (6.0 bar), or internal distribution line ruptured/leaked, disabling pneumatic tool clamps, sealing air, and axis scales purge.","Elevated Spindle Motor Temperature reached 58.0C (Warning threshold: 50C). | High Drive Load spike observed up to 26.2% under heavy cutting. | Spindle current surging to 33.3A (normal idle: 0-2A, normal cut: 7-12A). | Axis Y11 torque sustained high at 48.8 Nm against mechanical drag/brake.","1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.","1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.",XX:XX hrs,0.33
+2026-03-29 15:30:46,Bavius 4mtr N01-02,11000452,Pneumatic System,Compressed Air Supply Pressure Low (< 6.0 Bar),700121 / 700122,High,12 times in last 6 months (Last: 2026-09-22),12,2026-09-22,"Central pneumatic shop air supply dropped below minimum machine threshold (6.0 bar), or internal distribution line ruptured/leaked, disabling pneumatic tool clamps, sealing air, and axis scales purge.",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 57.0C (Warning threshold: 50C). | Axis Y11 torque sustained high at 66.0 Nm against mechanical drag/brake.,"1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.","1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.",XX:XX hrs,1.0
+2026-03-27 21:05:07,Bavius 4mtr N01-02,11000452,Spindle System,Spindle Excessive Vibration / Bearing Acoustic Deterioration,700730 / 700731,Critical,3 times in last 6 months (Last: 2026-06-10),3,2026-06-10,"SiViB Record 31 spindle vibration monitor exceeded Warning/Alarm threshold (> 2.5 pc / 4.5 mm/s RMS). Root cause: Toolholder unbalance (quality grade worse than ISO 1940 G2.5), spindle bearing cage wear/micro-spalling, or loose HSK-63 clamping segment causing centrifugal flutter.","Elevated Spindle Motor Temperature reached 55.0C (Warning threshold: 50C). | Spindle current surging to 20.8A (normal idle: 0-2A, normal cut: 7-12A). | Axis Y11 torque sustained high at 95.1 Nm against mechanical drag/brake.","1. Remove current tool and inspect HSK-63 clamping taper for fretting corrosion or chips.
+2. Measure dynamic balancing of tool assembly on balancing machine; rebalance to G2.5 at 24,000 RPM.
+3. Check spindle radial/axial runout using dial indicator (< 0.003 mm at spindle nose taper).
+4. Connect SiViB Record Control software via RS-232/Ethernet to export FFT vibration spectrum and identify bearing defect frequencies (BPFO/BPFI/BSF).
+5. If vibration persists in uncoupled idle test (> 2.0 mm/s), replace spindle bearing cartridge.","1. Remove current tool and inspect HSK-63 clamping taper for fretting corrosion or chips.
+2. Measure dynamic balancing of tool assembly on balancing machine; rebalance to G2.5 at 24,000 RPM.
+3. Check spindle radial/axial runout using dial indicator (< 0.003 mm at spindle nose taper).
+4. Connect SiViB Record Control software via RS-232/Ethernet to export FFT vibration spectrum and identify bearing defect frequencies (BPFO/BPFI/BSF).
+5. If vibration persists in uncoupled idle test (> 2.0 mm/s), replace spindle bearing cartridge.",XX:XX hrs,1.42
+2026-03-25 17:32:44,Bavius 4mtr N01-02,11000452,Axis Drives & Motion,Axis Clamping / Hydraulic Holding Brake / Standstill Fault,700112 / 700531 / 700109,Medium,6 times in last 6 months (Last: 2026-09-19),6,2026-09-19,"Rotary axis (C11/A11) or linear axis (Y11) hydraulic line clamp/brake failed to release before axis motion, or axis drifted beyond permissible standstill tolerance window under cutting load.",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Axis Y11 torque sustained high at 47.3 Nm against mechanical drag/brake.,"1. Inspect hydraulic brake release pressure (check pressure switches and solenoid valve spools).
+2. Verify optical linear scale / rotary encoder purge air pressure (Bavius alarm 700216).
+3. Check guideway lubrication pressure and verify grease distributor metering valves.
+4. Execute axis test stop and brake test sequence in SINUMERIK JOG mode channel 02.","1. Inspect hydraulic brake release pressure (check pressure switches and solenoid valve spools).
+2. Verify optical linear scale / rotary encoder purge air pressure (Bavius alarm 700216).
+3. Check guideway lubrication pressure and verify grease distributor metering valves.
+4. Execute axis test stop and brake test sequence in SINUMERIK JOG mode channel 02.",XX:XX hrs,0.46
+2026-03-19 15:08:06,Bavius 4mtr N01-02,11000452,Coolant & Filtration,Coolant Filter Fleece (Paper) Overuse / End-of-Roll,701338 / Knoll KF200,Medium,1 times in last 6 months (Last: 2026-03-19),1,2026-03-19,"Knoll KF 200 filter fleece roll reached end-of-roll limit or drive belt slipped, preventing fresh media advance and causing coolant pooling.",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 55.0C (Warning threshold: 50C). | High Drive Load spike observed up to 61.2% under heavy cutting. | Axis Y11 torque sustained high at 48.9 Nm against mechanical drag/brake.,"1. Replace exhausted filter fleece roll with fresh Knoll specification filtervlies roll (KF 200/1800).
+2. Thread fleece under scraper drum and through drive rollers per diagram 11033782.
+3. Reset fleece run-out limit switch and trigger manual test advance pulse.","1. Replace exhausted filter fleece roll with fresh Knoll specification filtervlies roll (KF 200/1800).
+2. Thread fleece under scraper drum and through drive rollers per diagram 11033782.
+3. Reset fleece run-out limit switch and trigger manual test advance pulse.",XX:XX hrs,0.58
+2026-03-19 16:57:30,Bavius 4mtr N01-02,11000452,Tool Changer (ATC) & Clamping,Main Spindle Tool Clamping / Gripper Mechanism Fault,700300 / 700905,High,4 times in last 6 months (Last: 2026-05-26),4,2026-05-26,"Tool clamp proximity switch S4 (tool clamped) failed to confirm within time limit, or clamping force deficient due to swarf buildup in HSK taper or worn disc springs.",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | High Drive Load spike observed up to 52.9% under heavy cutting. | Axis Y11 torque sustained high at 51.1 Nm against mechanical drag/brake.,"1. Clean spindle internal HSK taper socket and gripper collet segments using specialized cleaning cone.
+2. Measure pull-in force with Ott-Jakob POWER-CHECK instrument (verify against specification table in Chap 7.3.2).
+3. Disassemble gripper segments, lubricate with Klüber paste, inspect Belleville springs for cracks.
+4. Readjust proximity switch S4 switching gap (1.0 mm +/- 0.2 mm); test tool clamp/unclamp in JOG.","1. Clean spindle internal HSK taper socket and gripper collet segments using specialized cleaning cone.
+2. Measure pull-in force with Ott-Jakob POWER-CHECK instrument (verify against specification table in Chap 7.3.2).
+3. Disassemble gripper segments, lubricate with Klüber paste, inspect Belleville springs for cracks.
+4. Readjust proximity switch S4 switching gap (1.0 mm +/- 0.2 mm); test tool clamp/unclamp in JOG.",XX:XX hrs,2.0
+2026-03-18 12:01:46,Bavius 4mtr N01-02,11000452,Coolant & Filtration,Coolant Soil Tank High Level / Sludge Overflow,701338 / 701342,Medium,4 times in last 6 months (Last: 2026-08-19),4,2026-08-19,Knoll KF 200 compact filter soil tank level reached high alarm float switch due to high aluminum chip extraction volume and delayed filter fleece indexing.,High Drive Load spike observed up to 48.3% under heavy cutting. | Axis Y11 torque sustained high at 48.1 Nm against mechanical drag/brake.,"1. Empty chip sediment and sludge from dirty coolant soil tank compartment.
+2. Clean float level switches and optical level probes from fine aluminum paste build-up.
+3. Check filter fleece roll advance drive motor and ensure fleece is advancing smoothly without tears.","1. Empty chip sediment and sludge from dirty coolant soil tank compartment.
+2. Clean float level switches and optical level probes from fine aluminum paste build-up.
+3. Check filter fleece roll advance drive motor and ensure fleece is advancing smoothly without tears.",XX:XX hrs,0.32
+2026-03-17 09:26:25,Bavius 4mtr N01-02,11000452,Pneumatic System,Compressed Air Supply Pressure Low (< 6.0 Bar),700121 / 700122,Medium,12 times in last 6 months (Last: 2026-09-22),12,2026-09-22,"Central pneumatic shop air supply dropped below minimum machine threshold (6.0 bar), or internal distribution line ruptured/leaked, disabling pneumatic tool clamps, sealing air, and axis scales purge.",Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 56.0C (Warning threshold: 50C). | Axis Y11 torque sustained high at 48.7 Nm against mechanical drag/brake.,"1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.","1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.",XX:XX hrs,0.57
+2026-03-16 14:05:37,Bavius 4mtr N01-02,11000452,Pneumatic System,Compressed Air Supply Pressure Low (< 6.0 Bar),700121 / 700122,Medium,12 times in last 6 months (Last: 2026-09-22),12,2026-09-22,"Central pneumatic shop air supply dropped below minimum machine threshold (6.0 bar), or internal distribution line ruptured/leaked, disabling pneumatic tool clamps, sealing air, and axis scales purge.","Elevated Spindle Motor Temperature reached 56.0C (Warning threshold: 50C). | Spindle current surging to 20.9A (normal idle: 0-2A, normal cut: 7-12A). | Axis Y11 torque sustained high at 48.9 Nm against mechanical drag/brake.","1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.","1. Check primary pneumatic service unit pressure gauge [item 8 in manual]; verify supply >= 6.0 bar.
+2. Check auto-drain water separator filter bowl for clogging or excessive condensate.
+3. Listen for air leaks along energy drag chains, Festo valve manifolds, and tool magazine cylinders.
+4. If pipe ruptured, replace 8mm/12mm polyurethane air line and push-in fitting; re-pressurize system.",XX:XX hrs,0.3
+2026-03-14 02:59:54,Bavius 4mtr N01-02,11000452,General Mechanical / Electrical,Machine Subsystem Interruption: Bavius 4M1 Mode change is not allowed.,700100,Medium,1 times in last 6 months (Last: 2026-03-14),1,2026-03-14,Operational cycle halted due to safety interlock trip or sensor feedback disagreement during automated processing.,Pre-warning: 1 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Axis Y11 torque sustained high at 47.5 Nm against mechanical drag/brake.,"1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.","1. Check active alarm message on SINUMERIK CNC screen.
+2. Inspect affected mechanical components and proximity switches.
+3. Clear obstruction, reset safety circuit, and resume production.",XX:XX hrs,0.3
+2026-03-11 16:57:36,Bavius 4mtr N01-02,11000452,CNC Controller & Panel,CNC Control Panel Blinking / CPU Ready Watchdog Interruption,700425 / Siemens NCU,Medium,10 times in last 6 months (Last: 2026-08-16),10,2026-08-16,"24V DC auxiliary power line transient, safety door interlock oscillation, or Sinumerik NCU / PLC CPU watchdog timeout during auto mode transition.","Pre-warning: 2 intermittent FAULT signal pulses detected within 2h prior to stoppage. | Elevated Spindle Motor Temperature reached 56.0C (Warning threshold: 50C). | High Drive Load spike observed up to 36.8% under heavy cutting. | Spindle current surging to 23.8A (normal idle: 0-2A, normal cut: 7-12A). | Axis Y11 torque sustained high at 50.3 Nm against mechanical drag/brake.","1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.","1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.",XX:XX hrs,0.29
+2026-03-07 07:02:10,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,1.0
+2026-03-06 07:43:00,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,1.0
+2026-03-06 15:30:00,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,2.0
+2026-03-06 15:33:35,Bavius 4mtr N01-02,11000452,Pallet Changer,Automatic Pallet Changer (APC) Sequence / Clamping Fault,701018 / 701019 / 701033,Medium,19 times in last 6 months (Last: 2026-09-08),19,2026-09-08,"Pallet change cycle timed out or failed to reach confirmed end position. Swarf/chips on pallet cone seats, misaligned proximity switches on centering cylinders (X/Y), or hydraulic unclamp delay.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.","1. Thoroughly clean pallet locating taper cones, seating surfaces, and zero-point clamping receivers.
+2. Verify inductive proximity sensor LEDs on centering cylinders X/Y and swivel arm lock pin.
+3. Inspect hydraulic pressure for pallet clamping circuit (small ring / big ring pressure gauges).
+4. Switch to JOG mode and execute pallet recovery sequence per Operating Instructions Section 2.3.
+5. Test pallet change in manual single-block before resuming NC_AUTO.",XX:XX hrs,2.0
+2026-03-05 09:06:55,Bavius 4mtr N01-02,11000452,CNC Controller & Panel,CNC Control Panel Blinking / CPU Ready Watchdog Interruption,700425 / Siemens NCU,Medium,10 times in last 6 months (Last: 2026-08-16),10,2026-08-16,"24V DC auxiliary power line transient, safety door interlock oscillation, or Sinumerik NCU / PLC CPU watchdog timeout during auto mode transition.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.","1. Check 24V DC power supply status LEDs (SITOP power units) for overcurrent or voltage sag.
+2. Inspect operator panel emergency stop pushbuttons and key switches for intermittent contacts.
+3. Check Siemens CSM 1277 industrial Ethernet switch connection to decentral ET200 I/O blocks.
+4. Perform controlled CNC warm restart; verify NCU 7-segment display displays status '6' with green RUN LED.",XX:XX hrs,1.06
+2026-03-04 07:40:22,Bavius 4mtr N01-02,11000452,Spindle System,Main Spindle SP1 Drive Controller Fault,700113 / Siemens 25201,High,3 times in last 6 months (Last: 2026-07-13),3,2026-07-13,"Siemens Sinumerik drive controller fault on SP1 axis due to following error, speed controller saturation, or encoder signal loss during rapid acceleration.",No abnormal precursor flags logged within 2h window (sudden mechanical/operator trip).,"1. Check encoder signal cable and clean optical pulse connector on spindle rear.
+2. Inspect motor power terminal block for loose lugs or thermal discoloration.
+3. Verify spindle drive heat sink fan operation and clean ventilation grilles.
+4. Acknowledge alarm via NC-Reset and perform slow spindle spin-up test (500 -> 3000 -> 10000 RPM).","1. Check encoder signal cable and clean optical pulse connector on spindle rear.
+2. Inspect motor power terminal block for loose lugs or thermal discoloration.
+3. Verify spindle drive heat sink fan operation and clean ventilation grilles.
+4. Acknowledge alarm via NC-Reset and perform slow spindle spin-up test (500 -> 3000 -> 10000 RPM).",XX:XX hrs,0.33

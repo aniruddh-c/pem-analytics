@@ -1,0 +1,13 @@
+# Large raw telemetry dataset (>100MB GitHub push limit)
+bavius-data.csv
+
+# Temporary development scripts & cache
+scratch/
+__pycache__/
+*.pyc
+*.log
+server.log
+
+# System files
+.DS_Store
+Thumbs.db
