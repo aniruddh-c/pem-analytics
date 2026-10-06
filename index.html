@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TASL PEM AI Reliability Engineer - Industrial Condition Based Monitoring & Predictive Engineering System">
+  <title>PEM AI Reliability Engineer | Tata Advanced Systems Limited</title>
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top App Master Header -->
+  <header class="app-header">
+    <div class="brand-wrap" id="brandLogoNav" title="Go to Plant Overview">
+      <img src="tasl-logo.jpg" alt="TASL Logo" class="brand-logo-img">
+      <div class="brand-text">
+        <h1>PEM AI Reliability Engineer</h1>
+      </div>
+    </div>
+
+    <!-- Primary Top Navigation Card Buttons: Home, CBM & PredM, Breakdown & PrevM -->
+    <nav class="main-nav-tabs" aria-label="Main Dashboards">
+      <button class="main-tab-btn active" data-tab="home">Home</button>
+      <button class="main-tab-btn" data-tab="cbm">CBM &amp; PredM</button>
+      <button class="main-tab-btn" data-tab="breakdown">Breakdown &amp; PrevM</button>
+      <button class="main-tab-btn" data-tab="metrics">Metrics</button>
+      <button class="main-tab-btn" data-tab="spares">Spares</button>
+    </nav>
+
+    <div class="header-right">
+      <div class="system-clock" id="systemClock">--:--:-- IST</div>
+      <button class="theme-btn" id="themeToggleBtn" title="Toggle Light/Dark Theme">
+        <span id="themeToggleIcon">🌙</span> Theme
+      </button>
+    </div>
+  </header>
+
+  <!-- Plant Tabs Bar (Folder style like tabs-example.jpg - appears on inner dashboards) -->
+  <div class="plant-tabs-wrapper" id="plantTabsBar" style="display: none;">
+    <div class="plant-tabs-container">
+      <div id="plantTabsContainer" style="display: flex; gap: 4px;">
+        <!-- Populated dynamically: TSAL, TASL-NGP, TCOE, TASL-BLR, TASL-XXX -->
+      </div>
+    </div>
+    <!-- Connecting blue line opening up to show data below -->
+    <div class="plant-tabs-blue-line"></div>
+  </div>
+
+  <!-- Main Container -->
+  <main id="mainContainer">
+
+    <!-- ===================================================================
+         VIEW 1: HOME SCREEN - PLANT CARDS OVERVIEW (old-cbm.webp style)
+         =================================================================== -->
+    <section class="home-overview-container" id="homeViewSection">
+      <div class="home-hero-bar">
+        <div class="home-hero-title">
+          <h2>Plant Overview</h2>
+        </div>
+        <div class="total-overall-stat">
+          <div class="label">Total Machines<br>Connected</div>
+          <div class="number" id="totalMachinesCount">42</div>
+        </div>
+      </div>
+
+      <!-- Plant Cards Grid: All 5 cards fit in 1 single row, longer & narrower -->
+      <div class="plant-cards-grid" id="homePlantCardsGrid">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         VIEW 2: CBM & PM DASHBOARD
+         =================================================================== -->
+    <section class="cbm-container" id="cbmViewSection" style="display: none;">
+
+      <!-- Secondary Sub-navigation Tab Buttons (Action Cards removed) -->
+      <div class="cbm-subnav-bar">
+        <button class="cbm-subnav-btn active" data-subtab="machines-matrix">
+          <span>Health Matrix</span>
+          <span class="subnav-badge" id="badgeHealthMatrix">16</span>
+        </button>
+        <button class="cbm-subnav-btn" data-subtab="alert-table">
+          <span>Breakdown Alert Engine</span>
+          <span class="subnav-badge alert" id="badgeAlertEngine">100</span>
+        </button>
+        <button class="cbm-subnav-btn" data-subtab="open-reports">
+          <span>Open Reports</span>
+          <span class="subnav-badge warning" id="badgeOpenReports">7</span>
+        </button>
+        <button class="cbm-subnav-btn" data-subtab="closed-reports">
+          <span>Closed Reports</span>
+          <span class="subnav-badge success" id="badgeClosedReports">48</span>
+        </button>
+        <button class="cbm-subnav-btn" data-subtab="manuals-library">
+          <span>OEM Manuals Library</span>
+          <span class="subnav-badge" id="badgeManuals">11</span>
+        </button>
+      </div>
+
+      <!-- Subview 1: Health Matrix (Modular Machine cards with pastel Green & Red boxes) -->
+      <div id="cbmMachinesOverviewView">
+        <div class="cbm-machine-cards-grid" id="cbmMachinesGrid">
+          <!-- Rendered by app.js -->
+        </div>
+      </div>
+
+      <!-- Subview 2: Dedicated Machine Parameters View (Clicking machine card) -->
+      <div id="cbmParametersView" style="display: none;">
+        <div class="parameters-page-container">
+          <div class="params-header-card">
+            <div class="params-machine-meta" id="paramsMachineMeta">
+              <!-- Populated by app.js -->
+            </div>
+            <button class="back-to-machines-btn" id="backToMachinesBtn">&larr; Back to Health Matrix</button>
+          </div>
+
+          <!-- Machine Sub-Tabs: Parameters vs Analysis -->
+          <div class="machine-subnav-tabs">
+            <button class="machine-tab-btn active" id="tabBtnParameters" onclick="window.switchMachineViewTab('parameters')">Parameters</button>
+            <button class="machine-tab-btn" id="tabBtnAnalysis" onclick="window.switchMachineViewTab('analysis')">Analysis</button>
+          </div>
+
+          <!-- Pane 1: Parameters Tab Pane -->
+          <div id="machineParamsPane">
+            <div style="margin-bottom: 14px; display: flex; justify-content: flex-end;">
+              <input type="text" class="search-input" id="paramSearchInput" placeholder="Filter parameters by name..." style="width: 280px; background:var(--bg-card); border:1px solid var(--border-medium); color:var(--text-main); padding:8px 12px; border-radius:6px; font-size:0.8rem;">
+            </div>
+            <div id="paramsGroupsContainer" style="display: flex; flex-direction: column; gap: 16px;">
+              <!-- Grouped parameters rendered by app.js -->
+            </div>
+          </div>
+
+          <!-- Pane 2: Analysis Tab Pane (Collapsible row cards) -->
+          <div id="machineAnalysisPane" style="display: none;">
+            <div class="analysis-collapse-container" id="paramsAnomalySection">
+              <!-- Collapsible row cards rendered by app.js -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subview 3: Predictive Breakdown Alert Engine Table -->
+      <div id="cbmAlertTableView" style="display: none;">
+        <div class="alert-table-toolbar">
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <input type="text" class="search-input" id="tableSearchInput" placeholder="Search breakdown, anomalies detected, corrective recommendations..." style="width: 320px; background:var(--bg-card); border:1px solid var(--border-medium); color:var(--text-main); padding:8px 12px; border-radius:6px; font-size:0.8rem;">
+            <span id="tableMatchCount" style="font-size: 0.78rem; color: var(--text-dim); font-weight: 700;">100 predictive alerts</span>
+          </div>
+          <button id="exportCsvBtn" class="export-btn">Export Table (CSV)</button>
+        </div>
+
+        <div class="table-card-container">
+          <table class="predictive-alerts-table">
+            <thead>
+              <tr>
+                <th style="width: 110px;">Timestamp</th>
+                <th style="width: 140px;">Machine</th>
+                <th style="width: 210px;">
+                  <div class="th-filter-wrap">
+                    <span>Subsystem &amp; Breakdown Type</span>
+                    <button class="th-filter-arrow" id="subsystemFilterBtn" title="Filter Subsystems">▼</button>
+                    <!-- Subsystem Filter Dropdown Menu -->
+                    <div class="filter-popover" id="subsystemFilterPopover">
+                      <div class="filter-popover-title">Filter Subsystems</div>
+                      <div class="filter-popover-options" id="subsystemFilterOptions"></div>
+                    </div>
+                  </div>
+                </th>
+                <th style="width: 150px;">Past Incidents</th>
+                <th style="width: 110px;">
+                  <div class="th-filter-wrap">
+                    <span>Severity</span>
+                    <button class="th-filter-arrow" id="severityFilterBtn" title="Filter Severity">▼</button>
+                    <!-- Severity Filter Dropdown Menu -->
+                    <div class="filter-popover" id="severityFilterPopover">
+                      <div class="filter-popover-title">Filter Severity</div>
+                      <div class="sev-filter-buttons">
+                        <button class="sev-pill-btn active" data-sev="critical">Critical</button>
+                        <button class="sev-pill-btn" data-sev="high">High</button>
+                        <button class="sev-pill-btn" data-sev="medium">Medium</button>
+                      </div>
+                    </div>
+                  </div>
+                </th>
+                <th style="width: 260px;">Anomalies Detected</th>
+                <th>Corrective Recommendations (OEM Manual)</th>
+                <th style="width: 120px;">Time to Breakdown</th>
+              </tr>
+            </thead>
+            <tbody id="alertsTableBody">
+              <!-- Rendered by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Subview 4: Open Reports Table -->
+      <div id="cbmOpenReportsView" style="display: none;">
+        <div class="table-card-container">
+          <div class="reports-header-strip">
+            <div>
+              <h3>Active SAP Corrective Maintenance Tickets</h3>
+              <p style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+                Policy: 1 Ticket Per Asset. Auto-consolidates all active red alarms. Re-raising inhibited until ticket closure or 10-day SLA window.
+              </p>
+            </div>
+            <div style="display:flex; gap:16px; align-items:center;">
+              <span class="reports-badge open">8 Active Asset Tickets</span>
+              <div class="compliance-score-card">
+                <div class="compliance-score-val">85.7%</div>
+                <div class="compliance-score-info">
+                  <div class="compliance-score-title">COMPLIANCE SCORE</div>
+                  <div class="compliance-score-sub">48 Closed / 56 Total</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <table class="reports-table">
+            <thead>
+              <tr>
+                <th style="width: 140px;">Ticket ID</th>
+                <th style="width: 160px;">Equipment</th>
+                <th style="width: 120px;">Report Date</th>
+                <th>Red Parameters</th>
+                <th style="width: 220px;">Spares Required</th>
+                <th>Corrective Recommendation</th>
+                <th style="width: 110px; text-align: center;">Status</th>
+              </tr>
+            </thead>
+            <tbody id="openReportsTableBody">
+              <!-- Rendered by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Subview 5: Closed Reports Table -->
+      <div id="cbmClosedReportsView" style="display: none;">
+        <div class="table-card-container">
+          <div class="reports-header-strip">
+            <div>
+              <h3>Closed &amp; Resolved SAP Maintenance Reports</h3>
+              <p style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+                Audit log of 48 completed work orders, root cause corrective actions, and verified uptime restorations.
+              </p>
+            </div>
+            <div style="display:flex; gap:16px; align-items:center;">
+              <span class="reports-badge closed">48 Resolved Tickets &bull; 412.5 hrs Downtime Saved</span>
+              <div class="compliance-score-card">
+                <div class="compliance-score-val">85.7%</div>
+                <div class="compliance-score-info">
+                  <div class="compliance-score-title">COMPLIANCE SCORE</div>
+                  <div class="compliance-score-sub">48 Closed / 56 Total</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <table class="reports-table">
+            <thead>
+              <tr>
+                <th>Ticket ID</th>
+                <th>Equipment</th>
+                <th>Diagnosis</th>
+                <th>Date of Fault Detection</th>
+                <th>Date of Closure</th>
+                <th>Downtime Saved</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="closedReportsTableBody">
+              <!-- Rendered by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Subview 6: OEM Manuals Library Split-Screen View -->
+      <div id="cbmManualsView" style="display: none;">
+        <div class="manuals-split-view">
+          <!-- Left Pane: Manual Cards List -->
+          <div class="manuals-list-pane">
+            <div class="manuals-pane-head">
+              <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                <div>
+                  <h3>OEM Technical Documentation Library</h3>
+                  <p>Official Fischer, Rittal, Knoll, and Bavius machine manuals</p>
+                </div>
+                <button class="upload-manual-btn" onclick="window.openUploadManualModal()">+ Upload Manual</button>
+              </div>
+            </div>
+            <div class="manuals-cards-stack" id="manualsCardsStack">
+              <!-- Rendered by app.js -->
+            </div>
+          </div>
+
+          <!-- Right Pane: Embedded PDF Viewer with Close Button -->
+          <div class="manuals-viewer-pane">
+            <div class="manuals-viewer-head" id="manualsViewerHead">
+              <span id="activeManualTitle">Select a manual to browse</span>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <a id="manualNewTabLink" href="#" target="_blank" class="manual-action-link" style="display: none;">New Tab &nearr;</a>
+                <button class="manual-close-doc-btn" id="closeManualDocBtn" style="display: none;" onclick="window.closeManualDocument()">Close ✕</button>
+              </div>
+            </div>
+            <div class="manuals-viewer-body" id="manualsViewerBody">
+              <div class="manual-placeholder-prompt" id="manualPromptWrap">
+                <div class="prompt-icon">📄</div>
+                <h4>OEM Technical Manual Viewer</h4>
+                <p>Click on any manual card from the left panel to load the technical document and schematic side-by-side inside this browser window.</p>
+              </div>
+              <iframe id="manualPdfFrame" src="" style="display: none;" title="OEM Technical Manual Viewer"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ===================================================================
+         VIEW 3: BREAKDOWN MONITORING DASHBOARD
+         =================================================================== -->
+    <section class="breakdown-view-container" id="breakdownViewSection" style="display: none;">
+      <!-- Header -->
+      <div class="breakdown-header-bar">
+        <div class="breakdown-header-left">
+          <div class="breakdown-title-text">Breakdown Monitoring</div>
+        </div>
+
+        <div style="display:flex; gap:12px; align-items:center;">
+          <button class="customized-pm-btn" id="customizedPmBtn" onclick="window.openCustomizedPmModal()" title="View and execute AI-optimized PM tasklist against historical breakdown telemetry">
+            <span class="pm-gear-icon">⚙</span> Customized PM Checklist
+          </button>
+          <div class="opc-badge"><span class="opc-dot"></span> OPC ONLINE</div>
+          <div class="opc-badge sap-badge">SAP INTEGRATION ACTIVE</div>
+        </div>
+      </div>
+
+      <!-- Split Grid: Left Side (Critical Active Breakdowns) vs Right Side (KPIs on top, Top 5 Causes below) -->
+      <div class="breakdown-top-split-grid">
+        <!-- Whole Left Side: Critical Active Breakdowns Panel -->
+        <div class="bd-left-col">
+          <div class="breakdown-panel-box">
+            <div class="panel-title-bar" style="color:var(--status-alarm);">
+              <span>Critical Active Breakdowns (SAP Tickets Auto-Generated)</span>
+            </div>
+            <div id="criticalActiveBreakdownsList">
+              <!-- Rendered by app.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Top KPIs & Below Top 5 Breakdown Causes (No empty space) -->
+        <div class="bd-right-col">
+          <div class="bd-kpis-wrapper">
+            <div class="bd-kpi-card">
+              <span class="bd-kpi-label">Active Critical Breakdowns</span>
+              <span class="bd-kpi-val red" id="activeBreakdownsCount">2</span>
+              <span class="bd-kpi-sub">30-sec rule &bull; SAP Ticket Auto-Generated</span>
+            </div>
+
+            <div class="bd-kpi-card">
+              <span class="bd-kpi-label">Events Logged Today</span>
+              <span class="bd-kpi-val cyan">31</span>
+              <span class="bd-kpi-sub">Telemetry Sensor Signals &bull; Monitored</span>
+            </div>
+          </div>
+
+          <!-- Top 5 Breakdown Causes sits directly below KPIs -->
+          <div class="top-causes-card">
+            <div class="top-causes-header">
+              <div class="top-causes-title">Top 5 Breakdown Causes (Last 6 months)</div>
+              <span class="top-causes-tag">Historical Failure Modes &bull; Click row for Root Cause Corrective Action</span>
+            </div>
+            <div class="top-causes-compact-list" id="topCausesList">
+              <!-- Rendered by app.js as compact clickable rows -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Panel: Event Log Stream (Last 50 Signals) -->
+      <div class="breakdown-panel-box" style="margin-top: 20px;">
+        <div class="panel-title-bar">
+          <span>Event Log Stream (Last 50 Signals)</span>
+          <span style="font-size:0.7rem; color:var(--text-dim);">LIVE TELEMETRY STREAM</span>
+        </div>
+        <div style="max-height: 480px; overflow-y: auto;">
+          <table class="stream-table">
+            <thead>
+              <tr>
+                <th style="width: 150px;">Timestamp</th>
+                <th style="width: 130px; text-align: center;">ID</th>
+                <th>Machine &amp; Message</th>
+                <th style="width: 170px; text-align: center;">Unplanned Downtime</th>
+                <th style="width: 120px;">Status</th>
+                <th style="width: 130px;">Control</th>
+              </tr>
+            </thead>
+            <tbody id="eventLogStreamBody">
+              <!-- Rendered by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         VIEW 4: METRICS DASHBOARD (Senior Leadership Operations & Reliability)
+         =================================================================== -->
+    <section class="metrics-view-container" id="metricsViewSection" style="display: none;">
+      <!-- Metrics Header Bar -->
+      <div class="metrics-header-bar">
+        <div class="metrics-header-left">
+          <div class="metrics-title-text">Plant Reliability &amp; Operational Metrics</div>
+        </div>
+
+        <div style="display:flex; gap:10px; align-items:center;">
+          <div class="opc-badge" id="metricsScopeBadge"><span class="opc-dot"></span> SCOPE: OVERALL (341 ASSETS)</div>
+          <div class="opc-badge sap-badge">SAP S/4HANA &bull; MES INTEGRATED</div>
+        </div>
+      </div>
+
+      <!-- Plant Selection Tab Bar (Clean Folder/Tab Style) -->
+      <div class="metrics-tabs-bar">
+        <div class="metrics-plant-tabs-wrap" id="metricsPlantPillsContainer">
+          <!-- Populated dynamically as tabs: All Plants, TSAL, TASL-NGP, TASL-BLR, TCOE, TASL-H01, TBAL, TLMAL, MCA, TASL-XXX -->
+        </div>
+      </div>
+
+      <!-- Leadership Action Cards Row -->
+      <div class="metrics-action-cards-grid">
+        <div class="metric-action-card downtime-card">
+          <div class="metric-card-label">Unplanned Downtime Today</div>
+          <div class="metric-card-val" id="metricValToday">4.82 <span class="unit">hrs</span></div>
+        </div>
+
+        <div class="metric-action-card downtime-card highlight-card">
+          <div class="metric-card-label">Unplanned Downtime (Current Month)</div>
+          <div class="metric-card-val" id="metricValMonth">2,597.91 <span class="unit">hrs</span></div>
+        </div>
+
+        <div class="metric-action-card downtime-card">
+          <div class="metric-card-label">Cumulative Downtime YTD</div>
+          <div class="metric-card-val" id="metricValYtd">12,470.0 <span class="unit">hrs</span></div>
+        </div>
+
+        <div class="metric-action-card">
+          <div class="metric-card-label">Total Connected Machines</div>
+          <div class="metric-card-val" id="metricValMachines">341 <span class="unit">Units</span></div>
+        </div>
+
+        <div class="metric-action-card kpi-card">
+          <div class="metric-card-label">Equipment Availability</div>
+          <div class="metric-card-val success" id="metricValAvail">98.90<span class="unit">%</span></div>
+        </div>
+
+        <div class="metric-action-card kpi-card">
+          <div class="metric-card-label">PM Compliance</div>
+          <div class="metric-card-val success" id="metricValPm">94.8<span class="unit">%</span></div>
+        </div>
+
+        <div class="metric-action-card kpi-card">
+          <div class="metric-card-label">MTBF</div>
+          <div class="metric-card-val" id="metricValMtbf">626.9 <span class="unit">hrs</span></div>
+        </div>
+
+        <div class="metric-action-card kpi-card">
+          <div class="metric-card-label">MTTR</div>
+          <div class="metric-card-val" id="metricValMttr">6.98 <span class="unit">hrs</span></div>
+        </div>
+      </div>
+
+      <!-- Visual Graphics Grid -->
+      <div class="metrics-visuals-grid">
+        <!-- Visual 1: Equipment Availability Chart -->
+        <div class="metric-visual-panel">
+          <div class="panel-header-row">
+            <h3 class="visual-panel-title">Equipment Availability</h3>
+          </div>
+          <div class="chart-container" id="availabilityChartContainer">
+            <!-- Rendered graphically by app.js (SVG Bar Chart) -->
+          </div>
+        </div>
+
+        <!-- Visual 2: MTBF & MTTR Chart -->
+        <div class="metric-visual-panel">
+          <div class="panel-header-row">
+            <h3 class="visual-panel-title">MTBF &amp; MTTR</h3>
+          </div>
+          <div class="chart-container" id="mtbfMttrChartContainer">
+            <!-- Rendered graphically by app.js -->
+          </div>
+        </div>
+
+        <!-- Visual 3: PM Compliance Chart -->
+        <div class="metric-visual-panel">
+          <div class="panel-header-row">
+            <h3 class="visual-panel-title">PM Compliance</h3>
+          </div>
+          <div class="chart-container" id="pmComplianceChartContainer">
+            <!-- Rendered graphically by app.js (Radial progress rings for all plants) -->
+          </div>
+        </div>
+
+        <!-- Visual 4: Unplanned Downtime Pareto -->
+        <div class="metric-visual-panel">
+          <div class="panel-header-row">
+            <h3 class="visual-panel-title">Unplanned Downtime &amp; Breakdown Pareto</h3>
+          </div>
+          <div class="chart-container" id="downtimeParetoChartContainer">
+            <!-- Rendered graphically by app.js -->
+          </div>
+        </div>
+
+        <!-- Visual 5: 6-Month Reliability Trajectory -->
+        <div class="metric-visual-panel full-width">
+          <div class="panel-header-row">
+            <h3 class="visual-panel-title">6-Month Reliability Trajectory</h3>
+          </div>
+          <div class="chart-container" id="monthlyTrajectoryChartContainer">
+            <!-- Rendered graphically by app.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Official SAP S/4HANA PEM Metrics (UAT Record) Table -->
+      <div class="metrics-table-panel">
+        <div class="panel-header-row">
+          <h3 class="visual-panel-title">Official SAP S/4HANA PEM Metrics (UAT Record)</h3>
+          <button class="export-csv-btn" onclick="window.exportMetricsTableToCsv()">Export Metrics CSV &rarr;</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="industrial-table metrics-table">
+            <thead>
+              <tr>
+                <th style="width:100px;">Plant</th>
+                <th>A-Class Machines</th>
+                <th>Equipment Availability %</th>
+                <th>Unplanned Downtime (Hrs)</th>
+                <th>MTBF (Hrs)</th>
+                <th>MTTR (Hrs)</th>
+                <th>PM Compliance %</th>
+                <th>BD Occurrences</th>
+                <th>SPOC Confirmation</th>
+                <th>Audit Remarks</th>
+              </tr>
+            </thead>
+            <tbody id="metricsTableBody">
+              <!-- Rendered dynamically by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         VIEW 5: SPARES DASHBOARD (Spare Parts Consumption & Analytics)
+         =================================================================== -->
+    <section class="spares-view-container" id="sparesViewSection" style="display: none;">
+      <!-- Spares Sub-Tabs Navigation -->
+      <div class="spares-subnav-strip">
+        <div class="spares-pills-wrap">
+          <button class="spares-tab-btn active" data-sparestab="overall" onclick="window.switchSparesSubTab('overall')">Overall Spares Overview</button>
+          <button class="spares-tab-btn" data-sparestab="breton1" onclick="window.switchSparesSubTab('breton1')">Breton 1 (Flymill-5Axis CNC)</button>
+          <button class="spares-tab-btn" data-sparestab="plantwise" onclick="window.switchSparesSubTab('plantwise')">Plant-Wise Spares Analysis</button>
+        </div>
+
+      </div>
+
+      <!-- Breton 1 Spares Action KPI Cards -->
+      <div class="spares-kpi-grid">
+        <div class="spares-kpi-box highlight">
+          <div class="spares-label">Total Spares Consumed (Breton 1)</div>
+          <div class="spares-num">&#8377;9,10,559.63</div>
+        </div>
+
+        <div class="spares-kpi-box">
+          <div class="spares-label">Units Consumed</div>
+          <div class="spares-num">13 EA <span class="sub-qty">+ 1,541 L</span></div>
+        </div>
+
+        <div class="spares-kpi-box">
+          <div class="spares-label">Unique Material Codes</div>
+          <div class="spares-num">16 <span class="sub-qty">Materials</span></div>
+        </div>
+
+        <div class="spares-kpi-box warning">
+          <div class="spares-label">High Lead-Time Risk Items</div>
+          <div class="spares-num" style="color:#f59e0b;">3 <span class="sub-qty">Critical Spares</span></div>
+        </div>
+      </div>
+
+      <!-- Graphical Spares Analytics Visualizations -->
+      <div class="spares-visuals-grid">
+        <!-- Visual 1: ABC Cost Pareto Distribution -->
+        <div class="spares-visual-panel">
+          <div class="panel-header-row">
+            <h3 class="visual-panel-title">ABC Cost Pareto Distribution</h3>
+          </div>
+          <div class="chart-container" id="sparesAbcChartContainer">
+            <!-- Rendered graphically by app.js -->
+          </div>
+        </div>
+
+        <!-- Visual 2: Subsystem Expenditure Breakdown -->
+        <div class="spares-visual-panel">
+          <div class="panel-header-row">
+            <h3 class="visual-panel-title">Subsystem Spend Breakdown</h3>
+          </div>
+          <div class="chart-container" id="sparesSubsystemChartContainer">
+            <!-- Rendered graphically by app.js -->
+          </div>
+        </div>
+
+        <!-- Visual 3: Consumables Velocity & Buffer -->
+        <div class="spares-visual-panel">
+          <div class="panel-header-row">
+            <h3 class="visual-panel-title">Consumables Velocity &amp; Buffer</h3>
+          </div>
+          <div class="chart-container" id="sparesVelocityChartContainer">
+            <!-- Rendered graphically by app.js -->
+          </div>
+        </div>
+
+        <!-- Visual 4: Critical Spares Stockout Risk & Lead-Time Matrix -->
+        <div class="spares-visual-panel">
+          <div class="panel-header-row">
+            <h3 class="visual-panel-title">Critical Spares Lead-Time Risk Matrix</h3>
+          </div>
+          <div class="chart-container" id="sparesLeadTimeChartContainer">
+            <!-- Rendered graphically by app.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Material Consumption & Maintenance Order Linkage Table -->
+      <div class="spares-table-panel">
+        <div class="panel-header-row">
+          <h3 class="visual-panel-title">Breton 1 Spare Material Goods Issue Ledger (SAP MvT 201/261)</h3>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <input type="text" class="search-input" id="sparesSearchInput" placeholder="Search material, doc, order..." style="width:240px; padding:6px 12px; font-size:0.8rem;">
+            <button class="export-csv-btn" onclick="window.exportSparesTableToCsv()">Export Ledger CSV &rarr;</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="industrial-table spares-table">
+            <thead>
+              <tr>
+                <th style="width:85px;">Posting Date</th>
+                <th style="width:90px;">Material Doc</th>
+                <th style="width:115px;">Material Code</th>
+                <th>Material Description &amp; Specification</th>
+                <th style="width:110px;">Subsystem</th>
+                <th style="width:75px; text-align:right;">Qty</th>
+                <th style="width:90px; text-align:right;">Unit Cost (&#8377;)</th>
+                <th style="width:100px; text-align:right;">Total Spend (&#8377;)</th>
+                <th style="width:55px; text-align:center;">MvT</th>
+                <th style="width:105px; text-align:center;">Lead Time Risk</th>
+              </tr>
+            </thead>
+            <tbody id="sparesTableBody">
+              <!-- Rendered dynamically by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Universal Modal Backdrop & Content (Locks body scroll when open) -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal-panel" id="modalPanel">
+      <div class="modal-head">
+        <h3 id="modalTitle">Diagnostic Information</h3>
+        <button class="modal-close" id="modalCloseBtn">&times;</button>
+      </div>
+      <div class="modal-content-body" id="modalContentBody">
+        <!-- Dynamic content injected by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
