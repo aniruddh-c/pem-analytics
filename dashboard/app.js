@@ -1007,11 +1007,41 @@
   // =========================================================================
   // OEM MANUALS LIBRARY (Split-Screen Viewer with Close Option)
   // =========================================================================
+  function resolveManualUrl(rawPath) {
+    if (!rawPath) return '';
+    if (rawPath.startsWith('http://') || rawPath.startsWith('https://') || rawPath.startsWith('blob:')) {
+      return rawPath;
+    }
+    // Remove leading slashes to prevent browser navigating to domain root
+    let clean = rawPath.replace(/^\/+/, '');
+    // URL-encode each segment to safely handle spaces in filenames
+    let encoded = clean.split('/').map(part => encodeURIComponent(part)).join('/');
+
+    // Resolve relative to current directory (handles /pem-analytics/ and localhost)
+    let loc = window.location.pathname;
+    let dir = '';
+    if (!loc.endsWith('/')) {
+      if (loc.split('/').pop().includes('.')) {
+        dir = loc.substring(0, loc.lastIndexOf('/') + 1);
+      } else {
+        dir = loc + '/';
+      }
+    } else {
+      dir = loc;
+    }
+    return window.location.origin + dir + encoded;
+  }
+
   function renderManualsLibrary() {
     const stack = document.getElementById('manualsCardsStack');
     if (!stack) return;
 
     const manuals = window.OEM_MANUALS_DATA || [];
+
+    // Automatically select the first manual if none is selected
+    if (!state.selectedManualId && manuals.length > 0) {
+      state.selectedManualId = manuals[0].id;
+    }
 
     stack.innerHTML = manuals.map(m => {
       const isSelected = state.selectedManualId === m.id;
@@ -1027,15 +1057,25 @@
         </div>
       `;
     }).join('');
+
+    // Ensure the manual viewer displays the document
+    if (state.selectedManualId) {
+      const frame = document.getElementById('manualPdfFrame');
+      if (frame && (!frame.src || frame.style.display === 'none')) {
+        window.loadManualDocument(state.selectedManualId, false);
+      }
+    }
   }
 
-  window.loadManualDocument = function (manualId) {
+  window.loadManualDocument = function (manualId, updateStack = true) {
     state.selectedManualId = manualId;
     const manuals = window.OEM_MANUALS_DATA || [];
-    const manual = manuals.find(m => m.id === manualId);
+    const manual = manuals.find(m => m.id === manualId) || manuals[0];
     if (!manual) return;
 
-    renderManualsLibrary();
+    if (updateStack) {
+      renderManualsLibrary();
+    }
 
     const titleEl = document.getElementById('activeManualTitle');
     const linkEl = document.getElementById('manualNewTabLink');
@@ -1043,16 +1083,20 @@
     const promptWrap = document.getElementById('manualPromptWrap');
     const frame = document.getElementById('manualPdfFrame');
 
+    const cleanUrl = resolveManualUrl(manual.pdfUrl);
+
     if (titleEl) titleEl.textContent = manual.title;
     if (linkEl) {
-      linkEl.href = manual.pdfUrl;
+      linkEl.href = cleanUrl;
       linkEl.style.display = 'inline-block';
     }
     if (closeBtn) closeBtn.style.display = 'inline-block';
     if (promptWrap) promptWrap.style.display = 'none';
     if (frame) {
       frame.style.display = 'block';
-      frame.src = manual.pdfUrl;
+      if (frame.src !== cleanUrl) {
+        frame.src = cleanUrl;
+      }
     }
   };
 
@@ -1515,7 +1559,7 @@
     const highlights = highlightsInput && highlightsInput.value.trim() ? highlightsInput.value.trim() : 'User uploaded OEM technical manual.';
     const file = fileInput && fileInput.files ? fileInput.files[0] : null;
 
-    let pdfUrl = "/manuals/00_Operating_Instructions/Operating instructions en.pdf";
+    let pdfUrl = "manuals/00_Operating_Instructions/Operating instructions en.pdf";
     if (file) {
       pdfUrl = URL.createObjectURL(file);
     }

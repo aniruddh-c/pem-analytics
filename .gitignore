@@ -11,3 +11,6 @@ server.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Local manuals copy (bundled dynamically in CI from bavius-hbz-cc/)
+dashboard/manuals/

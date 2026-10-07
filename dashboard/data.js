@@ -387,16 +387,16 @@ window.OEM_MANUALS_DATA = [
     "id": "man-spindle",
     "title": "Fischer MFW-1920/30/1 Spindle Operating & Maintenance Manual",
     "model": "MFW-1920/30/1 HSK-A63 Hybrid Ceramic Spindle",
-    "pdfUrl": "/manuals/04_Spindle/MFW_1920_30_1_EN.pdf",
+    "pdfUrl": "manuals/04_Spindle/MFW_1920_30_1_EN.pdf",
     "pages": 123,
     "category": "Main Spindle",
-    "highlights": "Rated 30,000 RPM HSC machining. Covers bearing temperature thresholds (50\u00b0C alarm, 65\u00b0C emergency trip), stator PTC thermistor resistance testing (< 3000 \u03a9), Ott-Jakob drawbar POWER-CHECK pull-in force calibration (min 18 kN), and dynamic runout limits (< 0.003 mm)."
+    "highlights": "Rated 30,000 RPM HSC machining. Covers bearing temperature thresholds (50°C alarm, 65°C emergency trip), stator PTC thermistor resistance testing (< 3000 Ω), Ott-Jakob drawbar POWER-CHECK pull-in force calibration (min 18 kN), and dynamic runout limits (< 0.003 mm)."
   },
   {
     "id": "man-cooling",
     "title": "Rittal KRA150 Spindle Recooler / Chiller Technical Manual",
     "model": "KRA150A83369 Closed-Loop Spindle Chiller",
-    "pdfUrl": "/manuals/05_Cooling_Spindle/064  KRA150A83369_06_048657_122101316.pdf",
+    "pdfUrl": "manuals/05_Cooling_Spindle/064  KRA150A83369_06_048657_122101316.pdf",
     "pages": 234,
     "category": "Cooling System",
     "highlights": "Closed-loop spindle chiller. Diagnoses collective fault 700502, low fluid level switch LE/AQ, high-pressure switch PA trip, condenser fin cleaning, and VGB-R 455 P coolant charging."
@@ -405,7 +405,7 @@ window.OEM_MANUALS_DATA = [
     "id": "man-filtration",
     "title": "Knoll KF 200/1800 Compact Filter System Instructions",
     "model": "KF 200 Filter Fleece & Sludge Tank System",
-    "pdfUrl": "/manuals/09_Cooling_Lubricant/12000063   110/2/11033782_75 515 401986_KF 200.pdf",
+    "pdfUrl": "manuals/09_Cooling_Lubricant/12000063   110/2/11033782_75 515 401986_KF 200.pdf",
     "pages": 78,
     "category": "Coolant & Lubrication",
     "highlights": "Filter fleece advance mechanism and soil tank sludge management. Guides resolution of 701338 KF filter flooded, filter paper advance jam, float switch 2S1 cleaning, and chip conveyor overload."
@@ -414,7 +414,7 @@ window.OEM_MANUALS_DATA = [
     "id": "man-hydraulic",
     "title": "Bavius HBZ CC Hydraulic Schematic & Component Manual",
     "model": "HS-002-K617-2-AC02 Central Hydraulic System",
-    "pdfUrl": "/manuals/07_Hydraulic/HS-002-K617-2-AC02.pdf",
+    "pdfUrl": "manuals/07_Hydraulic/HS-002-K617-2-AC02.pdf",
     "pages": 64,
     "category": "Hydraulics",
     "highlights": "Hydraulic pressure regulator 120 bar line clamping, pallet changer lock/unlock cylinders, counter-balance accumulator charging, and proportional valve testing."
@@ -423,7 +423,7 @@ window.OEM_MANUALS_DATA = [
     "id": "man-vibration",
     "title": "SiViB Record 31 Spindle Vibration & Bearing Monitor",
     "model": "SiViB Record 31 Accelerometer FFT Sensor",
-    "pdfUrl": "/manuals/14_Spindle_Control/SiViB_Record_31_Manual en.pdf",
+    "pdfUrl": "manuals/14_Spindle_Control/SiViB_Record_31_Manual en.pdf",
     "pages": 53,
     "category": "Spindle Diagnostics",
     "highlights": "Spindle nose accelerometer FFT vibration monitoring. Configures warning limit 700730 and alarm limit 700731, toolholder dynamic unbalance (ISO 1940 G2.5), and bearing defect frequency tracking (BPFO/BPFI)."
@@ -432,7 +432,7 @@ window.OEM_MANUALS_DATA = [
     "id": "man-vacuum",
     "title": "VOC-AD-S-63/100 Vacuum Clamping Station Instructions",
     "model": "VOC Vakuumanlage AD S 63_100 Aerostructure Clamping",
-    "pdfUrl": "/manuals/13_Vacuum/VOC Vakuumanlage AD S 63_100 en.PDF",
+    "pdfUrl": "manuals/13_Vacuum/VOC Vakuumanlage AD S 63_100 en.PDF",
     "pages": 42,
     "category": "Workholding",
     "highlights": "Monitors safe machining vacuum threshold at -600 mbar via pressure switch 1Z2. Outlines liquid feedback drainage (valve 2V2), silicone sealing gasket inspection, and vacuum pump oil servicing."
@@ -441,7 +441,7 @@ window.OEM_MANUALS_DATA = [
     "id": "man-operating",
     "title": "Bavius HBZ Compact Cell Operating Instructions",
     "model": "HBZ CC 200/100 5-Axis Horizontal High-Speed Machining",
-    "pdfUrl": "/manuals/00_Operating_Instructions/Operating instructions en.pdf",
+    "pdfUrl": "manuals/00_Operating_Instructions/Operating instructions en.pdf",
     "pages": 298,
     "category": "Machine General",
     "highlights": "Full OEM PLC alarm registry (700100 - 701350). Step-by-step procedures for pallet changer recovery (Section 4.8), pneumatic service unit maintenance (Section 2.3), and Safety Integrated test stop."
@@ -450,7 +450,7 @@ window.OEM_MANUALS_DATA = [
     "id": "man-suction",
     "title": "AFS Air Filtration & Mist Suction System",
     "model": "AFS 1.07 Industrial Oil Mist Collector",
-    "pdfUrl": "/manuals/10_Suction/AFS_1.07_EN_US__Instruction_Manual.pdf",
+    "pdfUrl": "manuals/10_Suction/AFS_1.07_EN_US__Instruction_Manual.pdf",
     "pages": 38,
     "category": "Air Filtration",
     "highlights": "Enclosure negative pressure monitoring, HEPA filter differential pressure gauge, and automatic aerosol drainage."
@@ -459,7 +459,7 @@ window.OEM_MANUALS_DATA = [
     "id": "man-probe",
     "title": "Renishaw RMI-Q Radio Machine Probe Installation Guide",
     "model": "RMI-Q / RMP60 Multi-Probe Radio Transmission",
-    "pdfUrl": "/manuals/11_Radio_Probe/RMI-Q_Installation_guide.pdf",
+    "pdfUrl": "manuals/11_Radio_Probe/RMI-Q_Installation_guide.pdf",
     "pages": 46,
     "category": "Probing & Inspection",
     "highlights": "Radio transmission signal strength, channel pairing, battery status indicators, and kinematic stylus alignment."
@@ -468,7 +468,7 @@ window.OEM_MANUALS_DATA = [
     "id": "man-drive",
     "title": "HBZ Compact Cell Drive Diagram & Kinematics",
     "model": "Antriebsschema HBZ CC 200/100 Dual Gantry",
-    "pdfUrl": "/manuals/02_Drive_Diagramm/Antriebsschema_HBZ_CC_200_100.pdf",
+    "pdfUrl": "manuals/02_Drive_Diagramm/Antriebsschema_HBZ_CC_200_100.pdf",
     "pages": 18,
     "category": "Motion Drives",
     "highlights": "Tandem gantry kinematics (X11/X12), ballscrew pitch compensation, rotary axis C11 torque motor, and A11 swivel trunnion."
@@ -477,7 +477,7 @@ window.OEM_MANUALS_DATA = [
     "id": "man-tool",
     "title": "Tool Changer & Pneumatic Control Unit Operating Manual",
     "model": "Operating Instructions 146598 Automatic Tool Magazine",
-    "pdfUrl": "/manuals/12_Tool_Control/Operating instructions 146598 rev0-2_0-2 de en.pdf",
+    "pdfUrl": "manuals/12_Tool_Control/Operating instructions 146598 rev0-2_0-2 de en.pdf",
     "pages": 52,
     "category": "Tool Changer",
     "highlights": "Tool changer arm indexing, shutter door pneumatic cylinders, inductive proximity switch B47 alignment, and tool clamp verification."
