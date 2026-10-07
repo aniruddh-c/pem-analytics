@@ -41,19 +41,21 @@
     </div>
   </header>
 
-  <!-- Plant Tabs Bar (Folder style like tabs-example.jpg - appears on inner dashboards) -->
-  <div class="plant-tabs-wrapper" id="plantTabsBar" style="display: none;">
-    <div class="plant-tabs-container">
-      <div id="plantTabsContainer" style="display: flex; gap: 4px;">
-        <!-- Populated dynamically: TSAL, TASL-NGP, TCOE, TASL-BLR, TASL-XXX -->
-      </div>
-    </div>
-    <!-- Connecting blue line opening up to show data below -->
-    <div class="plant-tabs-blue-line"></div>
-  </div>
+
 
   <!-- Main Container -->
   <main id="mainContainer">
+
+    <!-- Unified Plant Switching Tabs (Connected via Bright Blue Line across the screen) -->
+    <div class="plant-tabs-wrapper hidden" id="plantTabsBar" style="display: none;">
+      <div class="plant-tabs-container">
+        <div id="plantTabsContainer" style="display: flex; gap: 6px;">
+          <!-- Populated dynamically: TASL-NGP, TSAL, TCOE, TASL-BLR, TASL-XXX -->
+        </div>
+      </div>
+      <!-- Solid 4px Bright Blue Line spanning entire width directly beneath tabs -->
+      <div class="plant-tabs-blue-line"></div>
+    </div>
 
     <!-- ===================================================================
          VIEW 1: HOME SCREEN - PLANT CARDS OVERVIEW (old-cbm.webp style)
@@ -415,20 +417,10 @@
          VIEW 4: METRICS DASHBOARD (Senior Leadership Operations & Reliability)
          =================================================================== -->
     <section class="metrics-view-container" id="metricsViewSection" style="display: none;">
-      <!-- Metrics Header Bar -->
-      <div class="metrics-header-bar">
-        <div class="metrics-header-left">
-          <div class="metrics-title-text">Plant Reliability &amp; Operational Metrics</div>
-        </div>
 
-        <div style="display:flex; gap:10px; align-items:center;">
-          <div class="opc-badge" id="metricsScopeBadge"><span class="opc-dot"></span> SCOPE: OVERALL (341 ASSETS)</div>
-          <div class="opc-badge sap-badge">SAP S/4HANA &bull; MES INTEGRATED</div>
-        </div>
-      </div>
 
       <!-- Plant Selection Tab Bar (Clean Folder/Tab Style) -->
-      <div class="metrics-tabs-bar">
+      <div class="metrics-tabs-bar" style="display: none;">
         <div class="metrics-plant-tabs-wrap" id="metricsPlantPillsContainer">
           <!-- Populated dynamically as tabs: All Plants, TSAL, TASL-NGP, TASL-BLR, TCOE, TASL-H01, TBAL, TLMAL, MCA, TASL-XXX -->
         </div>
@@ -457,7 +449,7 @@
         </div>
 
         <div class="metric-action-card kpi-card">
-          <div class="metric-card-label">Equipment Availability</div>
+          <div class="metric-card-label">Equipment Uptime %</div>
           <div class="metric-card-val success" id="metricValAvail">98.90<span class="unit">%</span></div>
         </div>
 
@@ -465,6 +457,8 @@
           <div class="metric-card-label">PM Compliance</div>
           <div class="metric-card-val success" id="metricValPm">94.8<span class="unit">%</span></div>
         </div>
+
+
 
         <div class="metric-action-card kpi-card">
           <div class="metric-card-label">MTBF</div>
@@ -482,7 +476,7 @@
         <!-- Visual 1: Equipment Availability Chart -->
         <div class="metric-visual-panel">
           <div class="panel-header-row">
-            <h3 class="visual-panel-title">Equipment Availability</h3>
+            <h3 class="visual-panel-title">Equipment Uptime %</h3>
           </div>
           <div class="chart-container" id="availabilityChartContainer">
             <!-- Rendered graphically by app.js (SVG Bar Chart) -->
@@ -542,15 +536,14 @@
             <thead>
               <tr>
                 <th style="width:100px;">Plant</th>
-                <th>A-Class Machines</th>
-                <th>Equipment Availability %</th>
-                <th>Unplanned Downtime (Hrs)</th>
-                <th>MTBF (Hrs)</th>
-                <th>MTTR (Hrs)</th>
-                <th>PM Compliance %</th>
-                <th>BD Occurrences</th>
-                <th>SPOC Confirmation</th>
-                <th>Audit Remarks</th>
+                <th style="text-align:center;">A-Class Machines</th>
+                <th style="text-align:right;">Equipment Uptime %</th>
+                <th style="text-align:right;">Unplanned Downtime (Hrs)</th>
+                <th style="text-align:right;">MTBF (Hrs)</th>
+                <th style="text-align:right;">MTTR (Hrs)</th>
+                <th style="text-align:center;">PM Compliance %</th>
+                <th style="text-align:center;">CM Compliance %</th>
+                <th style="text-align:center;">BD Occurrences</th>
               </tr>
             </thead>
             <tbody id="metricsTableBody">
@@ -578,7 +571,7 @@
       <!-- Breton 1 Spares Action KPI Cards -->
       <div class="spares-kpi-grid">
         <div class="spares-kpi-box highlight">
-          <div class="spares-label">Total Spares Consumed (Breton 1)</div>
+          <div class="spares-label">Total Spares Consumed (<span id="sparesPlantLabel">TASL-NGP</span> &bull; Breton 1)</div>
           <div class="spares-num">&#8377;9,10,559.63</div>
         </div>
 

@@ -9,7 +9,7 @@
   // Application State
   const state = {
     activeNavTab: 'home', // 'home', 'cbm', 'breakdown'
-    activePlantId: 'TSAL', // Default active plant
+    activePlantId: 'TASL-NGP', // Default active plant
     activeCbmSubTab: 'machines-matrix', // 'machines-matrix', 'machine-parameters', 'alert-table', 'open-reports', 'closed-reports', 'manuals-library'
     machineViewTab: 'parameters', // 'parameters' or 'analysis'
     selectedMachineId: 'bavius-01',
@@ -20,7 +20,7 @@
     subsystemFilters: new Set(['all']),      // Default: All subsystems
     paramSearch: '',
     bdTimer: null,
-    metricsSelectedPlant: 'OVERALL',
+    metricsSelectedPlant: 'TASL-NGP',
     metricsMultiPlants: new Set(['TSAL', 'TASL-NGP', 'TASL-BLR', 'TCOE', 'TASL-H01', 'TBAL', 'TLMAL', 'MCA', 'TASL-XXX']),
     activeSparesSubTab: 'overall',
     sparesSearch: ''
@@ -203,9 +203,16 @@
     if (metricsView) metricsView.style.display = tabId === 'metrics' ? 'flex' : 'none';
     if (sparesView) sparesView.style.display = tabId === 'spares' ? 'flex' : 'none';
 
-    // Show plant folder tabs on CBM and Breakdown only; hide on Home, Metrics and Spares (they feature their own specialized plant controls)
+    // Show plant folder tabs on inner dashboards (CBM, Breakdown, Metrics, Spares); strictly hide on Home
     if (plantTabsBar) {
-      plantTabsBar.style.display = (tabId === 'cbm' || tabId === 'breakdown') ? 'flex' : 'none';
+      if (tabId === 'home') {
+        plantTabsBar.classList.add('hidden');
+        plantTabsBar.style.display = 'none';
+      } else {
+        plantTabsBar.classList.remove('hidden');
+        plantTabsBar.style.display = 'flex';
+        renderPlantFolderTabs();
+      }
     }
 
     if (tabId === 'cbm') renderCbmDashboard();
@@ -217,13 +224,23 @@
 
   // Plant Switching
   window.onPlantTabClick = function (plantId) {
-    state.activePlantId = plantId;
+    if (plantId === 'OVERALL') {
+      state.metricsSelectedPlant = 'OVERALL';
+    } else {
+      state.activePlantId = plantId;
+      state.metricsSelectedPlant = plantId;
+    }
     renderPlantFolderTabs();
     if (state.activeNavTab === 'cbm') {
       state.activeCbmSubTab = 'machines-matrix';
       renderCbmDashboard();
+    } else if (state.activeNavTab === 'breakdown') {
+      renderBreakdownDashboard();
+    } else if (state.activeNavTab === 'metrics') {
+      renderMetricsDashboard();
+    } else if (state.activeNavTab === 'spares') {
+      renderSparesDashboard();
     }
-    if (state.activeNavTab === 'breakdown') renderBreakdownDashboard();
   };
 
   // Render Folder-style Plant Tabs
@@ -232,15 +249,30 @@
     if (!container) return;
 
     const plants = window.TASL_PLANTS || [];
-    container.innerHTML = plants.map(p => {
-      const isActive = p.id === state.activePlantId;
-      return `
+    let tabs = [];
+    if (state.activeNavTab === 'metrics') {
+      const isOverall = state.metricsSelectedPlant === 'OVERALL';
+      tabs.push(`
+        <button class="plant-folder-tab ${isOverall ? 'active' : ''}" onclick="window.onPlantTabClick('OVERALL')">
+          <span>ALL PLANTS</span>
+          <span class="tab-machine-badge">341</span>
+        </button>
+      `);
+    }
+
+    plants.forEach(p => {
+      const isActive = (state.activeNavTab === 'metrics')
+        ? state.metricsSelectedPlant === p.id
+        : p.id === state.activePlantId;
+      tabs.push(`
         <button class="plant-folder-tab ${isActive ? 'active' : ''}" onclick="window.onPlantTabClick('${p.id}')">
           <span>${p.name}</span>
           <span class="tab-machine-badge">${p.totalMachines}</span>
         </button>
-      `;
-    }).join('');
+      `);
+    });
+
+    container.innerHTML = tabs.join('');
   }
 
   // =========================================================================
@@ -309,6 +341,7 @@
 
   window.navigateToPlant = function (plantId) {
     state.activePlantId = plantId;
+    state.metricsSelectedPlant = plantId;
     renderPlantFolderTabs();
     switchNavTab('cbm');
   };
@@ -1785,8 +1818,7 @@
   }
 
   window.selectMetricsPlant = function (plantId) {
-    state.metricsSelectedPlant = plantId;
-    renderMetricsDashboard();
+    window.onPlantTabClick(plantId);
   };
 
   function updateMetricsActionCards() {
@@ -1834,6 +1866,14 @@
       elPm.className = 'metric-card-val ' + (target.pmCompliancePct >= 95 ? 'success' : '');
     }
 
+    // CM Compliance
+    const elCm = document.getElementById('metricValCm');
+    if (elCm) {
+      const cmVal = target.cmCompliancePct !== undefined ? target.cmCompliancePct : 87.3;
+      elCm.innerHTML = `${cmVal.toFixed(1)}<span class="unit">%</span>`;
+      elCm.className = 'metric-card-val ' + (cmVal >= 85 ? 'success' : '');
+    }
+
     // MTBF
     const elMtbf = document.getElementById('metricValMtbf');
     if (elMtbf) elMtbf.innerHTML = `${target.mtbfHrs.toLocaleString('en-IN', {maximumFractionDigits: 1})} <span class="unit">hrs</span>`;
@@ -1875,39 +1915,44 @@
 
     const w = container.clientWidth || 540;
     const h = 260;
-    const padding = { top: 20, right: 60, bottom: 25, left: 95 };
+    const padding = { top: 24, right: 85, bottom: 25, left: 95 };
     const chartW = w - padding.left - padding.right;
     const chartH = h - padding.top - padding.bottom;
     const rowH = chartH / plants.length;
 
-    // Domain: 90% to 100%
     const minVal = 90.0;
     const maxVal = 100.0;
     const scaleX = (val) => Math.max(0, Math.min(chartW, ((Math.max(minVal, val) - minVal) / (maxVal - minVal)) * chartW));
-
-    // Target 99.5% line X
     const targetX = padding.left + scaleX(99.5);
 
     let barsHtml = '';
     plants.forEach((p, idx) => {
-      const y = padding.top + idx * rowH + 6;
-      const barH = Math.max(12, rowH - 12);
+      const y = padding.top + idx * rowH + 4;
+      const barH = Math.max(12, rowH - 8);
       const barW = scaleX(p.availabilityPct);
-      const barColor = p.availabilityPct >= 99.5 ? '#10b981' : (p.availabilityPct >= 95.0 ? '#f59e0b' : '#ef4444');
+      const isTarget = p.availabilityPct >= 99.5;
+      const barColor = isTarget ? '#10b981' : (p.availabilityPct >= 95.0 ? '#f59e0b' : '#ef4444');
+      const delta = (p.availabilityPct - 99.5).toFixed(2);
+      const deltaSign = delta >= 0 ? `+${delta}%` : `${delta}%`;
+      const isSelected = (state.metricsSelectedPlant === p.id);
 
       barsHtml += `
         <g class="chart-bar-group">
           <!-- Plant Label -->
-          <text x="${padding.left - 10}" y="${y + barH / 2 + 4}" text-anchor="end" class="chart-label bold">${p.id}</text>
+          <text x="${padding.left - 10}" y="${y + barH / 2 + 4}" text-anchor="end" font-size="9.5" font-weight="${isSelected ? '900' : '700'}" fill="${isSelected ? '#38bdf8' : '#cbd5e1'}">${p.id}</text>
           <!-- Background track -->
           <rect x="${padding.left}" y="${y}" width="${chartW}" height="${barH}" fill="rgba(255,255,255,0.04)" rx="3" />
           <!-- Filled Bar -->
-          <rect class="chart-bar" x="${padding.left}" y="${y}" width="${barW}" height="${barH}" fill="${barColor}" rx="3">
-            <title>${p.name}: ${p.availabilityPct.toFixed(2)}% Availability</title>
+          <rect class="chart-bar" x="${padding.left}" y="${y}" width="${barW}" height="${barH}" fill="${barColor}" rx="3" opacity="${isSelected ? '1.0' : '0.85'}">
+            <title>${p.name}: ${p.availabilityPct.toFixed(2)}% Equipment Uptime (Variance: ${deltaSign})</title>
           </rect>
           <!-- Value Text -->
-          <text x="${padding.left + barW + 8}" y="${y + barH / 2 + 4}" class="chart-label bold" fill="${barColor}">
+          <text x="${padding.left + barW + 6}" y="${y + barH / 2 + 3.5}" font-size="9" font-family="var(--font-mono)" font-weight="800" fill="${barColor}">
             ${p.availabilityPct.toFixed(2)}%
+          </text>
+          <!-- Delta Badge -->
+          <text x="${w - padding.right + 12}" y="${y + barH / 2 + 3.5}" font-size="8" font-family="var(--font-mono)" font-weight="700" fill="${isTarget ? '#10b981' : '#ef4444'}">
+            ${deltaSign}
           </text>
         </g>
       `;
@@ -1919,16 +1964,19 @@
         ${[90, 92, 94, 96, 98, 100].map(v => {
           const gx = padding.left + scaleX(v);
           return `
-            <line x1="${gx}" y1="${padding.top}" x2="${gx}" y2="${padding.top + chartH}" class="chart-grid-line" />
-            <text x="${gx}" y="${h - 6}" text-anchor="middle" class="chart-label">${v}%</text>
+            <line x1="${gx}" y1="${padding.top}" x2="${gx}" y2="${padding.top + chartH}" stroke="rgba(255,255,255,0.06)" />
+            <text x="${gx}" y="${h - 8}" text-anchor="middle" font-size="8.5" font-family="var(--font-mono)" fill="#64748b">${v}%</text>
           `;
         }).join('')}
 
-        ${barsHtml}
+        <!-- 99.5% Target Line -->
+        <line x1="${targetX}" y1="${padding.top - 6}" x2="${targetX}" y2="${padding.top + chartH}" stroke="#38bdf8" stroke-width="1.8" stroke-dasharray="4 3" opacity="0.85" />
+        <text x="${targetX}" y="${padding.top - 10}" text-anchor="middle" font-size="8.5" font-weight="800" fill="#38bdf8">99.5% TARGET</text>
 
-        <!-- 99.5% SLA Target Line -->
-        <line x1="${targetX}" y1="${padding.top - 8}" x2="${targetX}" y2="${padding.top + chartH}" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4 3" />
-        <text x="${targetX}" y="${padding.top - 10}" text-anchor="middle" font-size="9" font-weight="800" fill="#38bdf8">TARGET 99.5%</text>
+        <!-- Right Header for Delta -->
+        <text x="${w - padding.right + 12}" y="${padding.top - 10}" font-size="8" font-weight="800" fill="#94a3b8">VARIANCE</text>
+
+        ${barsHtml}
       </svg>
     `;
   }
@@ -1939,51 +1987,74 @@
 
     const w = container.clientWidth || 540;
     const h = 260;
-    const padding = { top: 25, right: 30, bottom: 35, left: 55 };
+    const padding = { top: 30, right: 55, bottom: 30, left: 65 };
     const chartW = w - padding.left - padding.right;
     const chartH = h - padding.top - padding.bottom;
 
-    // Filter plants with significant MTBF for visualization
-    const displayPlants = plants.slice(0, 6);
-    const colW = chartW / displayPlants.length;
+    const visiblePlants = plants.slice(0, 7);
+    const colGroupW = chartW / visiblePlants.length;
+    const barW = Math.min(18, colGroupW * 0.38);
 
-    let barsHtml = '';
-    displayPlants.forEach((p, idx) => {
-      const cx = padding.left + idx * colW + colW / 2;
-      const bW = Math.min(22, colW * 0.35);
+    const maxMtbf = 1200;
+    const maxMttr = 8.0;
 
-      // Log-scaled height for MTBF (range 100 to 2000)
-      const mtbfH = Math.min(chartH - 20, Math.max(10, Math.log10(Math.max(10, p.mtbfHrs)) * (chartH / 3.5)));
-      // Scaled height for MTTR (range 0 to 10)
-      const mttrH = Math.min(chartH - 20, Math.max(6, (p.mttrHrs / 10) * chartH));
+    const scaleYMtbf = (v) => padding.top + chartH - (Math.min(maxMtbf, v) / maxMtbf) * chartH;
+    const scaleYMttr = (v) => padding.top + chartH - (Math.min(maxMttr, v) / maxMttr) * chartH;
 
-      barsHtml += `
+    const barsHtml = visiblePlants.map((p, i) => {
+      const gx = padding.left + i * colGroupW + colGroupW / 2;
+      const xMtbf = gx - barW - 2;
+      const xMttr = gx + 2;
+
+      const yMtbf = scaleYMtbf(p.mtbfHrs || 0);
+      const hMtbf = padding.top + chartH - yMtbf;
+
+      const yMttr = scaleYMttr(p.mttrHrs || 0);
+      const hMttr = padding.top + chartH - yMttr;
+
+      return `
         <g>
-          <!-- Plant X Label -->
-          <text x="${cx}" y="${padding.top + chartH + 18}" text-anchor="middle" class="chart-label bold">${p.id}</text>
-          
           <!-- MTBF Bar (Cyan) -->
-          <rect x="${cx - bW - 2}" y="${padding.top + chartH - mtbfH}" width="${bW}" height="${mtbfH}" fill="#0284c7" rx="3">
+          <rect x="${xMtbf}" y="${yMtbf}" width="${barW}" height="${hMtbf}" fill="#0284c7" rx="2">
             <title>${p.id} MTBF: ${p.mtbfHrs} hrs</title>
           </rect>
-          <text x="${cx - bW / 2 - 2}" y="${padding.top + chartH - mtbfH - 4}" text-anchor="middle" font-size="9" font-weight="700" fill="#38bdf8">
-            ${p.mtbfHrs > 999 ? (p.mtbfHrs / 1000).toFixed(1) + 'k' : Math.round(p.mtbfHrs)}h
-          </text>
-
-          <!-- MTTR Bar (Amber) -->
-          <rect x="${cx + 2}" y="${padding.top + chartH - mttrH}" width="${bW}" height="${mttrH}" fill="#f59e0b" rx="3">
+          <!-- MTTR Bar (Orange) -->
+          <rect x="${xMttr}" y="${yMttr}" width="${barW}" height="${hMttr}" fill="#f97316" rx="2">
             <title>${p.id} MTTR: ${p.mttrHrs} hrs</title>
           </rect>
-          <text x="${cx + bW / 2 + 2}" y="${padding.top + chartH - mttrH - 4}" text-anchor="middle" font-size="9" font-weight="700" fill="#fbbf24">
-            ${p.mttrHrs.toFixed(1)}h
-          </text>
+          <!-- Plant Label -->
+          <text x="${gx}" y="${padding.top + chartH + 16}" text-anchor="middle" font-size="8.5" font-weight="700" fill="#cbd5e1">${p.id}</text>
         </g>
       `;
-    });
+    }).join('');
 
     container.innerHTML = `
       <svg class="svg-chart" viewBox="0 0 ${w} ${h}">
-        <line x1="${padding.left}" y1="${padding.top + chartH}" x2="${w - padding.right}" y2="${padding.top + chartH}" class="chart-axis-line" />
+        <!-- Left Y-Axis Gridlines (MTBF hrs) -->
+        ${[0, 300, 600, 900, 1200].map(v => {
+          const gy = scaleYMtbf(v);
+          return `
+            <line x1="${padding.left}" y1="${gy}" x2="${w - padding.right}" y2="${gy}" stroke="rgba(255,255,255,0.06)" />
+            <text x="${padding.left - 6}" y="${gy + 3}" text-anchor="end" font-size="8" font-family="var(--font-mono)" fill="#0284c7">${v}h</text>
+          `;
+        }).join('')}
+
+        <!-- Right Y-Axis (MTTR hrs) -->
+        ${[0, 2, 4, 6, 8].map(v => {
+          const gy = scaleYMttr(v);
+          return `
+            <text x="${w - padding.right + 6}" y="${gy + 3}" text-anchor="start" font-size="8" font-family="var(--font-mono)" fill="#f97316">${v}h</text>
+          `;
+        }).join('')}
+
+        <!-- Legend -->
+        <g transform="translate(${padding.left}, 12)">
+          <rect x="0" y="0" width="10" height="10" fill="#0284c7" rx="2" />
+          <text x="14" y="9" font-size="8.5" font-weight="700" fill="#38bdf8">MTBF (Hrs - Left Axis)</text>
+          <rect x="150" y="0" width="10" height="10" fill="#f97316" rx="2" />
+          <text x="164" y="9" font-size="8.5" font-weight="700" fill="#fb923c">MTTR (Hrs - Right Axis)</text>
+        </g>
+
         ${barsHtml}
       </svg>
     `;
@@ -2066,63 +2137,120 @@
     if (!container || !target || !target.trend) return;
 
     const w = container.clientWidth || 1080;
-    const h = 220;
-    const padding = { top: 25, right: 40, bottom: 30, left: 55 };
+    const h = 240;
+    const padding = { top: 30, right: 65, bottom: 35, left: 65 };
     const chartW = w - padding.left - padding.right;
     const chartH = h - padding.top - padding.bottom;
     const trend = target.trend;
 
-    const stepX = chartW / (trend.length - 1);
-    const minAvail = 97.0;
-    const maxAvail = 100.0;
-    const scaleY = (val) => padding.top + chartH - ((Math.max(minAvail, Math.min(maxAvail, val)) - minAvail) / (maxAvail - minAvail)) * chartH;
+    // DYNAMIC Y-AXIS SCALING: Prevents flat line by zooming into the actual data range
+    const values = trend.map(d => d.availability);
+    const dataMin = Math.min(...values);
+    const dataMax = Math.max(...values);
+    const spread = Math.max(0.6, dataMax - dataMin);
 
-    // Generate Path Points
+    // Dynamic bounds with headroom for visible peaks & valleys
+    const minAvail = Math.max(80.0, Math.floor((dataMin - spread * 0.45) * 10) / 10);
+    const maxAvail = Math.min(100.0, Math.ceil((dataMax + spread * 0.45) * 10) / 10);
+    const availRange = maxAvail - minAvail || 1.0;
+
+    const scaleX = (i) => padding.left + (i / (trend.length - 1)) * chartW;
+    const scaleY = (val) => padding.top + chartH - ((val - minAvail) / availRange) * chartH;
+
+    // Downtime right-axis scaling
+    const dtValues = trend.map(d => d.downtime);
+    const maxDt = Math.max(500, Math.max(...dtValues) * 1.2);
+    const scaleYDt = (dt) => padding.top + chartH - (dt / maxDt) * chartH;
+
     const points = trend.map((d, i) => ({
-      x: padding.left + i * stepX,
+      x: scaleX(i),
       y: scaleY(d.availability),
+      yDt: scaleYDt(d.downtime),
       month: d.month,
       val: d.availability,
       dt: d.downtime
     }));
 
+    // Smooth Bezier Curve Path
     let pathD = `M ${points[0].x} ${points[0].y}`;
-    for (let i = 1; i < points.length; i++) {
-      pathD += ` L ${points[i].x} ${points[i].y}`;
+    for (let i = 0; i < points.length - 1; i++) {
+      const p0 = points[i];
+      const p1 = points[i + 1];
+      const cpx1 = p0.x + (p1.x - p0.x) * 0.5;
+      const cpy1 = p0.y;
+      const cpx2 = p0.x + (p1.x - p0.x) * 0.5;
+      const cpy2 = p1.y;
+      pathD += ` C ${cpx1} ${cpy1}, ${cpx2} ${cpy2}, ${p1.x} ${p1.y}`;
     }
 
-    // Target 99.5% Line Y
+    // Downtime Bars Path (technical dual-metric display)
+    const barWidth = 18;
+    const dtBarsHtml = points.map(pt => {
+      const barH = padding.top + chartH - pt.yDt;
+      return `
+        <rect x="${pt.x - barWidth / 2}" y="${pt.yDt}" width="${barWidth}" height="${barH}" fill="rgba(245, 158, 11, 0.18)" stroke="rgba(245, 158, 11, 0.5)" stroke-width="1" rx="2">
+          <title>${pt.month} Unplanned Downtime: ${pt.dt} hrs</title>
+        </rect>
+      `;
+    }).join('');
+
+    // Generate 4-5 nice tick values
+    const ticksCount = 4;
+    const tickStep = availRange / ticksCount;
+    const ticks = [];
+    for (let t = 0; t <= ticksCount; t++) {
+      ticks.push(minAvail + t * tickStep);
+    }
+
+    // Target Line at 99.50% (if within visible range or top pinned)
+    const showTarget = 99.5 >= minAvail && 99.5 <= maxAvail;
     const targetY = scaleY(99.5);
 
     container.innerHTML = `
       <svg class="svg-chart" viewBox="0 0 ${w} ${h}">
-        <!-- Gridlines -->
-        ${[97.0, 98.0, 99.0, 100.0].map(v => {
+        <defs>
+          <linearGradient id="trajGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#10b981" stop-opacity="0.32" />
+            <stop offset="100%" stop-color="#10b981" stop-opacity="0.0" />
+          </linearGradient>
+        </defs>
+
+        <!-- Horizontal Gridlines & Left Y-Axis (Uptime %) -->
+        ${ticks.map(v => {
           const gy = scaleY(v);
           return `
-            <line x1="${padding.left}" y1="${gy}" x2="${w - padding.right}" y2="${gy}" class="chart-grid-line" />
-            <text x="${padding.left - 10}" y="${gy + 4}" text-anchor="end" class="chart-label">${v.toFixed(1)}%</text>
+            <line x1="${padding.left}" y1="${gy}" x2="${w - padding.right}" y2="${gy}" class="chart-grid-line" stroke="rgba(255,255,255,0.06)" />
+            <text x="${padding.left - 10}" y="${gy + 4}" text-anchor="end" font-size="10" font-weight="700" fill="#94a3b8">${v.toFixed(2)}%</text>
           `;
         }).join('')}
 
-        <!-- Target Line -->
-        <line x1="${padding.left}" y1="${targetY}" x2="${w - padding.right}" y2="${targetY}" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4 3" />
-        <text x="${w - padding.right}" y="${targetY - 6}" text-anchor="end" font-size="9" font-weight="800" fill="#38bdf8">Target (99.5%)</text>
+        <!-- Right Y-Axis Label (Downtime Hrs) -->
+        <text x="${w - padding.right + 10}" y="${padding.top + 10}" font-size="9" font-weight="700" fill="#f59e0b">DOWNTIME (HRS)</text>
+        <text x="${w - padding.right + 10}" y="${padding.top + chartH}" font-size="9" font-weight="700" fill="#f59e0b">0 hrs</text>
+
+        <!-- Background Downtime Bars -->
+        ${dtBarsHtml}
+
+        <!-- Target Line (99.5% SLA) -->
+        ${showTarget ? `
+          <line x1="${padding.left}" y1="${targetY}" x2="${w - padding.right}" y2="${targetY}" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.8" />
+          <text x="${w - padding.right - 8}" y="${targetY - 6}" text-anchor="end" font-size="9" font-weight="800" fill="#38bdf8">99.5% SLA TARGET</text>
+        ` : ''}
 
         <!-- Area fill under line -->
-        <path d="${pathD} L ${points[points.length - 1].x} ${padding.top + chartH} L ${points[0].x} ${padding.top + chartH} Z" fill="rgba(16, 185, 129, 0.08)" />
+        <path d="${pathD} L ${points[points.length - 1].x} ${padding.top + chartH} L ${points[0].x} ${padding.top + chartH} Z" fill="url(#trajGrad)" />
 
-        <!-- Line Graph -->
-        <path d="${pathD}" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" />
+        <!-- Line Graph with technical green glow -->
+        <path d="${pathD}" fill="none" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="drop-shadow(0 2px 6px rgba(16,185,129,0.5))" />
 
-        <!-- Nodes -->
+        <!-- Nodes and Labels -->
         ${points.map(pt => `
           <g>
-            <circle cx="${pt.x}" cy="${pt.y}" r="5" fill="#10b981" stroke="var(--bg-surface)" stroke-width="2">
-              <title>${pt.month} 2026: ${pt.val}% Availability (${pt.dt}h Downtime)</title>
-            </circle>
-            <text x="${pt.x}" y="${pt.y - 10}" text-anchor="middle" font-size="10" font-weight="800" fill="#10b981">${pt.val.toFixed(1)}%</text>
-            <text x="${pt.x}" y="${padding.top + chartH + 18}" text-anchor="middle" class="chart-label bold">${pt.month} 2026</text>
+            <circle cx="${pt.x}" cy="${pt.y}" r="5.5" fill="#10b981" stroke="#0d1527" stroke-width="2.5" />
+            <rect x="${pt.x - 26}" y="${pt.y - 24}" width="52" height="18" rx="4" fill="#0d1527" stroke="#10b981" stroke-width="1" />
+            <text x="${pt.x}" y="${pt.y - 12}" text-anchor="middle" font-size="9.5" font-weight="900" font-family="var(--font-mono)" fill="#ffffff">${pt.val.toFixed(2)}%</text>
+            <text x="${pt.x}" y="${padding.top + chartH + 20}" text-anchor="middle" font-size="10" font-weight="800" fill="#cbd5e1">${pt.month} 2026</text>
+            <text x="${pt.x}" y="${padding.top + chartH + 32}" text-anchor="middle" font-size="8.5" font-family="var(--font-mono)" fill="#f59e0b">${pt.dt.toFixed(0)}h DT</text>
           </g>
         `).join('')}
       </svg>
@@ -2151,7 +2279,7 @@
             <span class="plant-code-tag" style="font-size:0.8rem; padding:4px 9px;">${p.id}</span>
           </td>
           <td style="font-family:var(--font-mono); font-weight:800; text-align:center;">${p.machinesCount}</td>
-          <td style="font-family:var(--font-mono); font-weight:800; text-align:right; color:${availColor};">
+          <td style="font-family:var(--font-mono); font-weight:800; text-align:right; color:${availColor}; font-size:0.86rem;">
             ${p.availabilityPct.toFixed(2)}%
           </td>
           <td style="font-family:var(--font-mono); font-weight:800; text-align:right; color:${dtColor};">
@@ -2166,16 +2294,11 @@
           <td style="text-align:center;">
             <span class="compliance-badge-pill">${p.pmCompliancePct.toFixed(1)}%</span>
           </td>
+          <td style="text-align:center;">
+            <span class="compliance-badge-pill" style="background:rgba(2,132,199,0.15); color:#38bdf8; border:1px solid rgba(2,132,199,0.3);">${(p.cmCompliancePct !== undefined ? p.cmCompliancePct : 87.3).toFixed(1)}%</span>
+          </td>
           <td style="font-family:var(--font-mono); font-weight:700; text-align:center;">
             ${p.breakdownOccurrences}
-          </td>
-          <td style="text-align:center;">
-            <span class="stream-status-pill ${p.spocConfirmation === 'Yes' ? 'active' : 'idle'}">${p.spocConfirmation}</span>
-          </td>
-          <td style="font-size:0.74rem; color:var(--text-muted); line-height:1.35; max-width:260px;">
-            <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:260px;" title="${(p.remarks || '').replace(/"/g, '&quot;')}">
-              ${p.remarks || 'Standard production telemetry audited.'}
-            </div>
           </td>
         </tr>
       `;
@@ -2186,7 +2309,7 @@
     const data = window.METRICS_DASHBOARD_DATA;
     if (!data) return;
 
-    const headers = ['Plant', 'PlantCode', 'MachinesCount', 'EquipmentAvailability_Pct', 'UnplannedDowntime_Hrs', 'MTBF_Hrs', 'MTTR_Hrs', 'PMCompliance_Pct', 'BreakdownOccurrences', 'SPOC_Confirmation', 'Remarks'];
+    const headers = ['Plant', 'PlantCode', 'MachinesCount', 'EquipmentUptime_Pct', 'UnplannedDowntime_Hrs', 'MTBF_Hrs', 'MTTR_Hrs', 'PMCompliance_Pct', 'CMCompliance_Pct', 'BreakdownOccurrences'];
     const rows = data.plants.map(p => [
       `"${p.name}"`,
       `"${p.plantCode}"`,
@@ -2196,9 +2319,8 @@
       p.mtbfHrs,
       p.mttrHrs,
       p.pmCompliancePct,
-      p.breakdownOccurrences,
-      `"${p.spocConfirmation}"`,
-      `"${(p.remarks || '').replace(/"/g, '""')}"`
+      p.cmCompliancePct || 87.3,
+      p.breakdownOccurrences
     ]);
 
     const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
@@ -2222,6 +2344,9 @@
     document.querySelectorAll('.spares-tab-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.sparestab === state.activeSparesSubTab);
     });
+
+    const plantLbl = document.getElementById('sparesPlantLabel');
+    if (plantLbl) plantLbl.textContent = state.activePlantId;
 
     renderSparesVisualCharts();
     renderSparesTable();
@@ -2273,20 +2398,71 @@
     const data = window.SPARES_DASHBOARD_DATA;
     const cats = data.overall.categoryBreakdown;
 
-    let rowsHtml = cats.map(c => `
-      <div style="display:flex; align-items:center; justify-content:space-between; padding:4px 0; border-bottom:1px solid var(--border-subtle);">
-        <div style="display:flex; align-items:center; gap:8px;">
+    const w = container.clientWidth || 520;
+    const h = 230;
+    const cx = 110;
+    const cy = 115;
+    const rOuter = 82;
+    const rInner = 50;
+
+    let currentAngle = -Math.PI / 2;
+
+    const slicesHtml = cats.map(c => {
+      const sliceAngle = (c.pct / 100) * 2 * Math.PI;
+      const startAngle = currentAngle;
+      const endAngle = currentAngle + sliceAngle;
+      currentAngle = endAngle;
+
+      const x1 = cx + rOuter * Math.cos(startAngle);
+      const y1 = cy + rOuter * Math.sin(startAngle);
+      const x2 = cx + rOuter * Math.cos(endAngle);
+      const y2 = cy + rOuter * Math.sin(endAngle);
+
+      const ix1 = cx + rInner * Math.cos(endAngle);
+      const iy1 = cy + rInner * Math.sin(endAngle);
+      const ix2 = cx + rInner * Math.cos(startAngle);
+      const iy2 = cy + rInner * Math.sin(startAngle);
+
+      const largeArc = sliceAngle > Math.PI ? 1 : 0;
+      const pathD = `M ${x1} ${y1} A ${rOuter} ${rOuter} 0 ${largeArc} 1 ${x2} ${y2} L ${ix1} ${iy1} A ${rInner} ${rInner} 0 ${largeArc} 0 ${ix2} ${iy2} Z`;
+
+      return `
+        <path d="${pathD}" fill="${c.color}" stroke="var(--bg-card)" stroke-width="2" opacity="0.95">
+          <title>${c.category}: ₹${c.spend.toLocaleString('en-IN')} (${c.pct}%)</title>
+        </path>
+      `;
+    }).join('');
+
+    // Amounts use var(--text-main) and theme-safe contrast so they NEVER blend into the background
+    const legendHtml = cats.map(c => `
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:4px 0; border-bottom:1px solid var(--border-subtle); font-size:0.75rem;">
+        <div style="display:flex; align-items:center; gap:6px;">
           <span style="width:8px; height:8px; border-radius:2px; background:${c.color}; display:inline-block;"></span>
-          <span style="font-size:0.78rem; font-weight:700; color:var(--text-main);">${c.category}</span>
+          <span style="color:var(--text-main); font-weight:700;">${c.category}</span>
         </div>
         <div style="text-align:right;">
-          <span style="font-family:var(--font-mono); font-size:0.78rem; font-weight:800;">₹${c.spend.toLocaleString('en-IN', {maximumFractionDigits: 0})}</span>
-          <span style="font-size:0.7rem; color:var(--text-dim); margin-left:4px;">(${c.pct}%)</span>
+          <span style="font-family:var(--font-mono); font-weight:800; color:var(--text-main);">₹${(c.spend / 1000).toFixed(1)}k</span>
+          <span style="color:var(--text-dim); font-size:0.7rem; margin-left:3px;">(${c.pct}%)</span>
         </div>
       </div>
     `).join('');
 
-    container.innerHTML = `<div style="width:100%; display:flex; flex-direction:column; justify-content:flex-start;">${rowsHtml}</div>`;
+    container.innerHTML = `
+      <div style="display:flex; align-items:center; width:100%; height:100%; gap:12px;">
+        <svg style="width:220px; height:${h}px; flex-shrink:0;" viewBox="0 0 220 ${h}">
+          ${slicesHtml}
+          <!-- Center cutout content using dynamic background and theme-adaptive text -->
+          <circle cx="${cx}" cy="${cy}" r="${rInner - 2}" fill="var(--bg-surface)" />
+          <text x="${cx}" y="${cy - 6}" text-anchor="middle" font-size="8" font-weight="800" fill="var(--text-muted)" letter-spacing="0.5">TOTAL SPEND</text>
+          <text x="${cx}" y="${cy + 11}" text-anchor="middle" font-size="12" font-weight="900" font-family="var(--font-mono)" fill="var(--cyan-primary)">₹9.11L</text>
+          <text x="${cx}" y="${cy + 22}" text-anchor="middle" font-size="7.5" fill="var(--text-dim)">16 Materials</text>
+        </svg>
+
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center; min-width:0;">
+          ${legendHtml}
+        </div>
+      </div>
+    `;
   }
 
   // Visual 3: Consumables Velocity & Monthly Run-Rate (1,541 Liters)

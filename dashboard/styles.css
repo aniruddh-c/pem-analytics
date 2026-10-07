@@ -279,11 +279,7 @@ body.modal-open {
 /* ==========================================================================
    FOLDER-STYLE PLANT TABS (tabs-example.jpg style with connecting blue line)
    ========================================================================== */
-.plant-tabs-wrapper {
-  background: var(--bg-surface);
-  display: flex;
-  flex-direction: column;
-}
+.plant-tabs-wrapper { background: #0d1527; display: flex; flex-direction: column; }
 
 .plant-tabs-container {
   padding: 12px 24px 0;
@@ -3308,4 +3304,287 @@ body.modal-open {
 
 .metrics-table tr {
   height: 44px !important;
+}
+
+/* ==========================================================================
+   TOP APP HEADER & RESPONSIVE NAVBAR (PREVENT OVERLAP ON ALL LAPTOPS)
+   ========================================================================== */
+.app-header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  height: 56px !important;
+  min-height: 56px !important;
+  background: #0d1527 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18) !important;
+  padding: 0 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  z-index: 1000 !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  box-sizing: border-box !important;
+}
+
+#mainContainer {
+  padding-top: 56px !important;
+}
+
+.brand-wrap {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+}
+
+.brand-logo-img {
+  height: 32px !important;
+  width: auto !important;
+  max-width: 100px !important;
+  object-fit: contain !important;
+  border-radius: 4px !important;
+  background: #ffffff !important;
+  padding: 2px 6px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.brand-text h1 {
+  font-size: 1.12rem !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.3px !important;
+  line-height: 1.1 !important;
+  color: #ffffff !important;
+  white-space: nowrap !important;
+}
+
+.main-nav-tabs {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex: 1 1 auto !important;
+  justify-content: center !important;
+  margin: 0 10px !important;
+  min-width: 0 !important;
+}
+
+.main-tab-btn {
+  padding: 6px 13px !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  color: #94a3b8 !important;
+  background: #151e33 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: var(--radius-sm) !important;
+  cursor: pointer !important;
+  transition: all var(--transition) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.3px !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+.main-tab-btn:hover {
+  color: #ffffff !important;
+  background: #202d4b !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  transform: translateY(-1px) !important;
+}
+
+.main-tab-btn.active {
+  background: var(--cyan-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--cyan-primary) !important;
+  box-shadow: 0 4px 12px var(--cyan-glow) !important;
+}
+
+.header-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex-shrink: 0 !important;
+}
+
+.system-clock {
+  font-family: var(--font-mono) !important;
+  font-size: 0.78rem !important;
+  color: #94a3b8 !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+}
+
+.theme-btn {
+  background: #182339 !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #f8fafc !important;
+  padding: 5px 10px !important;
+  border-radius: var(--radius-sm) !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+/* Responsive Media Queries to guarantee no button overlap */
+@media (max-width: 1366px) {
+  .app-header {
+    padding: 0 12px !important;
+  }
+  .main-nav-tabs {
+    gap: 4px !important;
+    margin: 0 6px !important;
+  }
+  .main-tab-btn {
+    padding: 5px 10px !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.2px !important;
+  }
+  .system-clock {
+    font-size: 0.74rem !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  .brand-text h1 {
+    font-size: 1rem !important;
+  }
+  .main-tab-btn {
+    padding: 5px 8px !important;
+    font-size: 0.72rem !important;
+  }
+  .header-right {
+    gap: 8px !important;
+  }
+}
+
+@media (max-width: 1050px) {
+  .brand-text {
+    display: none !important; /* Preserves logo while liberating width */
+  }
+  .system-clock {
+    max-width: 90px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+}
+
+@media (max-width: 880px) {
+  .system-clock {
+    display: none !important;
+  }
+  .main-nav-tabs {
+    overflow-x: auto !important;
+    justify-content: flex-start !important;
+  }
+}
+
+/* ==========================================================================
+   UNIFIED PLANT FOLDER TABS & SOLID BLUE CONTEXT LINE
+   ========================================================================== */
+.plant-tabs-wrapper {
+  position: sticky !important;
+  top: 56px !important;
+  z-index: 990 !important;
+  background: #0d1527 !important;
+  display: flex;
+  flex-direction: column;
+  width: 100% !important;
+}
+
+.plant-tabs-wrapper.hidden {
+  display: none !important;
+}
+
+.plant-tabs-container {
+  padding: 8px 24px 0 !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  overflow-x: auto !important;
+  gap: 6px !important;
+  background: #0d1527 !important;
+}
+
+.plant-folder-tab {
+  padding: 9px 20px !important;
+  font-size: 0.84rem !important;
+  font-weight: 700 !important;
+  color: #94a3b8 !important;
+  background: #111a2e !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-bottom: none !important;
+  border-radius: 8px 8px 0 0 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  position: relative !important;
+  white-space: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.plant-folder-tab:hover {
+  color: #ffffff !important;
+  background: #1e293b !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.plant-folder-tab.active {
+  color: #ffffff !important;
+  background: #0284c7 !important; /* Bright Blue */
+  border-color: #0284c7 !important;
+  border-bottom: none !important;
+  box-shadow: 0 -2px 12px rgba(2, 132, 199, 0.5) !important;
+  z-index: 2 !important;
+  margin-bottom: -1px !important;
+}
+
+.plant-folder-tab.active .tab-machine-badge {
+  background: rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
+}
+
+.tab-machine-badge {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #cbd5e1 !important;
+  padding: 1px 7px !important;
+  border-radius: 9999px !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+}
+
+/* Solid Bright Blue Line Spanning the entire width right below tabs */
+.plant-tabs-blue-line {
+  height: 4px !important;
+  background: #0284c7 !important; /* Bright Blue */
+  width: 100% !important;
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.5) !important;
+  z-index: 1 !important;
+}
+
+.metrics-action-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 1200px) {
+  .metrics-action-cards-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .metrics-action-cards-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
 }

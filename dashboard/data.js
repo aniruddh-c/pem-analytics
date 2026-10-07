@@ -1,20 +1,20 @@
 // Auto-generated TASL PEM AI Reliability Engineer Data Engine
 window.TASL_PLANTS = [
   {
-    "id": "TSAL",
-    "name": "TSAL",
-    "fullName": "TSAL - Advanced Precision Machining Facility",
-    "totalMachines": 16,
-    "running": 10,
-    "idle": 2,
-    "alarm": 1,
-    "shutdown": 2,
-    "breakdown": 1
-  },
-  {
     "id": "TASL-NGP",
     "name": "TASL-NGP",
     "fullName": "TASL Defense & Aerostructures - Nagpur",
+    "totalMachines": 16,
+    "running": 9,
+    "idle": 2,
+    "alarm": 1,
+    "shutdown": 2,
+    "breakdown": 2
+  },
+  {
+    "id": "TSAL",
+    "name": "TSAL",
+    "fullName": "TSAL - Advanced Precision Machining Facility",
     "totalMachines": 12,
     "running": 6,
     "idle": 3,
@@ -59,12 +59,12 @@ window.TASL_PLANTS = [
 window.TASL_MACHINES = [
   {
     "id": "bavius-01",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "name": "Bavius HBZ AeroCell 200/100",
     "model": "HBZ Compact Cell 200/100",
     "oem": "Bavius Technologie GmbH",
     "stationId": "MS-01-02",
-    "plantLocation": "TSAL - Precision Machining Bay",
+    "plantLocation": "TASL-NGP - Precision Machining Bay",
     "status": "ALARM",
     "statusColor": "amber",
     "healthScore": 68,
@@ -76,12 +76,12 @@ window.TASL_MACHINES = [
   },
   {
     "id": "fanuc-01",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "name": "Fanuc Robodrill \u03b1-D21LiB5",
     "model": "5-Axis High-Speed VMC",
     "oem": "FANUC Corporation",
     "stationId": "AE-02-04",
-    "plantLocation": "TSAL - High-Speed Drilling Cell",
+    "plantLocation": "TASL-NGP - High-Speed Drilling Cell",
     "status": "RUNNING",
     "statusColor": "green",
     "healthScore": 92,
@@ -93,12 +93,12 @@ window.TASL_MACHINES = [
   },
   {
     "id": "breton-k60",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "name": "Breton K60 5-Axis",
     "model": "Matrix 800 - 60k RPM",
     "oem": "Breton S.p.A.",
     "stationId": "MS-03-15",
-    "plantLocation": "TSAL - High Precision Bay 2",
+    "plantLocation": "TASL-NGP - High Precision Bay 2",
     "status": "RUNNING",
     "statusColor": "green",
     "healthScore": 79,
@@ -110,12 +110,12 @@ window.TASL_MACHINES = [
   },
   {
     "id": "breton-k80",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "name": "Breton K80 Heavy Gantry",
     "model": "Flymill 2000 Titanium Cell",
     "oem": "Breton S.p.A.",
     "stationId": "MSD_MS-03-16",
-    "plantLocation": "TSAL - Heavy Structural Bay",
+    "plantLocation": "TASL-NGP - Heavy Structural Bay",
     "status": "SHUTDOWN",
     "statusColor": "blue",
     "healthScore": 95,
@@ -127,12 +127,12 @@ window.TASL_MACHINES = [
   },
   {
     "id": "makino-t1",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "name": "Makino T1 5-Axis",
     "model": "ADV Titanium Machining Center",
     "oem": "Makino Milling Machine Co.",
     "stationId": "MS-02-09",
-    "plantLocation": "TSAL - Titanium Complex Cell",
+    "plantLocation": "TASL-NGP - Titanium Complex Cell",
     "status": "RUNNING",
     "statusColor": "green",
     "healthScore": 88,
@@ -144,12 +144,12 @@ window.TASL_MACHINES = [
   },
   {
     "id": "modig-03c",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "name": "Modig HHV3 C",
     "model": "Horizontal High Velocity Extrusion Cell",
     "oem": "Modig Machine Tool Sweden",
     "stationId": "MS-04-01",
-    "plantLocation": "TSAL - Extrusion Milling Bay",
+    "plantLocation": "TASL-NGP - Extrusion Milling Bay",
     "status": "BREAKDOWN",
     "statusColor": "red",
     "healthScore": 42,
@@ -161,12 +161,12 @@ window.TASL_MACHINES = [
   },
   {
     "id": "makino-mag3",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "name": "Makino MAG3 5-Axis",
     "model": "MAG3.EX Horizontal Profiler",
     "oem": "Makino Milling Machine Co.",
     "stationId": "MS-01-08",
-    "plantLocation": "TSAL - Wing Spar Bay",
+    "plantLocation": "TASL-NGP - Wing Spar Bay",
     "status": "RUNNING",
     "statusColor": "green",
     "healthScore": 89,
@@ -178,12 +178,12 @@ window.TASL_MACHINES = [
   },
   {
     "id": "dmg-dmu80",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "name": "DMG MORI DMU 80 P",
     "model": "duoBLOCK 5-Axis Mill-Turn",
     "oem": "DMG MORI AG",
     "stationId": "MS-02-14",
-    "plantLocation": "TSAL - Engine Mount Cell",
+    "plantLocation": "TASL-NGP - Engine Mount Cell",
     "status": "RUNNING",
     "statusColor": "green",
     "healthScore": 94,
@@ -195,12 +195,12 @@ window.TASL_MACHINES = [
   },
   {
     "id": "starrag-hec800",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "name": "Starrag Heckert HEC 800",
     "model": "HEC 800 X5 High-Torque",
     "oem": "Starrag Group Switzerland",
     "stationId": "MS-03-04",
-    "plantLocation": "TSAL - Inconel & Titanium Cell",
+    "plantLocation": "TASL-NGP - Inconel & Titanium Cell",
     "status": "IDLE",
     "statusColor": "amber",
     "healthScore": 82,
@@ -212,12 +212,12 @@ window.TASL_MACHINES = [
   },
   {
     "id": "matsuura-mam72",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "name": "Matsuura MAM72-63V",
     "model": "5-Axis High Performance Center",
     "oem": "Matsuura Machinery Corp.",
     "stationId": "MS-02-18",
-    "plantLocation": "TSAL - Precision Actuator Cell",
+    "plantLocation": "TASL-NGP - Precision Actuator Cell",
     "status": "RUNNING",
     "statusColor": "green",
     "healthScore": 91,
@@ -229,12 +229,12 @@ window.TASL_MACHINES = [
   },
   {
     "id": "mazak-vortex",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "name": "Mazak Vortex i-800V/8",
     "model": "5-Axis Vertical Machining Center",
     "oem": "Yamazaki Mazak Corp.",
     "stationId": "MS-01-11",
-    "plantLocation": "TSAL - Bulkhead Profiling Cell",
+    "plantLocation": "TASL-NGP - Bulkhead Profiling Cell",
     "status": "RUNNING",
     "statusColor": "green",
     "healthScore": 87,
@@ -246,12 +246,12 @@ window.TASL_MACHINES = [
   },
   {
     "id": "bavius-aerocell",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "name": "Bavius HBZ AeroCell 500",
     "model": "HBZ AeroCell Horizontal HPC",
     "oem": "Bavius Technologie GmbH",
     "stationId": "MS-01-05",
-    "plantLocation": "TSAL - High-Velocity Milling Bay",
+    "plantLocation": "TASL-NGP - High-Velocity Milling Bay",
     "status": "IDLE",
     "statusColor": "amber",
     "healthScore": 76,
@@ -263,12 +263,12 @@ window.TASL_MACHINES = [
   },
   {
     "id": "grob-g550",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "name": "Grob G550 5-Axis",
     "model": "G550 Universal Machining Center",
     "oem": "GROB-WERKE GmbH & Co. KG",
     "stationId": "MS-03-22",
-    "plantLocation": "TSAL - Precision Flap Bay",
+    "plantLocation": "TASL-NGP - Precision Flap Bay",
     "status": "RUNNING",
     "statusColor": "green",
     "healthScore": 93,
@@ -280,12 +280,12 @@ window.TASL_MACHINES = [
   },
   {
     "id": "hermle-c52",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "name": "Hermle C 52 U MT",
     "model": "C 52 Dynamic Mill-Turn",
     "oem": "Maschinenfabrik Berthold Hermle AG",
     "stationId": "MS-02-01",
-    "plantLocation": "TSAL - Turbine Discs Cell",
+    "plantLocation": "TASL-NGP - Turbine Discs Cell",
     "status": "SHUTDOWN",
     "statusColor": "blue",
     "healthScore": 96,
@@ -297,12 +297,12 @@ window.TASL_MACHINES = [
   },
   {
     "id": "okuma-mu8000",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "name": "Okuma MU-8000V",
     "model": "MU-8000V Laser EX Hybrid",
     "oem": "Okuma Corporation",
     "stationId": "MS-04-10",
-    "plantLocation": "TSAL - Additive & Subtractive Bay",
+    "plantLocation": "TASL-NGP - Additive & Subtractive Bay",
     "status": "RUNNING",
     "statusColor": "green",
     "healthScore": 90,
@@ -314,12 +314,12 @@ window.TASL_MACHINES = [
   },
   {
     "id": "chiron-fz15",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "name": "Chiron FZ 15W High-Speed",
     "model": "FZ 15W Twin-Spindle VMC",
     "oem": "CHIRON Group SE",
     "stationId": "MS-01-20",
-    "plantLocation": "TSAL - Secondary Bracket Line",
+    "plantLocation": "TASL-NGP - Secondary Bracket Line",
     "status": "RUNNING",
     "statusColor": "green",
     "healthScore": 85,
@@ -328,6 +328,448 @@ window.TASL_MACHINES = [
     "redCount": 0,
     "statusDuration": "05H 45M 30S",
     "desc": "Twin-spindle high-speed vertical center with basket tool changer (0.9s chip-to-chip)."
+  },
+  {
+    "id": "tsal-modig-01",
+    "plantId": "TSAL",
+    "name": "Modig HHV3 Extrusion Cell",
+    "model": "HHV-3 High Speed Extrusion",
+    "oem": "Modig Machine Tool",
+    "stationId": "TSAL-EXT-01",
+    "plantLocation": "TSAL - Aerostructures Bay A",
+    "status": "BREAKDOWN",
+    "statusColor": "red",
+    "healthScore": 42,
+    "greenCount": 40,
+    "yellowCount": 12,
+    "redCount": 4,
+    "statusDuration": "02H 14M 08S",
+    "desc": "High velocity horizontal machining center for aerospace stringers and extruded structural profiles."
+  },
+  {
+    "id": "tsal-breton-01",
+    "plantId": "TSAL",
+    "name": "Breton Flymill 2000",
+    "model": "Flymill 5-Axis CNC",
+    "oem": "Breton S.p.A.",
+    "stationId": "TSAL-FM-02",
+    "plantLocation": "TSAL - Precision Machining Bay",
+    "status": "ALARM",
+    "statusColor": "amber",
+    "healthScore": 71,
+    "greenCount": 52,
+    "yellowCount": 8,
+    "redCount": 2,
+    "statusDuration": "00H 48M 19S",
+    "desc": "High-performance gantry machining center with continuous 5-axis contouring for wing spars."
+  },
+  {
+    "id": "tsal-makino-01",
+    "plantId": "TSAL",
+    "name": "Makino MAG3.EX",
+    "model": "5-Axis Horizontal High-Speed",
+    "oem": "Makino Milling Machine Co.",
+    "stationId": "TSAL-MK-03",
+    "plantLocation": "TSAL - Aerostructures Bay B",
+    "status": "ALARM",
+    "statusColor": "amber",
+    "healthScore": 74,
+    "greenCount": 54,
+    "yellowCount": 7,
+    "redCount": 1,
+    "statusDuration": "01H 05M 33S",
+    "desc": "Ultra high-power 33,000 RPM titanium and aluminum monolith wing-rib machining cell."
+  },
+  {
+    "id": "tsal-fanuc-01",
+    "plantId": "TSAL",
+    "name": "Fanuc Robodrill \u03b1-D21LiB5",
+    "model": "High-Speed Drilling & Tapping",
+    "oem": "FANUC Corporation",
+    "stationId": "TSAL-RD-04",
+    "plantLocation": "TSAL - Fastener & Flange Bay",
+    "status": "RUNNING",
+    "statusColor": "green",
+    "healthScore": 96,
+    "greenCount": 62,
+    "yellowCount": 0,
+    "redCount": 0,
+    "statusDuration": "06H 12M 40S",
+    "desc": "Compact CNC drilling and tapping center for high-volume aerospace bracket fabrication."
+  },
+  {
+    "id": "tsal-dmg-01",
+    "plantId": "TSAL",
+    "name": "DMG MORI DMC 125 FD",
+    "model": "duoBLOCK Mill-Turn 5-Axis",
+    "oem": "DMG MORI AG",
+    "stationId": "TSAL-DM-05",
+    "plantLocation": "TSAL - Heavy Turning Bay",
+    "status": "RUNNING",
+    "statusColor": "green",
+    "healthScore": 93,
+    "greenCount": 61,
+    "yellowCount": 1,
+    "redCount": 0,
+    "statusDuration": "05H 41M 12S",
+    "desc": "5-axis simultaneous milling and turning duoBLOCK for engine casing rings and bulkheads."
+  },
+  {
+    "id": "tsal-hermle-01",
+    "plantId": "TSAL",
+    "name": "Hermle C 42 U MT",
+    "model": "High-Precision 5-Axis Dynamic",
+    "oem": "Maschinenfabrik Berthold Hermle AG",
+    "stationId": "TSAL-HM-06",
+    "plantLocation": "TSAL - Impeller & Blisk Cell",
+    "status": "RUNNING",
+    "statusColor": "green",
+    "healthScore": 94,
+    "greenCount": 62,
+    "yellowCount": 1,
+    "redCount": 0,
+    "statusDuration": "07H 19M 02S",
+    "desc": "High dynamic 5-axis machining center for aerospace blisks and complex fuel nozzles."
+  },
+  {
+    "id": "tsal-chiron-01",
+    "plantId": "TSAL",
+    "name": "Chiron DZ 15 W",
+    "model": "Dual-Spindle High-Speed",
+    "oem": "CHIRON Group SE",
+    "stationId": "TSAL-CH-07",
+    "plantLocation": "TSAL - Twin Spindle Cell",
+    "status": "RUNNING",
+    "statusColor": "green",
+    "healthScore": 91,
+    "greenCount": 59,
+    "yellowCount": 3,
+    "redCount": 0,
+    "statusDuration": "03H 55M 19S",
+    "desc": "Twin-spindle high rate production machining center for aerospace titanium link fittings."
+  },
+  {
+    "id": "tsal-mazak-01",
+    "plantId": "TSAL",
+    "name": "Mazak VARIAXIS i-800",
+    "model": "5-Axis Multi-Tasking Center",
+    "oem": "Yamazaki Mazak Corp.",
+    "stationId": "TSAL-MZ-08",
+    "plantLocation": "TSAL - Main Precision Cell",
+    "status": "RUNNING",
+    "statusColor": "green",
+    "healthScore": 89,
+    "greenCount": 58,
+    "yellowCount": 4,
+    "redCount": 0,
+    "statusDuration": "04H 10M 55S",
+    "desc": "Simultaneous 5-axis vertical machining center for aerospace structural bulkhead lugs."
+  },
+  {
+    "id": "tsal-grob-01",
+    "plantId": "TSAL",
+    "name": "GROB G550 5-Axis",
+    "model": "Universal Machining Center",
+    "oem": "GROB-WERKE GmbH & Co. KG",
+    "stationId": "TSAL-GB-09",
+    "plantLocation": "TSAL - Pallet Automation Cell",
+    "status": "RUNNING",
+    "statusColor": "green",
+    "healthScore": 95,
+    "greenCount": 62,
+    "yellowCount": 1,
+    "redCount": 0,
+    "statusDuration": "06H 48M 01S",
+    "desc": "Horizontal spindle arrangement with upside-down swivel-rotary table for chip evacuation."
+  },
+  {
+    "id": "tsal-starrag-01",
+    "plantId": "TSAL",
+    "name": "Starrag STC 800",
+    "model": "Titanium Machining Center",
+    "oem": "Starrag Group",
+    "stationId": "TSAL-ST-10",
+    "plantLocation": "TSAL - Titanium Wing Bay",
+    "status": "IDLE",
+    "statusColor": "yellow",
+    "healthScore": 88,
+    "greenCount": 58,
+    "yellowCount": 4,
+    "redCount": 0,
+    "statusDuration": "01H 20M 14S",
+    "desc": "Heavy-duty horizontal center tailored for tough titanium alloys and aerospace structural forgings."
+  },
+  {
+    "id": "tsal-haas-01",
+    "plantId": "TSAL",
+    "name": "Haas VF-4SS Super-Speed",
+    "model": "High-Speed VMC 12k RPM",
+    "oem": "Haas Automation Inc.",
+    "stationId": "TSAL-HS-11",
+    "plantLocation": "TSAL - General Machining Bay",
+    "status": "IDLE",
+    "statusColor": "yellow",
+    "healthScore": 86,
+    "greenCount": 56,
+    "yellowCount": 5,
+    "redCount": 0,
+    "statusDuration": "00H 55M 32S",
+    "desc": "Super-speed vertical machining center for tooling, fixtures, and secondary trim machining."
+  },
+  {
+    "id": "tsal-zeiss-01",
+    "plantId": "TSAL",
+    "name": "Zeiss PRISMO Ultra 3D",
+    "model": "Coordinate Measuring Machine",
+    "oem": "Carl Zeiss AG",
+    "stationId": "TSAL-ZS-12",
+    "plantLocation": "TSAL - Metrology & Quality Lab",
+    "status": "IDLE",
+    "statusColor": "yellow",
+    "healthScore": 99,
+    "greenCount": 62,
+    "yellowCount": 0,
+    "redCount": 0,
+    "statusDuration": "02H 05M 18S",
+    "desc": "Ultra-high accuracy sub-micron CMM for final inspection of AS9100 aerospace flight articles."
+  },
+  {
+    "id": "tcoe-makino-01",
+    "plantId": "TCOE",
+    "name": "Makino T2 5-Axis Titanium",
+    "model": "T-Series Titanium Specialist",
+    "oem": "Makino Milling Machine Co.",
+    "stationId": "TCOE-MK-01",
+    "plantLocation": "TCOE - Advanced Titanium Center",
+    "status": "RUNNING",
+    "statusColor": "green",
+    "healthScore": 98,
+    "greenCount": 62,
+    "yellowCount": 0,
+    "redCount": 0,
+    "statusDuration": "08H 15M 00S",
+    "desc": "5-axis horizontal machining center with 1000 Nm high-torque spindle for titanium engine pylons."
+  },
+  {
+    "id": "tcoe-breton-01",
+    "plantId": "TCOE",
+    "name": "Breton Matrix 1000",
+    "model": "High-Speed Gantry 5-Axis",
+    "oem": "Breton S.p.A.",
+    "stationId": "TCOE-BR-02",
+    "plantLocation": "TCOE - Composites & Aero Cell",
+    "status": "RUNNING",
+    "statusColor": "green",
+    "healthScore": 97,
+    "greenCount": 62,
+    "yellowCount": 0,
+    "redCount": 0,
+    "statusDuration": "06H 30M 45S",
+    "desc": "Linear motor driven 5-axis gantry center for aerospace composites and carbon-fiber trimming."
+  },
+  {
+    "id": "tcoe-hermle-01",
+    "plantId": "TCOE",
+    "name": "Hermle C 62 U MT Dynamic",
+    "model": "Large-Scale 5-Axis Mill-Turn",
+    "oem": "Maschinenfabrik Berthold Hermle AG",
+    "stationId": "TCOE-HM-03",
+    "plantLocation": "TCOE - Turbine Component Bay",
+    "status": "RUNNING",
+    "statusColor": "green",
+    "healthScore": 95,
+    "greenCount": 61,
+    "yellowCount": 1,
+    "redCount": 0,
+    "statusDuration": "05H 40M 20S",
+    "desc": "Heavy-duty 5-axis dynamic mill-turn center for gas turbine discs and rotating aero components."
+  },
+  {
+    "id": "tcoe-dmg-01",
+    "plantId": "TCOE",
+    "name": "DMG MORI LASERTEC 65 3D",
+    "model": "Hybrid Additive & 5-Axis Milling",
+    "oem": "DMG MORI AG",
+    "stationId": "TCOE-LT-04",
+    "plantLocation": "TCOE - Additive Manufacturing Lab",
+    "status": "RUNNING",
+    "statusColor": "green",
+    "healthScore": 96,
+    "greenCount": 62,
+    "yellowCount": 0,
+    "redCount": 0,
+    "statusDuration": "09H 12M 15S",
+    "desc": "Laser metal deposition hybrid 5-axis machining center for rocket engine regenerative cooling jackets."
+  },
+  {
+    "id": "tcoe-zeiss-01",
+    "plantId": "TCOE",
+    "name": "Zeiss X-Ray CT METROTOM",
+    "model": "Industrial Computed Tomography",
+    "oem": "Carl Zeiss AG",
+    "stationId": "TCOE-CT-05",
+    "plantLocation": "TCOE - NDT & Non-Destructive Lab",
+    "status": "RUNNING",
+    "statusColor": "green",
+    "healthScore": 99,
+    "greenCount": 62,
+    "yellowCount": 0,
+    "redCount": 0,
+    "statusDuration": "11H 00M 00S",
+    "desc": "High resolution industrial CT scanner for internal void and defect inspection in 3D printed aero components."
+  },
+  {
+    "id": "tcoe-grob-01",
+    "plantId": "TCOE",
+    "name": "GROB G750 5-Axis",
+    "model": "Universal 5-Axis Center",
+    "oem": "GROB-WERKE GmbH & Co. KG",
+    "stationId": "TCOE-GB-06",
+    "plantLocation": "TCOE - Heavy Structures Bay",
+    "status": "SHUTDOWN",
+    "statusColor": "blue",
+    "healthScore": 100,
+    "greenCount": 62,
+    "yellowCount": 0,
+    "redCount": 0,
+    "statusDuration": "18H 30M 00S",
+    "desc": "Scheduled tooling overhaul and calibration for landing gear strut machining cell."
+  },
+  {
+    "id": "tcoe-matsuura-01",
+    "plantId": "TCOE",
+    "name": "Matsuura LUMEX Avance-25",
+    "model": "Metal 3D Laser Sintering & Mill",
+    "oem": "Matsuura Machinery Corp.",
+    "stationId": "TCOE-MA-07",
+    "plantLocation": "TCOE - R&D Additive Cell",
+    "status": "SHUTDOWN",
+    "statusColor": "blue",
+    "healthScore": 100,
+    "greenCount": 62,
+    "yellowCount": 0,
+    "redCount": 0,
+    "statusDuration": "24H 00M 00S",
+    "desc": "Hybrid selective laser sintering and high-speed milling center under planned nitrogen supply maintenance."
+  },
+  {
+    "id": "tcoe-waldrich-01",
+    "plantId": "TCOE",
+    "name": "Waldrich Coburg Taurus 30",
+    "model": "Portal Milling Machine",
+    "oem": "Waldrich Coburg GmbH",
+    "stationId": "TCOE-WC-08",
+    "plantLocation": "TCOE - Mega Structure Bay",
+    "status": "SHUTDOWN",
+    "statusColor": "blue",
+    "healthScore": 100,
+    "greenCount": 62,
+    "yellowCount": 0,
+    "redCount": 0,
+    "statusDuration": "14H 15M 00S",
+    "desc": "Heavy portal milling machine under scheduled geometric laser interferometer recertification."
+  },
+  {
+    "id": "blr-fanuc-01",
+    "plantId": "TASL-BLR",
+    "name": "Fanuc Robodrill \u03b1-D14MiB5",
+    "model": "Avionics Precision CNC",
+    "oem": "FANUC Corporation",
+    "stationId": "BLR-AV-01",
+    "plantLocation": "TASL-BLR - Avionics Chassis Bay",
+    "status": "RUNNING",
+    "statusColor": "green",
+    "healthScore": 97,
+    "greenCount": 62,
+    "yellowCount": 0,
+    "redCount": 0,
+    "statusDuration": "05H 50M 00S",
+    "desc": "High precision CNC milling center for radar transmit/receive module housings and microwave filters."
+  },
+  {
+    "id": "blr-datron-01",
+    "plantId": "TASL-BLR",
+    "name": "DATRON M8Cube High-Speed",
+    "model": "High-Speed Micro-Milling",
+    "oem": "DATRON AG",
+    "stationId": "BLR-DT-02",
+    "plantLocation": "TASL-BLR - Micro-Machining Cell",
+    "status": "RUNNING",
+    "statusColor": "green",
+    "healthScore": 96,
+    "greenCount": 61,
+    "yellowCount": 1,
+    "redCount": 0,
+    "statusDuration": "07H 10M 15S",
+    "desc": "60,000 RPM high speed machining center for electronic enclosure cooling micro-channels."
+  },
+  {
+    "id": "blr-hermle-01",
+    "plantId": "TASL-BLR",
+    "name": "Hermle C 22 U 5-Axis",
+    "model": "Dynamic Precision 5-Axis",
+    "oem": "Maschinenfabrik Berthold Hermle AG",
+    "stationId": "BLR-HM-03",
+    "plantLocation": "TASL-BLR - Optical Mount Cell",
+    "status": "RUNNING",
+    "statusColor": "green",
+    "healthScore": 98,
+    "greenCount": 62,
+    "yellowCount": 0,
+    "redCount": 0,
+    "statusDuration": "08H 35M 40S",
+    "desc": "Sub-micron accuracy 5-axis machining center for airborne gimbal mounts and seeker optical housings."
+  },
+  {
+    "id": "blr-dmg-01",
+    "plantId": "TASL-BLR",
+    "name": "DMG MORI NTX 1000 2nd Gen",
+    "model": "Compact Turn-Mill Center",
+    "oem": "DMG MORI AG",
+    "stationId": "BLR-DM-04",
+    "plantLocation": "TASL-BLR - Actuator Fabrication Bay",
+    "status": "RUNNING",
+    "statusColor": "green",
+    "healthScore": 94,
+    "greenCount": 60,
+    "yellowCount": 2,
+    "redCount": 0,
+    "statusDuration": "04H 20M 10S",
+    "desc": "Precision multi-axis turn-mill center for flight-control electro-mechanical servo actuator bodies."
+  },
+  {
+    "id": "blr-haas-01",
+    "plantId": "TASL-BLR",
+    "name": "Haas Mini Mill 2",
+    "model": "Compact CNC VMC",
+    "oem": "Haas Automation Inc.",
+    "stationId": "BLR-HS-05",
+    "plantLocation": "TASL-BLR - Harness Bracket Bay",
+    "status": "IDLE",
+    "statusColor": "yellow",
+    "healthScore": 89,
+    "greenCount": 59,
+    "yellowCount": 3,
+    "redCount": 0,
+    "statusDuration": "01H 45M 00S",
+    "desc": "Compact vertical machining center for rapid prototyping of avionics wiring harness brackets."
+  },
+  {
+    "id": "blr-zeiss-01",
+    "plantId": "TASL-BLR",
+    "name": "Zeiss MICURA CMM",
+    "model": "Compact High-Precision CMM",
+    "oem": "Carl Zeiss AG",
+    "stationId": "BLR-ZS-06",
+    "plantLocation": "TASL-BLR - Clean Room Metrology",
+    "status": "SHUTDOWN",
+    "statusColor": "blue",
+    "healthScore": 100,
+    "greenCount": 62,
+    "yellowCount": 0,
+    "redCount": 0,
+    "statusDuration": "12H 00M 00S",
+    "desc": "Class 10,000 cleanroom coordinate measuring machine under scheduled sensor probe calibration."
   }
 ];
 window.TOP_BREAKDOWN_CAUSES = [
@@ -2297,7 +2739,7 @@ window.ACTIVE_BREAKDOWNS = [
     "id": "BD-2026-0922-01",
     "machineId": "bavius-01",
     "machineName": "Bavius 4mtr N01-02",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "alarmCode": "700810 / 700731 / 700145",
     "alarmTag": "BAVIUS_4MTR_CONSOLIDATED_RED",
     "message": "Consolidated Multi-Alarm: Spindle Motor Temp (61.4\u00b0C), Nose Vibration (4.85 mm/s) & Tool Pull-In Force (14.2 kN)",
@@ -2337,7 +2779,7 @@ window.ACTIVE_BREAKDOWNS = [
     "id": "BD-2026-1005-02",
     "machineId": "modig-03c",
     "machineName": "Modig HHV3 C",
-    "plantId": "TSAL",
+    "plantId": "TASL-NGP",
     "alarmCode": "700121 / 700216 / 700340",
     "alarmTag": "MODIG_CONSOLIDATED_RED",
     "message": "Consolidated Multi-Alarm: Compressed Air Pressure Drop (< 5.2 bar) & Linear Scale Purge Fault",
@@ -11558,7 +12000,7 @@ window.METRICS_DASHBOARD_DATA = {
     ],
     "formulas": [
       {
-        "metric": "Equipment Availability %",
+        "metric": "Equipment Uptime %",
         "formula": "(Sum of Available Hours - Breakdown Hours) / Sum of Available Hours",
         "target": ">= 99.50%"
       },
@@ -11577,7 +12019,8 @@ window.METRICS_DASHBOARD_DATA = {
         "formula": "Closed PM Orders / Total Scheduled PM Orders",
         "target": ">= 95.00%"
       }
-    ]
+    ],
+    "cmCompliancePct": 87.3
   },
   "plants": [
     {
@@ -11630,7 +12073,8 @@ window.METRICS_DASHBOARD_DATA = {
           "availability": 93.82,
           "downtime": 328.5
         }
-      ]
+      ],
+      "cmCompliancePct": 87.3
     },
     {
       "id": "TASL-BLR",
@@ -11682,7 +12126,8 @@ window.METRICS_DASHBOARD_DATA = {
           "availability": 100.0,
           "downtime": 12.3
         }
-      ]
+      ],
+      "cmCompliancePct": 94.1
     },
     {
       "id": "TCOE",
@@ -11734,7 +12179,8 @@ window.METRICS_DASHBOARD_DATA = {
           "availability": 100.0,
           "downtime": 0.8
         }
-      ]
+      ],
+      "cmCompliancePct": 96.5
     },
     {
       "id": "TSAL",
@@ -11786,7 +12232,8 @@ window.METRICS_DASHBOARD_DATA = {
           "availability": 100.0,
           "downtime": 48.0
         }
-      ]
+      ],
+      "cmCompliancePct": 91.2
     },
     {
       "id": "TASL-H01",
@@ -11838,7 +12285,8 @@ window.METRICS_DASHBOARD_DATA = {
           "availability": 100.0,
           "downtime": 0.0
         }
-      ]
+      ],
+      "cmCompliancePct": 100.0
     },
     {
       "id": "TBAL",
@@ -11890,7 +12338,8 @@ window.METRICS_DASHBOARD_DATA = {
           "availability": 100.0,
           "downtime": 0.0
         }
-      ]
+      ],
+      "cmCompliancePct": 100.0
     },
     {
       "id": "TLMAL",
@@ -11942,7 +12391,8 @@ window.METRICS_DASHBOARD_DATA = {
           "availability": 100.0,
           "downtime": 0.0
         }
-      ]
+      ],
+      "cmCompliancePct": 100.0
     },
     {
       "id": "MCA",
@@ -11994,7 +12444,8 @@ window.METRICS_DASHBOARD_DATA = {
           "availability": 100.0,
           "downtime": 0.0
         }
-      ]
+      ],
+      "cmCompliancePct": 100.0
     },
     {
       "id": "TASL-XXX",
@@ -12045,6 +12496,148 @@ window.METRICS_DASHBOARD_DATA = {
           "month": "Sep",
           "availability": 100.0,
           "downtime": 0.0
+        }
+      ],
+      "cmCompliancePct": 100.0
+    },
+    {
+      "id": "TASL-HYD",
+      "name": "TASL Aerospace Structures - Hyderabad",
+      "plantCode": "HYD-AERO-01",
+      "machinesCount": 34,
+      "availabilityPct": 99.12,
+      "unplannedDowntimeHrs": 142.5,
+      "mtbfHrs": 710.5,
+      "mttrHrs": 3.8,
+      "pmCompliancePct": 96.2,
+      "cmCompliancePct": 92.5,
+      "breakdownOccurrences": 4,
+      "spocConfirmation": "Yes",
+      "remarks": "Empennage and fuselage assembly precision machining cell.",
+      "trend": [
+        {
+          "month": "Apr",
+          "availability": 99.4,
+          "downtime": 28.5
+        },
+        {
+          "month": "May",
+          "availability": 99.15,
+          "downtime": 32.0
+        },
+        {
+          "month": "Jun",
+          "availability": 98.8,
+          "downtime": 36.5
+        },
+        {
+          "month": "Jul",
+          "availability": 99.2,
+          "downtime": 30.0
+        },
+        {
+          "month": "Aug",
+          "availability": 99.12,
+          "downtime": 142.5
+        },
+        {
+          "month": "Sep",
+          "availability": 99.35,
+          "downtime": 26.0
+        }
+      ]
+    },
+    {
+      "id": "TASL-PUN",
+      "name": "TASL Defense Systems - Pune",
+      "plantCode": "PUN-DEF-02",
+      "machinesCount": 28,
+      "availabilityPct": 98.75,
+      "unplannedDowntimeHrs": 210.8,
+      "mtbfHrs": 585.0,
+      "mttrHrs": 4.15,
+      "pmCompliancePct": 93.8,
+      "cmCompliancePct": 89.0,
+      "breakdownOccurrences": 6,
+      "spocConfirmation": "Yes",
+      "remarks": "Heavy defense vehicle chassis and turret ring manufacturing.",
+      "trend": [
+        {
+          "month": "Apr",
+          "availability": 98.9,
+          "downtime": 41.0
+        },
+        {
+          "month": "May",
+          "availability": 98.6,
+          "downtime": 48.5
+        },
+        {
+          "month": "Jun",
+          "availability": 98.4,
+          "downtime": 52.0
+        },
+        {
+          "month": "Jul",
+          "availability": 98.7,
+          "downtime": 44.0
+        },
+        {
+          "month": "Aug",
+          "availability": 98.75,
+          "downtime": 210.8
+        },
+        {
+          "month": "Sep",
+          "availability": 98.95,
+          "downtime": 38.0
+        }
+      ]
+    },
+    {
+      "id": "TASL-NAG",
+      "name": "TASL Aerostructures Assembly - Nagpur",
+      "plantCode": "NAG-ASY-03",
+      "machinesCount": 16,
+      "availabilityPct": 99.6,
+      "unplannedDowntimeHrs": 45.2,
+      "mtbfHrs": 890.0,
+      "mttrHrs": 2.9,
+      "pmCompliancePct": 98.5,
+      "cmCompliancePct": 95.0,
+      "breakdownOccurrences": 2,
+      "spocConfirmation": "Yes",
+      "remarks": "Final assembly robotic riveting and skin panel milling bay.",
+      "trend": [
+        {
+          "month": "Apr",
+          "availability": 99.7,
+          "downtime": 8.0
+        },
+        {
+          "month": "May",
+          "availability": 99.55,
+          "downtime": 10.5
+        },
+        {
+          "month": "Jun",
+          "availability": 99.4,
+          "downtime": 12.0
+        },
+        {
+          "month": "Jul",
+          "availability": 99.65,
+          "downtime": 9.2
+        },
+        {
+          "month": "Aug",
+          "availability": 99.6,
+          "downtime": 45.2
+        },
+        {
+          "month": "Sep",
+          "availability": 99.8,
+          "downtime": 7.5
         }
       ]
     }
