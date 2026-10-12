@@ -335,22 +335,26 @@
           <div class="breakdown-title-text">Breakdown Monitoring</div>
         </div>
 
-        <div style="display:flex; gap:12px; align-items:center;">
+        <div class="breakdown-header-right">
+          <!-- Machine Breakdown Search Bar (Plant-scoped) -->
+          <div class="bd-machine-search-box">
+            <span class="bd-search-glass">&#128269;</span>
+            <input type="text" id="bdMachineSearchInput" class="bd-machine-search-input" placeholder="Search machine breakdowns..." autocomplete="off">
+            <button id="bdSearchClearBtn" class="bd-search-clear-btn" style="display:none;" onclick="window.clearBdMachineSearch()" title="Clear filter">&times;</button>
+          </div>
           <button class="customized-pm-btn" id="customizedPmBtn" onclick="window.openCustomizedPmModal()" title="View and execute AI-optimized PM tasklist against historical breakdown telemetry">
-            <span class="pm-gear-icon">⚙</span> Customized PM Checklist
+            <span class="pm-gear-icon">&#9881;</span> Customized PM Checklist
           </button>
-          <div class="opc-badge"><span class="opc-dot"></span> OPC ONLINE</div>
-          <div class="opc-badge sap-badge">SAP INTEGRATION ACTIVE</div>
         </div>
       </div>
 
-      <!-- Split Grid: Left Side (Critical Active Breakdowns) vs Right Side (KPIs on top, Top 5 Causes below) -->
+      <!-- Split Grid: Left Side (Active Breakdowns) vs Right Side (KPIs on top, Top 5 Repetitive Breakdowns below) -->
       <div class="breakdown-top-split-grid">
-        <!-- Whole Left Side: Critical Active Breakdowns Panel -->
+        <!-- Whole Left Side: Active Breakdowns Panel -->
         <div class="bd-left-col">
           <div class="breakdown-panel-box">
             <div class="panel-title-bar" style="color:var(--status-alarm);">
-              <span>Critical Active Breakdowns (SAP Tickets Auto-Generated)</span>
+              <span>Active Breakdowns</span>
             </div>
             <div id="criticalActiveBreakdownsList">
               <!-- Rendered by app.js -->
@@ -358,27 +362,25 @@
           </div>
         </div>
 
-        <!-- Right Side: Top KPIs & Below Top 5 Breakdown Causes (No empty space) -->
+        <!-- Right Side: Top KPIs & Below Top 5 Repetitive Breakdowns -->
         <div class="bd-right-col">
           <div class="bd-kpis-wrapper">
             <div class="bd-kpi-card">
               <span class="bd-kpi-label">Active Critical Breakdowns</span>
               <span class="bd-kpi-val red" id="activeBreakdownsCount">2</span>
-              <span class="bd-kpi-sub">30-sec rule &bull; SAP Ticket Auto-Generated</span>
             </div>
 
             <div class="bd-kpi-card">
               <span class="bd-kpi-label">Events Logged Today</span>
               <span class="bd-kpi-val cyan">31</span>
-              <span class="bd-kpi-sub">Telemetry Sensor Signals &bull; Monitored</span>
             </div>
           </div>
 
-          <!-- Top 5 Breakdown Causes sits directly below KPIs -->
+          <!-- Top 5 Repetitive Breakdowns sits directly below KPIs -->
           <div class="top-causes-card">
             <div class="top-causes-header">
-              <div class="top-causes-title">Top 5 Breakdown Causes (Last 6 months)</div>
-              <span class="top-causes-tag">Historical Failure Modes &bull; Click row for Root Cause Corrective Action</span>
+              <div class="top-causes-title">Top 5 Repetitive Breakdowns</div>
+              <span class="top-causes-tag">Last 6 Months</span>
             </div>
             <div class="top-causes-compact-list" id="topCausesList">
               <!-- Rendered by app.js as compact clickable rows -->
@@ -468,6 +470,37 @@
         <div class="metric-action-card kpi-card">
           <div class="metric-card-label">MTTR</div>
           <div class="metric-card-val" id="metricValMttr">6.98 <span class="unit">hrs</span></div>
+        </div>
+      </div>
+
+      <!-- Top 5 Breakdown Machines Reliability Metrics Panel (Plant Scoped) -->
+      <div class="top5-breakdown-panel" id="top5BreakdownSection">
+        <div class="top5-panel-header">
+          <div class="top5-header-title-wrap">
+            <h3 class="top5-header-title">Top 5 Breakdown Machines Reliability</h3>
+            <span class="top5-header-sub" id="top5PlantSubtitle">Focus: Highest Failure Impact Assets &bull; Selected Plant</span>
+          </div>
+
+          <!-- Top 5 Combined Metrics Summary Cards -->
+          <div class="top5-metrics-summary-strip">
+            <div class="top5-metric-stat-pill">
+              <span class="top5-pill-label">Top 5 Combined MTBF</span>
+              <span class="top5-pill-val cyan" id="top5CombinedMtbf">80.6 <span class="unit">hrs</span></span>
+            </div>
+            <div class="top5-metric-stat-pill">
+              <span class="top5-pill-label">Top 5 Combined MTTR</span>
+              <span class="top5-pill-val orange" id="top5CombinedMttr">8.56 <span class="unit">hrs</span></span>
+            </div>
+            <div class="top5-metric-stat-pill alert">
+              <span class="top5-pill-label">Top 5 Cumulative Downtime</span>
+              <span class="top5-pill-val red" id="top5CombinedDowntime">1,464.1 <span class="unit">hrs</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Machines List / Table -->
+        <div class="top5-machines-container" id="top5MachinesListContainer">
+          <!-- Rendered dynamically by app.js -->
         </div>
       </div>
 
@@ -576,8 +609,8 @@
         </div>
 
         <div class="spares-kpi-box">
-          <div class="spares-label">Units Consumed</div>
-          <div class="spares-num">13 EA <span class="sub-qty">+ 1,541 L</span></div>
+          <div class="spares-label">Spares Consumed</div>
+          <div class="spares-num">13 EA <span class="sub-qty">Mechanical &amp; Electrical</span></div>
         </div>
 
         <div class="spares-kpi-box">
@@ -593,40 +626,40 @@
 
       <!-- Graphical Spares Analytics Visualizations -->
       <div class="spares-visuals-grid">
-        <!-- Visual 1: ABC Cost Pareto Distribution -->
+        <!-- Visual 1: Maintenance Cost (Moved to Left) -->
         <div class="spares-visual-panel">
           <div class="panel-header-row">
-            <h3 class="visual-panel-title">ABC Cost Pareto Distribution</h3>
-          </div>
-          <div class="chart-container" id="sparesAbcChartContainer">
-            <!-- Rendered graphically by app.js -->
-          </div>
-        </div>
-
-        <!-- Visual 2: Subsystem Expenditure Breakdown -->
-        <div class="spares-visual-panel">
-          <div class="panel-header-row">
-            <h3 class="visual-panel-title">Subsystem Spend Breakdown</h3>
+            <h3 class="visual-panel-title">Maintenance Cost</h3>
           </div>
           <div class="chart-container" id="sparesSubsystemChartContainer">
+            <!-- Rendered graphically by app.js (Donut chart & categories) -->
+          </div>
+        </div>
+
+        <!-- Visual 2: ABC Distribution (Moved to Right) -->
+        <div class="spares-visual-panel">
+          <div class="panel-header-row">
+            <h3 class="visual-panel-title">ABC Distribution</h3>
+          </div>
+          <div class="chart-container" id="sparesAbcChartContainer">
+            <!-- Rendered graphically by app.js (Pareto bars) -->
+          </div>
+        </div>
+
+        <!-- Visual 3: Spare Parts Consumption (Replaces Consumables Frequency) -->
+        <div class="spares-visual-panel">
+          <div class="panel-header-row">
+            <h3 class="visual-panel-title">Spare Parts Consumption</h3>
+          </div>
+          <div class="chart-container" id="sparesConsumptionChartContainer">
             <!-- Rendered graphically by app.js -->
           </div>
         </div>
 
-        <!-- Visual 3: Consumables Velocity & Buffer -->
+        <!-- Visual 4: Class A Spares Lead Time -->
         <div class="spares-visual-panel">
           <div class="panel-header-row">
-            <h3 class="visual-panel-title">Consumables Velocity &amp; Buffer</h3>
-          </div>
-          <div class="chart-container" id="sparesVelocityChartContainer">
-            <!-- Rendered graphically by app.js -->
-          </div>
-        </div>
-
-        <!-- Visual 4: Critical Spares Stockout Risk & Lead-Time Matrix -->
-        <div class="spares-visual-panel">
-          <div class="panel-header-row">
-            <h3 class="visual-panel-title">Critical Spares Lead-Time Risk Matrix</h3>
+            <h3 class="visual-panel-title">Class A Spares Lead Time</h3>
           </div>
           <div class="chart-container" id="sparesLeadTimeChartContainer">
             <!-- Rendered graphically by app.js -->
@@ -637,9 +670,9 @@
       <!-- Material Consumption & Maintenance Order Linkage Table -->
       <div class="spares-table-panel">
         <div class="panel-header-row">
-          <h3 class="visual-panel-title">Breton 1 Spare Material Goods Issue Ledger (SAP MvT 201/261)</h3>
+          <h3 class="visual-panel-title">Breton 1 Spare Material Goods Issue</h3>
           <div style="display:flex; gap:10px; align-items:center;">
-            <input type="text" class="search-input" id="sparesSearchInput" placeholder="Search material, doc, order..." style="width:240px; padding:6px 12px; font-size:0.8rem;">
+            <input type="text" class="search-input" id="sparesSearchInput" placeholder="Search material, code, group..." style="width:240px; padding:6px 12px; font-size:0.8rem;">
             <button class="export-csv-btn" onclick="window.exportSparesTableToCsv()">Export Ledger CSV &rarr;</button>
           </div>
         </div>
@@ -648,16 +681,14 @@
           <table class="industrial-table spares-table">
             <thead>
               <tr>
-                <th style="width:85px;">Posting Date</th>
-                <th style="width:90px;">Material Doc</th>
-                <th style="width:115px;">Material Code</th>
+                <th style="width:90px;">Posting Date</th>
+                <th style="width:125px;">Material Code</th>
                 <th>Material Description &amp; Specification</th>
-                <th style="width:110px;">Subsystem</th>
+                <th style="width:140px;">Material Group</th>
                 <th style="width:75px; text-align:right;">Qty</th>
-                <th style="width:90px; text-align:right;">Unit Cost (&#8377;)</th>
-                <th style="width:100px; text-align:right;">Total Spend (&#8377;)</th>
-                <th style="width:55px; text-align:center;">MvT</th>
-                <th style="width:105px; text-align:center;">Lead Time Risk</th>
+                <th style="width:95px; text-align:right;">Unit Cost (&#8377;)</th>
+                <th style="width:105px; text-align:right;">Total Spend (&#8377;)</th>
+                <th style="width:120px; text-align:center;">Lead Time</th>
               </tr>
             </thead>
             <tbody id="sparesTableBody">

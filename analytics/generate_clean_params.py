@@ -188,7 +188,7 @@ def get_bavius_parameters():
                         "riskyTrend": "Tool pull-in clamping force dropped to 14.2 kN, below the 15.0 kN critical safe threshold.",
                         "probableReason": "Ott-Jakob drawbar Belleville disc spring stack fatigue or collet gripper claw contamination.",
                         "manualSolution": "1. Inhibit spindle start immediately to avoid toolholder ejection risk.\n2. Calibrate clamping force with Ott-Jakob POWER-CHECK wireless gauge.\n3. Inspect drawbar Belleville spring washers for cracks per Tool Manual 146598 Ch. 3.2.\n4. Clean and lubricate HSK gripper segments with Klüber paste.",
-                        "historicalCorrelation": "Precedent recorded 5 times across fleet in last 6 months (Last: 22-Aug-2026).",
+                        "historicalCorrelation": "Precedent recorded 5 times across facility in last 6 months (Last: 22-Aug-2026).",
                         "sparesRequired": "Belleville Disc Spring Stack 18 kN Pack (P/N: Bavius 146598-BSS), HSK-A63 4-Segment Clamping Gripper (P/N: OTT-JAKOB 95.600.034), Hydraulic Unclamp Piston NBR Seal Kit (P/N: NBR-90-V42)"
                     }
                 },

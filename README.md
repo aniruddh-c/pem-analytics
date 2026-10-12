@@ -11,7 +11,7 @@ pem-analytics/
 ├── dashboard/                  # Production Web Application
 │   ├── index.html              # Multi-Plant Control Room Portal (Home, CBM & PM, Breakdown Monitoring)
 │   ├── styles.css              # Industrial Cyber UI design system (Dark & Light modes)
-│   ├── app.js                  # Client state, dynamic TTB rate engine, fleet managers & split-screen viewer
+│   ├── app.js                  # Client state, dynamic TTB rate engine, multi-plant asset managers & split-screen viewer
 │   ├── data.js                 # Complete dataset (Plants, 62 Bavius signals, SAP tickets, 100 OEM alerts)
 │   └── tasl-logo.jpg           # Official TASL company logo
 │

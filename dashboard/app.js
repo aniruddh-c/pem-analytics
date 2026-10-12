@@ -23,7 +23,8 @@
     metricsSelectedPlant: 'TASL-NGP',
     metricsMultiPlants: new Set(['TSAL', 'TASL-NGP', 'TASL-BLR', 'TCOE', 'TASL-H01', 'TBAL', 'TLMAL', 'MCA', 'TASL-XXX']),
     activeSparesSubTab: 'overall',
-    sparesSearch: ''
+    sparesSearch: '',
+    bdMachineSearchQuery: ''
   };
 
   // Initialization
@@ -175,6 +176,28 @@
         renderSparesTable();
       });
     }
+
+    // Machine search in Breakdown Monitoring
+    const bdSearchInput = document.getElementById('bdMachineSearchInput');
+    const bdClearBtn = document.getElementById('bdSearchClearBtn');
+    if (bdSearchInput) {
+      bdSearchInput.addEventListener('input', (e) => {
+        state.bdMachineSearchQuery = e.target.value.toLowerCase().trim();
+        if (bdClearBtn) {
+          bdClearBtn.style.display = state.bdMachineSearchQuery ? 'block' : 'none';
+        }
+        renderActiveBreakdowns();
+        renderEventLogStream();
+      });
+    }
+
+    window.clearBdMachineSearch = function () {
+      state.bdMachineSearchQuery = '';
+      if (bdSearchInput) bdSearchInput.value = '';
+      if (bdClearBtn) bdClearBtn.style.display = 'none';
+      renderActiveBreakdowns();
+      renderEventLogStream();
+    };
   }
 
   // Primary Tab Switching (Reset subviews on tab switch)
@@ -1170,25 +1193,28 @@
 
     // Filter active breakdowns by active plant
     const allBds = window.ACTIVE_BREAKDOWNS || [];
-    const plantBds = allBds.filter(b => b.plantId === state.activePlantId);
+    let plantBds = allBds.filter(b => b.plantId === state.activePlantId);
+
+    // Apply machine search filter if active
+    const q = (state.bdMachineSearchQuery || '').trim().toLowerCase();
+    if (q) {
+      plantBds = plantBds.filter(b => (b.machineName || '').toLowerCase().includes(q));
+    }
 
     if (badge) badge.textContent = plantBds.length;
 
-    // If no active breakdowns for this plant (e.g. TASL-NGP, TCOE, TASL-BLR, TASL-XXX)
+    // If no active breakdowns for this plant or matching search
     if (plantBds.length === 0) {
       const plantObj = (window.TASL_PLANTS || []).find(p => p.id === state.activePlantId) || { name: state.activePlantId };
+      const emptyMsg = q
+        ? `No active breakdowns found for machine matching "${q}" in ${plantObj.name}.`
+        : `All Machine Subsystems Operational — ${plantObj.name}`;
       container.innerHTML = `
         <div class="plant-nominal-status-box">
           <div class="nominal-check-icon">&#10003;</div>
-          <div class="nominal-title">All Machine Subsystems Operational — ${plantObj.name}</div>
+          <div class="nominal-title">${emptyMsg}</div>
           <div class="nominal-desc">
-            Live OPC-UA telemetry link verified. 0 active alarm conditions recorded across all CNC axes, spindles, and auxiliaries.
-            Automated SAP maintenance work orders will trigger if any alarm persists &ge; 30 seconds.
-          </div>
-          <div class="nominal-pills">
-            <span class="nominal-pill">OPC Server: <strong>Online (100% Signal Integrity)</strong></span>
-            <span class="nominal-pill">Alarm Watchdog: <strong>Active (&lt; 30s Safe Band)</strong></span>
-            <span class="nominal-pill">SAP PM Link: <strong>Ready</strong></span>
+            ${q ? `Clear the machine search filter to view all active plant assets or check the Event Log Stream below for historical breakdowns.` : `Live telemetry link verified. 0 active breakdown conditions recorded across monitored assets.`}
           </div>
         </div>
       `;
@@ -1201,34 +1227,25 @@
       const secs = b.durationSeconds % 60;
       const timerStr = `${String(hours).padStart(2, '0')}h ${String(mins).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`;
 
-      const redParamsHtml = (b.redParameters || []).map(p => `
-        <span style="display:inline-block; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); color:#ef4444; font-size:0.7rem; font-weight:700; padding:2px 6px; border-radius:4px; margin-right:4px; margin-bottom:4px;">
-          ● ${p.name}: <strong>${p.value}</strong>
-        </span>
-      `).join('');
+      const sitePrefix = (b.plantId || 'TASL-NGP').replace('TASL-', '');
+      const sitewiseTicketId = b.sapTicketId
+        ? b.sapTicketId.replace(/^SAP-(?:PM-)?/, `SAP-${sitePrefix}-`)
+        : `SAP-${sitePrefix}-2026-${String(idx + 1).padStart(5, '0')}`;
 
       return `
         <div class="active-breakdown-card">
           <div class="bd-card-top-row">
-            <span class="bd-machine-tag">${b.machineName} (${b.plantId})</span>
+            <span class="bd-machine-tag">${b.machineName}</span>
             <span class="live-timer-badge" id="bdTimer_${idx}">⏱ ${timerStr}</span>
           </div>
-          <div style="margin:6px 0;">
-            ${redParamsHtml}
-          </div>
-          <div style="font-size:0.75rem; color:var(--text-muted); display:flex; justify-content:space-between; align-items:center;">
-            <span>Alarm Tag: <code>${b.alarmTag}</code> (${b.alarmCode})</span>
-            <span class="sap-ticket-pill">${b.sapTicketId} &bull; ${b.sapStatus}</span>
+          <div style="font-size:0.75rem; color:var(--text-muted); display:flex; justify-content:flex-end; align-items:center; margin: 4px 0;">
+            <span class="sap-ticket-pill">${sitewiseTicketId} &bull; ${b.sapStatus}</span>
           </div>
           <div style="background:rgba(0,0,0,0.25); padding:8px 10px; border-radius:4px; font-size:0.75rem; color:var(--text-muted); border-left:2px solid var(--cyan-primary);">
             <strong style="color:var(--cyan-primary)">OEM Remedy SOP:</strong> ${b.remedy}
           </div>
           <div style="background:linear-gradient(135deg, rgba(2,132,199,0.06), rgba(15,23,42,0.05)); padding:8px 10px; border-radius:4px; font-size:0.75rem; border-left:2px solid #38bdf8;">
             <strong style="color:var(--cyan-primary)">Spares Required:</strong> <span style="color:var(--text-main); font-weight:600;">${b.sparesRequired || 'Standard overhaul kit'}</span>
-          </div>
-          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:4px;">
-            <button class="ai-remedy-btn" onclick="window.openActiveBdModal(${idx})">AI Remedy Guide</button>
-            <button class="ai-remedy-btn" style="background:var(--bg-elevated); color:var(--text-main)" onclick="alert('Breakdown acknowledged. SAP maintenance work order flagged in progress.')">Acknowledge</button>
           </div>
         </div>
       `;
@@ -1305,7 +1322,30 @@
     const tbody = document.getElementById('eventLogStreamBody');
     if (!tbody) return;
 
-    const events = (window.EVENT_LOG_STREAM || []).slice(0, 50);
+    let events = (window.EVENT_LOG_STREAM || []);
+
+    // Filter by active plant
+    events = events.filter(ev => !ev.plantId || ev.plantId === state.activePlantId);
+
+    // Filter by machine search query if present
+    const q = (state.bdMachineSearchQuery || '').trim().toLowerCase();
+    if (q) {
+      events = events.filter(ev => (ev.machineName || '').toLowerCase().includes(q));
+    }
+
+    events = events.slice(0, 50);
+    state.filteredEventStream = events;
+
+    if (events.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align:center; padding:28px 16px; color:var(--text-muted); font-size:0.85rem;">
+            No breakdown signals found matching "${q || 'selection'}" in ${state.activePlantId}.
+          </td>
+        </tr>
+      `;
+      return;
+    }
 
     tbody.innerHTML = events.map((ev, i) => {
       const codes = ev.identifier.split('/').map(c => c.trim()).filter(c => c);
@@ -1329,7 +1369,7 @@
           <td><strong>${ev.machineName}</strong><br><small style="color:var(--text-muted)">${ev.description}</small></td>
           <td style="text-align:center;">${downtimeBadge}</td>
           <td><span class="stream-status-pill ${ev.status.toLowerCase()}">${ev.status}</span></td>
-          <td><button class="ai-remedy-btn" onclick="window.openEventRemedyModal(${i})">AI Remedy</button></td>
+          <td><button class="ai-remedy-btn" onclick="window.openEventRemedyModal('${ev.eventId || i}')">AI Remedy</button></td>
         </tr>
       `;
     }).join('');
@@ -1409,7 +1449,7 @@
     const title = document.getElementById('modalTitle');
     const body = document.getElementById('modalContentBody');
 
-    title.textContent = `Breakdown AI Remedy: ${bd.machineName} (${bd.plantId})`;
+    title.textContent = `Breakdown AI Remedy: ${bd.machineName}`;
     const redParamsHtml = (bd.redParameters || []).map(p => `
       <div style="font-size:0.78rem; color:#ef4444; background:rgba(239,68,68,0.08); padding:5px 8px; border-radius:4px; margin-bottom:4px; display:inline-block; margin-right:6px; border:1px solid rgba(239,68,68,0.25);">
         ● <strong>${p.name}:</strong> <span style="font-family:var(--font-mono); font-weight:800;">${p.value}</span>
@@ -1419,9 +1459,9 @@
     body.innerHTML = `
       <div style="background:var(--bg-surface); padding:16px; border-radius:8px; border:1px solid var(--border-subtle);">
         <h4 style="color:var(--status-alarm); margin-bottom:8px;">Active Breakdown Ticket ${bd.sapTicketId}</h4>
-        <p style="margin-bottom:4px;"><strong>Machine:</strong> ${bd.machineName} (${bd.plantId})</p>
+        <p style="margin-bottom:4px;"><strong>Machine:</strong> ${bd.machineName}</p>
         <p style="margin-bottom:4px;"><strong>Triggered At:</strong> ${bd.activeSince}</p>
-        <p style="margin-bottom:4px;"><strong>Alarm Tag:</strong> <code>${bd.alarmTag}</code> (${bd.alarmCode})</p>
+        <p style="margin-bottom:4px;"><strong>Alarm Code:</strong> <code>${bd.alarmCode}</code></p>
         <div style="margin: 8px 0;">
           <strong style="font-size:0.78rem; color:var(--text-main); display:block; margin-bottom:4px;">Anomalous Parameters:</strong>
           ${redParamsHtml || '<span style="font-size:0.75rem; color:var(--text-muted);">No individual telemetry signals logged</span>'}
@@ -1443,8 +1483,9 @@
   };
 
   // AI Remedy Modal for Event Log Stream
-  window.openEventRemedyModal = function (idx) {
-    const ev = (window.EVENT_LOG_STREAM || [])[idx];
+  window.openEventRemedyModal = function (target) {
+    const list = state.filteredEventStream || window.EVENT_LOG_STREAM || [];
+    const ev = (typeof target === 'string' ? list.find(e => e.eventId === target) : list[target]) || (window.EVENT_LOG_STREAM || [])[target];
     if (!ev) return;
 
     const title = document.getElementById('modalTitle');
@@ -1781,8 +1822,113 @@
 
     renderMetricsPlantControls();
     updateMetricsActionCards();
+    renderTop5BreakdownMachinesMetrics();
     renderMetricsVisualCharts();
     renderMetricsTable();
+  }
+
+  // Top 5 Breakdown Machines Reliability Metrics (Combined & Machine-level MTBF, MTTR, Cumulative Downtime)
+  function renderTop5BreakdownMachinesMetrics() {
+    const container = document.getElementById('top5MachinesListContainer');
+    const subtitleEl = document.getElementById('top5PlantSubtitle');
+    const mtbfEl = document.getElementById('top5CombinedMtbf');
+    const mttrEl = document.getElementById('top5CombinedMttr');
+    const dtEl = document.getElementById('top5CombinedDowntime');
+    if (!container) return;
+
+    const top5Data = window.TOP_BREAKDOWN_MACHINES_BY_PLANT || {};
+    const plantId = state.metricsSelectedPlant || state.activePlantId || 'TASL-NGP';
+    const isOverall = plantId === 'OVERALL';
+
+    const plantObj = (window.TASL_PLANTS || []).find(p => p.id === plantId) || { name: plantId };
+    const plantInfo = top5Data[plantId] || top5Data['TASL-NGP'] || {
+      combinedMtbfHrs: 80.6,
+      combinedMttrHrs: 8.56,
+      cumulativeDowntimeHrs: 1464.1,
+      totalBreakdowns: 171,
+      machines: []
+    };
+
+    if (subtitleEl) {
+      subtitleEl.innerHTML = `Plant Scope: <strong>${isOverall ? 'All Facilities (Combined)' : plantObj.name}</strong> &bull; Highest Failure Impact Asset Ranking`;
+    }
+
+    if (mtbfEl) {
+      mtbfEl.innerHTML = `${plantInfo.combinedMtbfHrs.toFixed(1)} <span class="unit">hrs</span>`;
+    }
+    if (mttrEl) {
+      mttrEl.innerHTML = `${plantInfo.combinedMttrHrs.toFixed(2)} <span class="unit">hrs</span>`;
+    }
+    if (dtEl) {
+      dtEl.innerHTML = `${plantInfo.cumulativeDowntimeHrs.toLocaleString('en-IN', {minimumFractionDigits: 1, maximumFractionDigits: 1})} <span class="unit">hrs</span>`;
+    }
+
+    const machines = plantInfo.machines || [];
+    if (machines.length === 0) {
+      container.innerHTML = `
+        <div style="padding: 28px; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+          No breakdown events recorded for ${plantObj.name} (0 machine failures).
+        </div>
+      `;
+      return;
+    }
+
+    const rowsHtml = machines.map((m) => {
+      const rankClass = m.rank === 1 ? 'rank-1' : (m.rank === 2 ? 'rank-2' : '');
+      const isHighImpact = m.downtimePct >= 20;
+
+      return `
+        <tr>
+          <td style="width: 50px; text-align: center;">
+            <span class="top5-rank-badge ${rankClass}">#${m.rank}</span>
+          </td>
+          <td>
+            <strong style="color:var(--text-main); font-size:0.86rem;">${m.name}</strong>
+            ${m.plant ? `<span style="font-size:0.7rem; color:var(--cyan-primary); margin-left:6px; font-weight:700;">[${m.plant}]</span>` : ''}
+            <div style="font-size:0.72rem; color:var(--text-dim); margin-top:2px;">${m.type} &bull; <span style="color:var(--text-muted);">${m.primaryCause}</span></div>
+          </td>
+          <td style="text-align: center; font-family: var(--font-mono); font-weight: 800; color: var(--status-alarm);">
+            ${m.breakdowns}
+          </td>
+          <td style="text-align: right; font-family: var(--font-mono); font-weight: 800; color: var(--text-main);">
+            ${m.downtimeHrs.toFixed(1)} <span style="font-size:0.7rem; color:var(--text-dim);">hrs</span>
+          </td>
+          <td style="text-align: right; font-family: var(--font-mono); font-weight: 800; color: var(--cyan-primary);">
+            ${m.mtbfHrs.toFixed(1)} <span style="font-size:0.7rem; color:var(--text-dim);">hrs</span>
+          </td>
+          <td style="text-align: right; font-family: var(--font-mono); font-weight: 800; color: #f97316;">
+            ${m.mttrHrs.toFixed(2)} <span style="font-size:0.7rem; color:var(--text-dim);">hrs</span>
+          </td>
+          <td style="width: 170px;">
+            <div class="top5-progress-bar-wrap">
+              <div class="top5-progress-bar-track">
+                <div class="top5-progress-bar-fill ${isHighImpact ? 'high-impact' : ''}" style="width: ${Math.min(100, m.downtimePct * 2.5)}%;"></div>
+              </div>
+              <span style="font-family: var(--font-mono); font-size: 0.74rem; font-weight: 800; color: var(--text-muted); min-width: 42px; text-align: right;">${m.downtimePct}%</span>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    container.innerHTML = `
+      <table class="top5-table">
+        <thead>
+          <tr>
+            <th style="width: 50px; text-align: center;">Rank</th>
+            <th>Machine Asset &amp; Dominant Failure Mode</th>
+            <th style="text-align: center;">Breakdown Count</th>
+            <th style="text-align: right;">Cumulative Downtime</th>
+            <th style="text-align: right;">MTBF</th>
+            <th style="text-align: right;">MTTR</th>
+            <th style="width: 170px;">Downtime Share (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+        </tbody>
+      </table>
+    `;
   }
 
   function renderMetricsPlantControls() {
@@ -2361,9 +2507,9 @@
     const data = window.SPARES_DASHBOARD_DATA;
     if (!data) return;
 
-    renderSparesAbcParetoChart(document.getElementById('sparesAbcChartContainer'));
     renderSparesSubsystemChart(document.getElementById('sparesSubsystemChartContainer'));
-    renderSparesVelocityChart(document.getElementById('sparesVelocityChartContainer'));
+    renderSparesAbcParetoChart(document.getElementById('sparesAbcChartContainer'));
+    renderSparesConsumptionChart(document.getElementById('sparesConsumptionChartContainer') || document.getElementById('sparesVelocityChartContainer'));
     renderSparesLeadTimeChart(document.getElementById('sparesLeadTimeChartContainer'));
   }
 
@@ -2465,38 +2611,112 @@
     `;
   }
 
-  // Visual 3: Consumables Velocity & Monthly Run-Rate (1,541 Liters)
-  function renderSparesVelocityChart(container) {
+  // Visual 3: Spare Parts Consumption (Discrete Mechanical & Electrical Components)
+  function renderSparesConsumptionChart(container) {
     if (!container) return;
 
-    const fluids = window.SPARES_DASHBOARD_DATA.breton1.fluidConsumption;
+    const sparesItems = [
+      {
+        name: 'Electro-Spindle Cartridge Unit & Drawbar Collet',
+        code: '111102001103293',
+        group: 'Main Electro-Spindle',
+        qty: 1,
+        unit: 'EA',
+        spend: 362405.42,
+        cycle: 'Scheduled Overhaul',
+        color: '#ef4444'
+      },
+      {
+        name: 'C1 Rotary Axis Feed Drive Servomotor',
+        code: '111102001103301',
+        group: 'Motion Drives & C-Axis',
+        qty: 1,
+        unit: 'EA',
+        spend: 85977.45,
+        cycle: 'Corrective Replacement',
+        color: '#f97316'
+      },
+      {
+        name: 'High-Pressure Proportional Directional Valve',
+        code: '111102001107492',
+        group: 'Hydraulics & Filtration',
+        qty: 1,
+        unit: 'EA',
+        spend: 37597.00,
+        cycle: 'Condition-Based Swap',
+        color: '#06b6d4'
+      },
+      {
+        name: 'Deublin High-Pressure Coolant Rotary Union Seal Kit',
+        code: '111102001108515',
+        group: 'Main Electro-Spindle',
+        qty: 1,
+        unit: 'EA',
+        spend: 24479.51,
+        cycle: 'Periodic Preventive Kit',
+        color: '#10b981'
+      },
+      {
+        name: 'X/Y Axis Telescopic Way Cover Wiper & Bellows',
+        code: '111102001103314',
+        group: 'Motion Drives & C-Axis',
+        qty: 1,
+        unit: 'EA',
+        spend: 23604.44,
+        cycle: 'Wear Replacement',
+        color: '#3b82f6'
+      },
+      {
+        name: 'HSK-A100 Collet Gripper Segments (Ott-Jakob)',
+        code: '111102001103312',
+        group: 'Main Electro-Spindle',
+        qty: 1,
+        unit: 'EA',
+        spend: 22945.88,
+        cycle: 'Clamping Degradation',
+        color: '#8b5cf6'
+      },
+      {
+        name: 'Main Return Line Hydraulic Filter Cartridges (10μm)',
+        code: '111102001103378',
+        group: 'Hydraulics & Filtration',
+        qty: 2,
+        unit: 'EA',
+        spend: 7777.08,
+        cycle: 'PM Filter Interval',
+        color: '#0284c7'
+      }
+    ];
 
-    let html = fluids.map(f => {
-      const isAlert = f.current <= f.reorder;
-      const fillPct = Math.min(100, (f.current / 400) * 100);
+    const maxSpend = 362405.42;
+
+    let itemsHtml = sparesItems.map(item => {
+      const fillPct = Math.max(10, (item.spend / maxSpend) * 100);
 
       return `
-        <div class="fluid-meter-row">
-          <div class="fluid-meter-labels">
-            <div>
-              <span style="color:var(--text-main); font-weight:700; font-size:0.82rem;">${f.name}</span>
+        <div style="margin-bottom:8px; background:var(--bg-card); padding:8px 12px; border-radius:6px; border:1px solid var(--border-subtle);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <div style="min-width:0; flex:1; padding-right:8px;">
+              <span style="color:var(--text-main); font-weight:700; font-size:0.79rem; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.name}</span>
+              <span style="font-size:0.7rem; color:var(--text-dim);">SKU: <code>${item.code}</code> &bull; <strong style="color:var(--cyan-primary);">${item.group}</strong></span>
             </div>
-            <div style="font-family:var(--font-mono); font-size:0.78rem;">
-              Consumed: <strong style="color:var(--cyan-primary);">${f.qty} L</strong> | Buffer: <strong style="color:${isAlert ? '#ef4444' : '#10b981'};">${f.current} L</strong>
+            <div style="text-align:right; flex-shrink:0;">
+              <span style="font-family:var(--font-mono); font-weight:800; font-size:0.8rem; color:var(--text-main);">₹${item.spend.toLocaleString('en-IN', {maximumFractionDigits: 0})}</span>
+              <span style="display:block; font-size:0.68rem; font-weight:700; color:var(--cyan-primary);">${item.qty} ${item.unit} &bull; ${item.cycle}</span>
             </div>
           </div>
-          <div class="fluid-meter-track">
-            <div class="fluid-meter-fill" style="width:${fillPct}%; background:${isAlert ? 'linear-gradient(90deg, #ef4444, #f59e0b)' : 'linear-gradient(90deg, #10b981, #06b6d4)'};"></div>
-          </div>
-          <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text-dim);">
-            <span>Reorder Trigger: ${f.reorder} L</span>
-            <span style="color:${isAlert ? '#ef4444' : '#10b981'}; font-weight:700;">${isAlert ? 'Reorder Alert' : 'Buffer Normal'}</span>
+          <div style="width:100%; height:5px; background:rgba(0,0,0,0.25); border-radius:9999px; overflow:hidden;">
+            <div style="width:${fillPct}%; height:100%; background:linear-gradient(90deg, ${item.color}, var(--cyan-primary)); border-radius:9999px;"></div>
           </div>
         </div>
       `;
     }).join('');
 
-    container.innerHTML = `<div style="width:100%; padding:4px 0;">${html}</div>`;
+    container.innerHTML = `
+      <div style="width:100%; max-height:220px; overflow-y:auto; padding-right:4px;">
+        ${itemsHtml}
+      </div>
+    `;
   }
 
   // Visual 4: Critical Spares Stockout Risk & Lead-Time Matrix
@@ -2545,24 +2765,18 @@
     });
 
     tbody.innerHTML = filtered.map(item => {
-      const isMvtOrder = item.mvt === '261';
+      const leadRiskClass = item.leadTime.includes('12') || item.leadTime.includes('8') ? 'high' : (item.leadTime.includes('6') || item.leadTime.includes('4') ? 'med' : 'low');
       return `
         <tr>
           <td style="font-family:var(--font-mono); font-size:0.75rem; white-space:nowrap;">${item.postingDate}</td>
-          <td><span class="sap-ticket-pill">${item.doc}</span></td>
-          <td style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);">${item.materialCode}</td>
+          <td style="font-family:var(--font-mono); font-size:0.75rem; color:var(--cyan-primary); font-weight:700;">${item.materialCode}</td>
           <td style="font-size:0.78rem; font-weight:700; color:var(--text-main);">${item.materialName}</td>
           <td style="font-size:0.74rem; color:var(--text-dim);">${item.category}</td>
           <td style="font-family:var(--font-mono); font-size:0.76rem; font-weight:700; text-align:right; white-space:nowrap;">${item.qty} ${item.unit}</td>
           <td style="font-family:var(--font-mono); font-size:0.76rem; text-align:right; white-space:nowrap;">₹${item.unitCost.toLocaleString('en-IN', {maximumFractionDigits: 2})}</td>
           <td style="font-family:var(--font-mono); font-size:0.78rem; font-weight:800; text-align:right; color:var(--text-main); white-space:nowrap;">₹${item.totalAmount.toLocaleString('en-IN', {maximumFractionDigits: 2})}</td>
-          <td style="text-align:center;">
-            <span class="stream-status-pill ${isMvtOrder ? 'active' : 'idle'}" title="${item.mvtDescription}">
-              ${item.mvt}
-            </span>
-          </td>
           <td style="text-align:center; white-space:nowrap;">
-            <span class="lead-time-tag ${item.leadTime.includes('12') || item.leadTime.includes('8') ? 'high' : (item.leadTime.includes('6') || item.leadTime.includes('4') ? 'med' : 'low')}">
+            <span class="lead-time-tag ${leadRiskClass}">
               ${item.leadTime}
             </span>
           </td>
