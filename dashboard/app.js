@@ -11,10 +11,10 @@
     activeNavTab: 'home', // 'home', 'cbm', 'breakdown'
     activePlantId: 'TASL-NGP', // Default active plant
     activeCbmSubTab: 'machines-matrix', // 'machines-matrix', 'machine-parameters', 'alert-table', 'open-reports', 'closed-reports', 'manuals-library'
-    machineViewTab: 'parameters', // 'parameters' or 'analysis'
+    machineViewTab: 'analysis', // 'analysis' (default) or 'parameters'
     selectedMachineId: 'bavius-01',
     selectedManualId: null,
-    theme: 'dark',
+    theme: 'light',
     tableSearch: '',
     severityFilters: new Set(['critical']), // Default: Critical severity only
     subsystemFilters: new Set(['all']),      // Default: All subsystems
@@ -406,13 +406,151 @@
 
     if (subTabId === 'machines-matrix') renderCbmMachinesGrid();
     if (subTabId === 'machine-parameters') {
-      state.machineViewTab = 'parameters';
+      state.machineViewTab = state.machineViewTab || 'analysis';
       renderMachineParametersPage();
     }
     if (subTabId === 'alert-table') renderAlertsTable();
     if (subTabId === 'open-reports') renderOpenReportsTable();
     if (subTabId === 'closed-reports') renderClosedReportsTable();
     if (subTabId === 'manuals-library') renderManualsLibrary();
+  }
+
+
+  // =========================================================================
+  // HELPER FUNCTIONS: MACHINE EMOJIS, SPARES STOCK & LEAN 5-WHYS
+  // =========================================================================
+  function getMachineConditionEmoji(m) {
+    const status = (m.status || '').toLowerCase();
+    const redCount = m.redCount || 0;
+    const yellowCount = m.yellowCount || 0;
+
+    if (status === 'alarm' || status === 'breakdown' || redCount > 0) {
+      return '😡';
+    } else if (status === 'idle' || status === 'shut down' || yellowCount > 0) {
+      return '☹️';
+    } else {
+      return '😁';
+    }
+  }
+
+  function getSparePartAvailability(partName) {
+    const t = (partName || '').toLowerCase();
+    if (t.includes('spindle cartridge') || t.includes('111102001103293') || t.includes('cartridge unit')) {
+      return { qty: 1, unit: 'EA', isLow: true };
+    } else if (t.includes('servomotor') || t.includes('feed drive') || t.includes('drive motor') || t.includes('111102001103301')) {
+      return { qty: 2, unit: 'EA', isLow: false };
+    } else if (t.includes('valve') || t.includes('proportional') || t.includes('111102001107492') || t.includes('spool')) {
+      return { qty: 3, unit: 'EA', isLow: false };
+    } else if (t.includes('rotary union') || t.includes('seal') || t.includes('111102001108515') || t.includes('piston nbr') || t.includes('o-ring')) {
+      return { qty: 4, unit: 'EA', isLow: false };
+    } else if (t.includes('gripper') || t.includes('collet') || t.includes('111102001103312') || t.includes('claw')) {
+      return { qty: 3, unit: 'EA', isLow: false };
+    } else if (t.includes('spring') || t.includes('belleville') || t.includes('146598-bss')) {
+      return { qty: 6, unit: 'EA', isLow: false };
+    } else if (t.includes('filter') || t.includes('cartridge') || t.includes('111102001103378') || t.includes('festo') || t.includes('mat') || t.includes('element')) {
+      return { qty: 8, unit: 'EA', isLow: false };
+    } else if (t.includes('wiper') || t.includes('bellows') || t.includes('111102001103314')) {
+      return { qty: 5, unit: 'EA', isLow: false };
+    } else if (t.includes('sensor') || t.includes('proximity') || t.includes('switch') || t.includes('scale')) {
+      return { qty: 3, unit: 'EA', isLow: false };
+    } else if (t.includes('pump') || t.includes('impeller')) {
+      return { qty: 2, unit: 'EA', isLow: false };
+    } else if (t.includes('bearing') || t.includes('ceramic')) {
+      return { qty: 2, unit: 'EA', isLow: false };
+    } else {
+      return { qty: 2, unit: 'EA', isLow: false };
+    }
+  }
+
+  function renderSparesStockBadge(sparesText) {
+    if (!sparesText || sparesText.includes('N/A')) {
+      return `
+        <div class="spares-stock-wrapper" style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+          <span class="stock-badge in-stock">📦 Standard Kit (4 EA Available)</span>
+        </div>
+      `;
+    }
+
+    // Split when multiple spare items are listed
+    const parts = sparesText.split(/[,;]\s*(?=[A-Z0-9])/).map(s => s.trim()).filter(Boolean);
+    if (parts.length <= 1) {
+      const avail = getSparePartAvailability(sparesText);
+      const cleanName = sparesText.replace(/\s*\(P\/N:[^)]+\)/i, '').trim();
+      return `
+        <div class="spares-stock-wrapper" style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+          <span class="stock-badge ${avail.isLow ? 'low-stock' : 'in-stock'}">
+            📦 <strong>${cleanName}:</strong> ${avail.qty} ${avail.unit} Available
+          </span>
+        </div>
+      `;
+    }
+
+    const badgesHtml = parts.map(part => {
+      const avail = getSparePartAvailability(part);
+      const cleanName = part.replace(/\s*\(P\/N:[^)]+\)/i, '').trim();
+      return `
+        <span class="stock-badge ${avail.isLow ? 'low-stock' : 'in-stock'}" title="${part}">
+          📦 <strong>${cleanName}:</strong> ${avail.qty} ${avail.unit} Available
+        </span>
+      `;
+    }).join('');
+
+    return `
+      <div class="spares-stock-wrapper" style="display:flex; flex-wrap:wrap; gap:5px;">
+        ${badgesHtml}
+      </div>
+    `;
+  }
+
+  function getEventFiveWhys(ev) {
+    if (ev.fiveWhys && Array.isArray(ev.fiveWhys) && ev.fiveWhys.length >= 4) {
+      return ev.fiveWhys;
+    }
+
+    const d = (ev.description || '').toLowerCase();
+    const r = ev.reason || '';
+
+    if (d.includes('air pressure') || d.includes('pneumatic')) {
+      return [
+        { tag: 'Y1', level: 'Immediate Symptom', text: 'Main machine inlet air supply dropped below minimum operational safety limit (< 6.0 bar).' },
+        { tag: 'Y2', level: 'Physical Cause', text: 'Air delivery line pressure collapsed due to localized leakage and flow restriction in distribution branch.' },
+        { tag: 'Y3', level: 'Component Failure', text: 'Pneumatic 12mm polyurethane air feed line cracked under repeated high-flexion drag chain fatigue.' },
+        { tag: 'Y4', level: 'Maintenance Precursor', text: 'Drag chain internal hose bend radius degraded past permissible elastic limit without scheduled replacement.' },
+        { tag: 'Y5', level: 'Systemic Root Cause', text: 'Preventive maintenance schedule lacked condition-based hose fatigue inspection interval at 5,000 motion cycles.' }
+      ];
+    } else if (d.includes('spindle') && (d.includes('temp') || d.includes('thermal'))) {
+      return [
+        { tag: 'Y1', level: 'Immediate Symptom', text: 'Spindle motor stator temperature exceeded 60.0°C safety interlock threshold.' },
+        { tag: 'Y2', level: 'Physical Cause', text: 'Recooler heat dissipation capacity dropped during continuous high-feed titanium roughing.' },
+        { tag: 'Y3', level: 'Component Failure', text: 'Rittal KRA150 chiller heat exchanger coils fouled with micro-aerosol coolant mist and particulate buildup.' },
+        { tag: 'Y4', level: 'Maintenance Precursor', text: 'Chiller intake G4 filter mat saturation bypassed scheduled differential pressure check.' },
+        { tag: 'Y5', level: 'Systemic Root Cause', text: 'No automated chiller delta-T telemetry link to trigger predictive backwashing before thermal trip.' }
+      ];
+    } else if (d.includes('vibration') || d.includes('bearing')) {
+      return [
+        { tag: 'Y1', level: 'Immediate Symptom', text: 'Spindle nose vibration FFT RMS exceeded 4.5 mm/s alarm limit.' },
+        { tag: 'Y2', level: 'Physical Cause', text: 'Harmonic dynamic imbalance generated excessive radial load at 18,000 RPM.' },
+        { tag: 'Y3', level: 'Component Failure', text: 'Hybrid ceramic ball raceway suffered micro-spalling from drawbar collet clamping force decay.' },
+        { tag: 'Y4', level: 'Maintenance Precursor', text: 'Drawbar Belleville spring stack fatigue was not detected via monthly pull-force checks.' },
+        { tag: 'Y5', level: 'Systemic Root Cause', text: 'Tool dynamic balancing verification was not mandated in CAM tool-loading standard operating procedures.' }
+      ];
+    } else if (d.includes('clamp') || d.includes('tool') || d.includes('atc')) {
+      return [
+        { tag: 'Y1', level: 'Immediate Symptom', text: 'Tool unclamp / clamp cycle timed out before confirming proximity sensor confirmation.' },
+        { tag: 'Y2', level: 'Physical Cause', text: 'Hydraulic unclamp cylinder pressure failed to reach 120 bar threshold within 800 ms.' },
+        { tag: 'Y3', level: 'Component Failure', text: 'Proportional directional valve spool varnished from high-temperature hydraulic fluid degradation.' },
+        { tag: 'Y4', level: 'Maintenance Precursor', text: 'Hydraulic return filter cartridge differential pressure indicator was neglected past 2,000 operating hours.' },
+        { tag: 'Y5', level: 'Systemic Root Cause', text: 'Absence of automated particulate contamination ISO cleanliness code trending on CNC hydraulic power packs.' }
+      ];
+    } else {
+      return [
+        { tag: 'Y1', level: 'Immediate Symptom', text: `Machine PLC raised alarm ${ev.identifier}: ${ev.description}.` },
+        { tag: 'Y2', level: 'Physical Cause', text: r || 'Subsystem telemetry exceeded calibrated engineering safety envelope.' },
+        { tag: 'Y3', level: 'Component Failure', text: 'Electro-mechanical actuator or sensor signal degradation during continuous production duty.' },
+        { tag: 'Y4', level: 'Maintenance Precursor', text: 'Periodic wear condition reached threshold before scheduled preventive inspection interval.' },
+        { tag: 'Y5', level: 'Systemic Root Cause', text: 'Absence of automated predictive threshold alert in legacy SCADA/CNC control loop.' }
+      ];
+    }
   }
 
   // Render Machine Cards (Modular design matching third image)
@@ -448,7 +586,8 @@
       return;
     }
 
-    grid.innerHTML = plantMachines.map(m => {
+    // Precedence sorting: Angry (😡) first, Sad (☹️) next, Happy (😁) last
+    const renderCard = (m) => {
       const statusClass = m.status.toLowerCase();
       const greenDisplay = m.greenCardCount !== undefined ? m.greenCardCount : ((m.greenCount || 0) + (m.yellowCount || 0));
 
@@ -457,12 +596,10 @@
           <div class="cbm-card-header">
             <div>
               <h3 class="cbm-machine-name">${m.name}</h3>
-              <div class="cbm-machine-model">${m.model}</div>
             </div>
-            <button class="cbm-info-btn" title="Machine Asset Specifications" onclick="event.stopPropagation(); window.openMachineInfoModal('${m.id}')">i</button>
+            <div class="cbm-condition-emoji" title="Machine Status: ${m.status}">${getMachineConditionEmoji(m)}</div>
           </div>
 
-          <!-- 2 Colored Parameter Zone Boxes: Pastel Green & Pastel Red (Exact 3rd image style) -->
           <div class="parameter-zones-row">
             <div class="zone-box green">
               <span class="zone-count">${greenDisplay}</span>
@@ -481,13 +618,36 @@
           </div>
         </div>
       `;
-    }).join('');
+    };
+
+    const angryMachines = plantMachines.filter(m => getMachineConditionEmoji(m) === '😡');
+    const sadMachines = plantMachines.filter(m => getMachineConditionEmoji(m) === '☹️');
+    const happyMachines = plantMachines.filter(m => getMachineConditionEmoji(m) === '😁');
+
+    let htmlParts = [];
+    if (angryMachines.length > 0) {
+      htmlParts.push(angryMachines.map(renderCard).join(''));
+    }
+    if (sadMachines.length > 0) {
+      if (angryMachines.length > 0) {
+        htmlParts.push('<div class="matrix-tier-break" style="grid-column: 1 / -1; width: 100%; height: 2px;"></div>');
+      }
+      htmlParts.push(sadMachines.map(renderCard).join(''));
+    }
+    if (happyMachines.length > 0) {
+      if (angryMachines.length > 0 || sadMachines.length > 0) {
+        htmlParts.push('<div class="matrix-tier-break" style="grid-column: 1 / -1; width: 100%; height: 2px;"></div>');
+      }
+      htmlParts.push(happyMachines.map(renderCard).join(''));
+    }
+
+    grid.innerHTML = htmlParts.join('');
   }
 
   // Open Machine Parameters
   window.openMachineParameters = function (machineId) {
     state.selectedMachineId = machineId;
-    state.machineViewTab = 'parameters';
+    state.machineViewTab = 'analysis';
     switchCbmSubTab('machine-parameters');
   };
 
@@ -518,10 +678,11 @@
 
     const machine = (window.TASL_MACHINES || []).find(m => m.id === state.selectedMachineId) || (window.TASL_MACHINES || [])[0];
 
-    // Clean, professional metadata without emojis
     metaContainer.innerHTML = `
-      <h2>${machine.name}</h2>
-      <p>${machine.model} &bull; Station ID: ${machine.stationId} &bull; ${machine.plantLocation || machine.plantId} &bull; Status: ${machine.status} (${machine.statusDuration})</p>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <h2>${machine.name}</h2>
+        <button class="cbm-info-btn" title="Machine Specifications & Operational Status" onclick="window.openMachineInfoModal('${machine.id}')" style="cursor:pointer;">i</button>
+      </div>
     `;
 
     // Reset sub-tab display
@@ -529,83 +690,185 @@
 
     const groups = window.BAVIUS_PARAMETERS || [];
 
-    // Extract all parameters with analysis objects (Red and Yellow)
-    const anomalyParams = [];
+    // Extract anomalous parameters (Red on top, Yellow below)
+    const redParams = [];
+    const yellowParams = [];
     groups.forEach(g => {
       g.parameters.forEach(p => {
         if (p.analysis) {
-          anomalyParams.push({ ...p, groupName: g.groupName });
+          const isCrit = (p.backendZone === 'red' || p.analysis.severity === 'Critical');
+          if (isCrit) {
+            redParams.push({ ...p, groupName: g.groupName });
+          } else {
+            yellowParams.push({ ...p, groupName: g.groupName });
+          }
         }
       });
     });
 
-    // Sort: Critical (Red) first, Medium (Yellow) below
-    anomalyParams.sort((a, b) => (a.analysis.severity === 'Critical' ? -1 : 1));
+    const renderAnalysisRow = (p, autoExpanded) => {
+      const isCrit = (p.backendZone === 'red' || p.analysis.severity === 'Critical');
+      const indicatorClass = isCrit ? 'red' : 'yellow';
+      const sevClass = isCrit ? 'critical' : 'medium';
+      const rowClass = autoExpanded ? 'analysis-collapse-row open' : 'analysis-collapse-row';
+      const bodyStyle = autoExpanded ? 'display: block;' : 'display: none;';
 
-    // Render Analysis Pane as Collapsible Row Cards
+      return `
+        <div class="${rowClass}" id="arow_${p.tag}" onclick="window.toggleAnalysisRow('${p.tag}')">
+          <div class="analysis-collapse-head">
+            <div class="analysis-head-left">
+              <span class="analysis-indicator ${indicatorClass}"></span>
+              <span class="analysis-head-title">${p.name} — ${p.value} ${p.unit}</span>
+              <span class="analysis-head-sub">${p.groupName}</span>
+            </div>
+            <div class="analysis-head-right">
+              <span class="analysis-sev-badge ${sevClass}">${p.analysis.severity}</span>
+              <span class="analysis-chevron" id="chevron_${p.tag}">▼</span>
+            </div>
+          </div>
+
+          <div class="analysis-collapse-body" id="body_${p.tag}" style="${bodyStyle}">
+            <div class="analysis-grid-details">
+              <div class="analysis-box">
+                <div class="analysis-box-label">Risky Trend</div>
+                <div>${p.analysis.riskyTrend}</div>
+              </div>
+
+              <div class="analysis-box">
+                <div class="analysis-box-label">Diagnosis</div>
+                <div>${p.analysis.probableReason}</div>
+              </div>
+
+              <div class="analysis-box">
+                <div class="analysis-box-label">Corrective Recommendations (Manual)</div>
+                <div style="white-space: pre-line; color:var(--text-main); font-size:0.82rem; line-height:1.5;">${p.analysis.manualSolution}</div>
+              </div>
+
+              <div class="analysis-box spares-box">
+                <div class="analysis-box-label">Spares and Stock</div>
+                <div class="spares-content">
+                  ${renderSparesStockBadge(p.analysis.sparesRequired)}
+                </div>
+              </div>
+
+              <div class="analysis-box">
+                <div class="analysis-box-label">Historical Breakdowns</div>
+                <div>${p.analysis.historicalCorrelation}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    };
+
+    // Render Analysis Pane as Collapsible Row Cards (Red on top auto-expanded, Yellow below collapsed)
     if (anomalyContainer) {
-      if (anomalyParams.length === 0) {
+      if (redParams.length === 0 && yellowParams.length === 0) {
         anomalyContainer.innerHTML = `
           <div style="padding:24px; text-align:center; color:var(--status-running); background:var(--bg-card); border-radius:8px;">
             All 62 monitored parameters within nominal limits. No anomalies detected.
           </div>
         `;
       } else {
-        anomalyContainer.innerHTML = anomalyParams.map(p => {
-          const isCrit = p.analysis.severity === 'Critical';
-          const indicatorClass = isCrit ? 'red' : 'yellow';
-          const sevClass = isCrit ? 'critical' : 'medium';
-
-          return `
-            <div class="analysis-collapse-row" id="arow_${p.tag}" onclick="window.toggleAnalysisRow('${p.tag}')">
-              <div class="analysis-collapse-head">
-                <div class="analysis-head-left">
-                  <span class="analysis-indicator ${indicatorClass}"></span>
-                  <span class="analysis-head-title">${p.name} — ${p.value} ${p.unit}</span>
-                  <span class="analysis-head-sub">${p.groupName}</span>
-                </div>
-                <div class="analysis-head-right">
-                  <span class="analysis-sev-badge ${sevClass}">${p.analysis.severity}</span>
-                  <span class="analysis-chevron" id="chevron_${p.tag}">▼</span>
-                </div>
-              </div>
-
-              <div class="analysis-collapse-body" id="body_${p.tag}" style="display: none;">
-                <div class="analysis-grid-details">
-                  <div class="analysis-box">
-                    <div class="analysis-box-label">Risky Trend</div>
-                    <div>${p.analysis.riskyTrend}</div>
-                  </div>
-
-                  <div class="analysis-box">
-                    <div class="analysis-box-label">Diagnosis</div>
-                    <div>${p.analysis.probableReason}</div>
-                  </div>
-
-                  <div class="analysis-box">
-                    <div class="analysis-box-label">Corrective Recommendations (Manual)</div>
-                    <div style="white-space: pre-line; color:var(--text-main); font-size:0.82rem; line-height:1.5;">${p.analysis.manualSolution}</div>
-                  </div>
-
-                  <div class="analysis-box spares-box">
-                    <div class="analysis-box-label">Spares Required</div>
-                    <div class="spares-content">${p.analysis.sparesRequired || 'N/A - Standard preventive maintenance pack.'}</div>
-                  </div>
-
-                  <div class="analysis-box">
-                    <div class="analysis-box-label">Historical Breakdowns</div>
-                    <div>${p.analysis.historicalCorrelation}</div>
-                  </div>
-                </div>
-              </div>
+        const redHtml = redParams.length > 0 ? `
+          <div class="analysis-section-block" style="margin-bottom: 16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; padding-bottom:6px; border-bottom:1.5px solid rgba(239,68,68,0.3);">
+              <span style="color:#ef4444; font-weight:800; font-size:0.85rem; display:flex; align-items:center; gap:6px;">
+                <span>🚨 CRITICAL ANOMALIES (${redParams.length})</span>
+              </span>
+              <span style="font-size:0.7rem; color:var(--text-dim);">Click row to collapse</span>
             </div>
-          `;
-        }).join('');
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              ${redParams.map(p => renderAnalysisRow(p, true)).join('')}
+            </div>
+          </div>
+        ` : '';
+
+        const yellowHtml = yellowParams.length > 0 ? `
+          <div class="analysis-section-block">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; margin-bottom:8px; padding-bottom:6px; border-bottom:1.5px solid rgba(245,158,11,0.3);">
+              <span style="color:#f59e0b; font-weight:800; font-size:0.85rem; display:flex; align-items:center; gap:6px;">
+                <span>⚠️ DEGRADATION WARNINGS (${yellowParams.length})</span>
+              </span>
+              <span style="font-size:0.7rem; color:var(--text-dim);">Click row to expand</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              ${yellowParams.map(p => renderAnalysisRow(p, false)).join('')}
+            </div>
+          </div>
+        ` : '';
+
+        anomalyContainer.innerHTML = redHtml + yellowHtml;
       }
     }
 
-    // Render Parameters Pane (Groups of sensor cards)
-    groupsContainer.innerHTML = groups.map(g => {
+    // Render Parameters Pane: Top Red Parameter Cards Section + All Subsystem Groups Below
+    const allRedParams = [];
+    groups.forEach(g => {
+      g.parameters.forEach(p => {
+        if (p.backendZone === 'red') {
+          allRedParams.push({ ...p, parentGroupName: g.groupName });
+        }
+      });
+    });
+
+    const filteredTopRed = allRedParams.filter(p => {
+      if (!state.paramSearch) return true;
+      return p.name.toLowerCase().includes(state.paramSearch) || p.tag.toLowerCase().includes(state.paramSearch);
+    });
+
+    const topRedCardsHtml = filteredTopRed.map(p => {
+      const zoneClass = 'zone-red';
+      const sparklineSvg = generateSparklineSvg(p.sparkline, p.backendZone);
+
+      return `
+        <div class="parameter-card ${zoneClass}" onclick="window.openExpandedParamModal('${p.tag}')" title="Critical Anomaly - Click to view expanded trend graph">
+          <div class="param-card-top">
+            <div class="param-left-info">
+              <div class="param-friendly-name">${p.name}</div>
+              <div class="param-val-display">
+                <span class="param-val-num">${p.value}</span>
+                <span class="param-val-unit">${p.unit}</span>
+              </div>
+            </div>
+            <div class="param-right-sparkline">
+              ${sparklineSvg}
+            </div>
+          </div>
+
+          <div class="param-divider"></div>
+
+          <!-- Calibrated Risk Meter -->
+          ${renderRiskMeter(p, false)}
+          <div style="margin-top:6px; font-size:0.68rem; color:#ef4444; font-weight:700; text-transform:uppercase;">
+            <span>● Critical Red Alert</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    const topRedSectionHtml = allRedParams.length > 0 ? `
+      <div class="param-group-box critical-alert-group">
+        <div class="param-group-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(239,68,68,0.25); padding-bottom:8px;">
+          <div>
+            <h3 class="param-group-title" style="color:#ef4444; display:flex; align-items:center; gap:8px;">
+              <span>🚨 Critical Red Parameters (Immediate Action)</span>
+            </h3>
+          </div>
+          <span style="background:rgba(239,68,68,0.18); color:#ef4444; border:1px solid rgba(239,68,68,0.35); font-weight:800; font-size:0.72rem; padding:3px 10px; border-radius:9999px;">
+            ${allRedParams.length} ACTIVE RED SIGNALS
+          </span>
+        </div>
+        <div class="parameters-grid">
+          ${topRedCardsHtml || '<div style="color:var(--text-dim); font-size:0.8rem; padding:12px;">No matching critical parameters for search filter.</div>'}
+        </div>
+      </div>
+    ` : '';
+
+    // Render Subsystem Groups (Ordered: Red first, Yellow second, Green third; no extra sublines)
+    const colorOrder = { 'red': 1, 'yellow': 2, 'green': 3 };
+
+    const normalGroupsHtml = groups.map(g => {
       const filtered = g.parameters.filter(p => {
         if (!state.paramSearch) return true;
         return p.name.toLowerCase().includes(state.paramSearch) || p.tag.toLowerCase().includes(state.paramSearch);
@@ -613,7 +876,14 @@
 
       if (filtered.length === 0) return '';
 
-      const cardsHtml = filtered.map(p => {
+      // Sort parameters: Red first, then Yellow, then Green
+      const sorted = [...filtered].sort((a, b) => {
+        const oA = colorOrder[a.backendZone] || 3;
+        const oB = colorOrder[b.backendZone] || 3;
+        return oA - oB;
+      });
+
+      const cardsHtml = sorted.map(p => {
         const zoneClass = 'zone-' + (p.backendZone || 'green');
         const sparklineSvg = generateSparklineSvg(p.sparkline, p.backendZone);
 
@@ -644,7 +914,6 @@
         <div class="param-group-box">
           <div class="param-group-header">
             <h3 class="param-group-title">${g.groupName}</h3>
-            <p class="param-group-desc">${g.description}</p>
           </div>
           <div class="parameters-grid">
             ${cardsHtml}
@@ -652,6 +921,8 @@
         </div>
       `;
     }).join('');
+
+    groupsContainer.innerHTML = topRedSectionHtml + normalGroupsHtml;
   }
 
   // Toggle Analysis Row Card Expansion
@@ -823,8 +1094,8 @@
             </ol>
           </div>
           <div style="background:linear-gradient(135deg, rgba(2,132,199,0.08), rgba(15,23,42,0.05)); padding:8px 12px; border-radius:6px; border-left:3px solid var(--cyan-primary);">
-            <strong style="font-size:0.84rem; color:var(--text-main);">Spares Required:</strong>
-            <div style="font-size:0.8rem; color:var(--text-main); margin-top:3px; font-weight:600;">${targetParam.analysis.sparesRequired || 'N/A - Standard preventive inspection kit.'}</div>
+            <strong style="font-size:0.84rem; color:var(--text-main); display:block; margin-bottom:4px;">Spares and Stock:</strong>
+            ${renderSparesStockBadge(targetParam.analysis.sparesRequired)}
           </div>
           <p style="font-size:0.84rem; line-height:1.4;"><strong style="color:var(--text-main);">Historical Breakdowns:</strong> <span style="color:var(--text-muted);">${targetParam.analysis.historicalCorrelation}</span></p>
         </div>
@@ -1029,8 +1300,8 @@
             </div>
           </td>
           <td>
-            <div style="font-size:0.75rem; color:var(--text-main); font-weight:600; line-height:1.4; background:var(--bg-surface); padding:6px 8px; border-radius:4px; border-left:2px solid var(--cyan-primary);">
-              ${r.sparesRequired || 'Standard overhaul kit'}
+            <div style="font-size:0.75rem; background:var(--bg-surface); padding:6px 8px; border-radius:4px; border-left:2px solid var(--cyan-primary);">
+              ${renderSparesStockBadge(r.sparesRequired)}
             </div>
           </td>
           <td style="font-size:0.76rem; color:var(--text-muted); line-height:1.4; white-space:pre-line;">${r.recommendation}</td>
@@ -1234,43 +1505,221 @@
 
       return `
         <div class="active-breakdown-card">
-          <div class="bd-card-top-row">
+          <div class="bd-card-top-row" style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
             <span class="bd-machine-tag">${b.machineName}</span>
-            <span class="live-timer-badge" id="bdTimer_${idx}">⏱ ${timerStr}</span>
-          </div>
-          <div style="font-size:0.75rem; color:var(--text-muted); display:flex; justify-content:flex-end; align-items:center; margin: 4px 0;">
-            <span class="sap-ticket-pill">${sitewiseTicketId} &bull; ${b.sapStatus}</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="sap-ticket-pill">${sitewiseTicketId} &bull; ${b.sapStatus}</span>
+              <span class="live-timer-badge" id="bdTimer_${idx}">⏱ ${timerStr}</span>
+            </div>
           </div>
           <div style="background:rgba(0,0,0,0.25); padding:8px 10px; border-radius:4px; font-size:0.75rem; color:var(--text-muted); border-left:2px solid var(--cyan-primary);">
             <strong style="color:var(--cyan-primary)">OEM Remedy SOP:</strong> ${b.remedy}
           </div>
           <div style="background:linear-gradient(135deg, rgba(2,132,199,0.06), rgba(15,23,42,0.05)); padding:8px 10px; border-radius:4px; font-size:0.75rem; border-left:2px solid #38bdf8;">
-            <strong style="color:var(--cyan-primary)">Spares Required:</strong> <span style="color:var(--text-main); font-weight:600;">${b.sparesRequired || 'Standard overhaul kit'}</span>
+            <strong style="color:var(--cyan-primary); display:block; margin-bottom:4px;">Spares and Stock:</strong>
+            ${renderSparesStockBadge(b.sparesRequired)}
           </div>
         </div>
       `;
     }).join('');
   }
 
-  // Render Compact Top 5 Breakdown Causes (Last 6 months)
+  // Render Top 5 Repetitive Breakdowns Graphical Combo Chart (Last 6 Months)
+  // Bar Chart: Downtime (Hours) on Primary Left Y-Axis
+  // Line Graph Overlay: Number of Occurrences / Incidents on Secondary Right Y-Axis
+  // Clickable: clicking on any bar, column, or node opens window.openCauseDetailModal(idx)
   function renderTopBreakdownCauses() {
-    const list = document.getElementById('topCausesList');
-    if (!list) return;
+    const container = document.getElementById('topCausesList');
+    if (!container) return;
 
     const causes = window.TOP_BREAKDOWN_CAUSES || [];
+    if (causes.length === 0) return;
 
-    list.innerHTML = causes.map((c, idx) => {
-      return `
-        <div class="top-cause-compact-item" onclick="window.openCauseDetailModal(${idx})" title="Click to view full Root Cause Corrective Action &amp; Manual SOP">
-          <div class="top-cause-badge">#${c.rank}</div>
-          <div class="top-cause-compact-info">
-            <div class="top-cause-compact-title">${c.title}</div>
-            <div class="top-cause-compact-meta">${c.downtime} downtime &bull; ${c.incidents} incidents in last 6 months</div>
-          </div>
-          <div class="top-cause-compact-action">Details &rarr;</div>
-        </div>
+    // Dimensions
+    const svgW = 540;
+    const svgH = 250;
+    const padLeft = 45;
+    const padRight = 45;
+    const padTop = 32;
+    const padBottom = 42;
+    const plotW = svgW - padLeft - padRight;
+    const plotH = svgH - padTop - padBottom;
+
+    const maxDowntime = 100; // max scale 100 hrs
+    const maxIncidents = 20; // max scale 20 incidents
+
+    const colWidth = plotW / causes.length;
+    const barW = 38;
+
+    // Grid lines (4 steps: 25, 50, 75, 100)
+    let gridLinesHtml = '';
+    [0, 25, 50, 75, 100].forEach(dVal => {
+      const y = padTop + plotH - (dVal / maxDowntime) * plotH;
+      const incVal = (dVal / maxDowntime) * maxIncidents;
+      gridLinesHtml += `
+        <line x1="${padLeft}" y1="${y}" x2="${padLeft + plotW}" y2="${y}" stroke="var(--border-subtle)" stroke-dasharray="3 3" />
+        <text x="${padLeft - 6}" y="${y + 3}" font-size="9" fill="var(--text-dim)" text-anchor="end" font-family="var(--font-mono)">${dVal}h</text>
+        <text x="${padLeft + plotW + 6}" y="${y + 3}" font-size="9" fill="#f59e0b" text-anchor="start" font-family="var(--font-mono)">${incVal}</text>
       `;
-    }).join('');
+    });
+
+    // Bars & line coordinates
+    const lineCoords = [];
+    let barsHtml = '';
+    let nodesHtml = '';
+
+    causes.forEach((c, idx) => {
+      const dtNum = parseFloat(c.downtime) || 0;
+      const incNum = c.incidents || 0;
+
+      const colCenterX = padLeft + idx * colWidth + colWidth / 2;
+      const barH = Math.max(6, (dtNum / maxDowntime) * plotH);
+      const barY = padTop + plotH - barH;
+      const barX = colCenterX - barW / 2;
+
+      // Line point (secondary axis)
+      const lineY = padTop + plotH - (incNum / maxIncidents) * plotH;
+      lineCoords.push({ x: colCenterX, y: lineY, inc: incNum, dt: dtNum, title: c.title, rank: c.rank, idx: idx });
+
+      const shortLabel = c.rank === 1 ? 'Spindle Temp'
+        : c.rank === 2 ? 'Spindle Vib'
+        : c.rank === 3 ? 'Air Supply'
+        : c.rank === 4 ? 'ATC Gripper'
+        : 'Axis Drive';
+
+      // Position downtime text inside top of bar for tall bars (avoids 17 incidents badge overlap!), or above for short bars
+      const isInside = barH >= 26;
+      const barTextY = isInside ? (barY + 16) : (barY - 6);
+      const barTextColor = isInside ? '#ffffff' : 'var(--text-main)';
+
+      barsHtml += `
+        <g class="chart-bar-group" onclick="window.openCauseDetailModal(${idx})" style="cursor:pointer;" tabindex="0" role="button" aria-label="${c.title}: ${c.downtime}, ${c.incidents} incidents">
+          <title>#${c.rank} ${c.title}&#10;• Downtime: ${c.downtime}&#10;• Occurrences: ${c.incidents} incidents&#10;(Click to view full Root Cause Corrective Action & SOP)</title>
+          <rect x="${barX - 4}" y="${padTop}" width="${barW + 8}" height="${plotH}" fill="transparent" class="col-hover-rect" />
+          <rect x="${barX}" y="${barY}" width="${barW}" height="${barH}" rx="4" fill="url(#barGradient_${idx})" class="breakdown-bar" />
+          <text x="${colCenterX}" y="${barTextY}" font-size="9.5" font-weight="900" font-family="var(--font-mono)" fill="${barTextColor}" text-anchor="middle" style="pointer-events:none; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));">${dtNum}h</text>
+          <text x="${colCenterX}" y="${padTop + plotH + 16}" font-size="9" font-weight="700" fill="var(--text-main)" text-anchor="middle">#${c.rank} ${shortLabel}</text>
+          <text x="${colCenterX}" y="${padTop + plotH + 28}" font-size="8" fill="var(--cyan-primary)" text-anchor="middle">Details &rarr;</text>
+        </g>
+      `;
+    });
+
+    const linePathD = 'M ' + lineCoords.map(pt => `${pt.x},${pt.y}`).join(' L ');
+
+    lineCoords.forEach(pt => {
+      nodesHtml += `
+        <g class="chart-node-group" onclick="window.openCauseDetailModal(${pt.idx})" style="cursor:pointer;">
+          <title>#${pt.rank} ${pt.title}&#10;Occurrences: ${pt.inc} incidents (Click for details)</title>
+          <circle cx="${pt.x}" cy="${pt.y}" r="6" fill="#f59e0b" stroke="var(--bg-card)" stroke-width="2.5" />
+          <circle cx="${pt.x}" cy="${pt.y}" r="2.5" fill="#fff" />
+          <rect x="${pt.x - 11}" y="${pt.y - 18}" width="22" height="13" rx="3" fill="#f59e0b" />
+          <text x="${pt.x}" y="${pt.y - 8}" font-size="8" font-weight="900" font-family="var(--font-mono)" fill="#0f172a" text-anchor="middle">${pt.inc}</text>
+        </g>
+      `;
+    });
+
+    container.innerHTML = `
+      <div class="repetitive-bd-chart-wrap" style="width:100%; display:flex; flex-direction:column; gap:8px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:0.75rem; padding:2px 4px;">
+          <div style="display:flex; align-items:center; gap:14px;">
+            <span style="display:inline-flex; align-items:center; gap:5px; color:var(--text-main); font-weight:700;">
+              <span style="display:inline-block; width:12px; height:12px; background:linear-gradient(180deg, #ef4444, #b91c1c); border-radius:2px;"></span>
+              Downtime Hours (Left Axis)
+            </span>
+            <span style="display:inline-flex; align-items:center; gap:5px; color:#f59e0b; font-weight:700;">
+              <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#f59e0b; border:2px solid #fff;"></span>
+              Occurrences / Incidents (Right Axis)
+            </span>
+          </div>
+        </div>
+
+        <div style="width:100%; overflow-x:auto;">
+          <svg viewBox="0 0 ${svgW} ${svgH}" style="width:100%; height:auto; display:block; min-width:380px;">
+            <defs>
+              <linearGradient id="barGradient_0" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ef4444" />
+                <stop offset="100%" stop-color="#991b1b" />
+              </linearGradient>
+              <linearGradient id="barGradient_1" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f97316" />
+                <stop offset="100%" stop-color="#c2410c" />
+              </linearGradient>
+              <linearGradient id="barGradient_2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#06b6d4" />
+                <stop offset="100%" stop-color="#0e7490" />
+              </linearGradient>
+              <linearGradient id="barGradient_3" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#3b82f6" />
+                <stop offset="100%" stop-color="#1d4ed8" />
+              </linearGradient>
+              <linearGradient id="barGradient_4" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#8b5cf6" />
+                <stop offset="100%" stop-color="#6d28d9" />
+              </linearGradient>
+            </defs>
+
+            ${gridLinesHtml}
+
+            <line x1="${padLeft}" y1="${padTop + plotH}" x2="${padLeft + plotW}" y2="${padTop + plotH}" stroke="var(--border-medium)" stroke-width="1.5" />
+
+            ${barsHtml}
+
+            <path d="${linePathD}" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+
+            ${nodesHtml}
+          </svg>
+        </div>
+      </div>
+    `;
+  }
+
+
+  // 5-Whys Root Cause Analysis for Top 5 Repetitive Breakdowns
+  function getTopCauseFiveWhys(rank) {
+    switch (rank) {
+      case 1:
+        return [
+          { tag: 'Y1', level: 'Immediate Symptom', text: 'Spindle motor stator temperature exceeded 60.0°C safety trip during titanium machining.' },
+          { tag: 'Y2', level: 'Physical Cause', text: 'Chiller heat dissipation capacity collapsed under continuous high-feed milling duty cycle.' },
+          { tag: 'Y3', level: 'Component Failure', text: 'Rittal KRA150 heat exchanger coils fouled with micro-aerosol coolant mist and swarf particulate.' },
+          { tag: 'Y4', level: 'Maintenance Precursor', text: 'Intake G4 filter mat saturation bypassed scheduled differential pressure inspection.' },
+          { tag: 'Y5', level: 'Systemic Root Cause', text: 'Recooler lacked automated delta-T telemetry interlock to trigger backwashing prior to thermal trip.' }
+        ];
+      case 2:
+        return [
+          { tag: 'Y1', level: 'Immediate Symptom', text: 'Spindle nose vibration FFT RMS exceeded 4.5 mm/s alarm threshold at 18,000 RPM.' },
+          { tag: 'Y2', level: 'Physical Cause', text: 'Excessive harmonic radial load generated dynamic runout during milling with long-reach toolholders.' },
+          { tag: 'Y3', level: 'Component Failure', text: 'Hybrid ceramic ball raceway developed micro-spalling and raceway surface micro-pitting.' },
+          { tag: 'Y4', level: 'Maintenance Precursor', text: 'Belleville spring stack clamping force degraded below 15.0 kN without weekly gauge check.' },
+          { tag: 'Y5', level: 'Systemic Root Cause', text: 'Tool dynamic balancing verification was not mandated in CAM tool-loading standard operating procedures.' }
+        ];
+      case 3:
+        return [
+          { tag: 'Y1', level: 'Immediate Symptom', text: 'Central pneumatic supply pressure dropped below 6.0 bar machine safety limit.' },
+          { tag: 'Y2', level: 'Physical Cause', text: 'Rapid line pressure collapse starved pneumatic tool unclamping and spindle labyrinth purge.' },
+          { tag: 'Y3', level: 'Component Failure', text: 'Polyurethane 12mm pneumatic supply tube cracked under continuous energy chain motion flexure.' },
+          { tag: 'Y4', level: 'Maintenance Precursor', text: 'Drag chain internal hose bend radius degraded past permissible fatigue limit without replacement.' },
+          { tag: 'Y5', level: 'Systemic Root Cause', text: 'PM schedule lacked condition-based pneumatic tubing replacement interval at 5,000 motion cycles.' }
+        ];
+      case 4:
+        return [
+          { tag: 'Y1', level: 'Immediate Symptom', text: 'Automatic tool exchange sequence timed out before receiving gripper claw proximity signal.' },
+          { tag: 'Y2', level: 'Physical Cause', text: 'Gripper claw mechanical linkage jammed midway through swing transfer cycle.' },
+          { tag: 'Y3', level: 'Component Failure', text: 'Tool clamp pull-in collet fingers accumulated solidified coolant sludge and particulate grime.' },
+          { tag: 'Y4', level: 'Maintenance Precursor', text: 'Gripper claw cleaning and Klüber paste lubrication interval was missed during bi-weekly PM.' },
+          { tag: 'Y5', level: 'Systemic Root Cause', text: 'Machine enclosure lacked automated high-pressure collet wash blast during tool unload cycles.' }
+        ];
+      case 5:
+        return [
+          { tag: 'Y1', level: 'Immediate Symptom', text: 'X/Y axis feed servo motor torque exceeded 85% continuous thermal overload envelope.' },
+          { tag: 'Y2', level: 'Physical Cause', text: 'Mechanical sliding drag on guideways forced servomotor to deliver excessive continuous torque.' },
+          { tag: 'Y3', level: 'Component Failure', text: 'Linear optical glass scale reading head soiled with micro-droplet oil fog and fine swarf debris.' },
+          { tag: 'Y4', level: 'Maintenance Precursor', text: 'Telescopic way cover wiper lip seal edge worn and hardened, permitting swarf ingress into scale bay.' },
+          { tag: 'Y5', level: 'Systemic Root Cause', text: 'Way cover wiper replacement was schedule-based rather than condition-monitored via servo load trending.' }
+        ];
+      default:
+        return [];
+    }
   }
 
   // Modal for Top Breakdown Cause Detail
@@ -1301,8 +1750,25 @@
       </div>
 
       <div style="background:var(--bg-surface); padding:16px; border-radius:8px; border:1px solid var(--border-subtle);">
-        <h5 style="color:var(--status-running); margin-bottom:8px; font-size:0.85rem;">Root Cause Corrective Action (RCCA)</h5>
-        <p style="font-size:0.82rem; color:var(--text-main); line-height:1.45;">${c.rcca}</p>
+        <h5 style="color:var(--status-running); margin-bottom:10px; font-size:0.85rem; display:flex; justify-content:space-between; align-items:center;">
+          <span>Root Cause Corrective Action (RCCA &bull; Y1-Y5)</span>
+          <span style="font-size:0.7rem; color:var(--text-dim); font-weight:700;">5-WHYS</span>
+        </h5>
+        <div class="five-whys-container" style="display:flex; flex-direction:column; gap:6px; margin-bottom:12px;">
+          ${(getTopCauseFiveWhys(c.rank) || []).map((w, i) => `
+            <div style="display:flex; gap:8px; align-items:flex-start; background:var(--bg-card); padding:7px 10px; border-radius:5px; border-left:3px solid ${i === 4 ? '#ef4444' : 'var(--cyan-primary)'};">
+              <span style="font-family:var(--font-mono); font-weight:800; font-size:0.75rem; color:${i === 4 ? '#ef4444' : 'var(--cyan-primary)'}; min-width:24px;">${w.tag}:</span>
+              <div style="font-size:0.78rem; line-height:1.4;">
+                <strong style="color:var(--text-main); font-size:0.74rem;">${w.level}:</strong>
+                <span style="color:var(--text-muted);">${w.text}</span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <div style="border-top:1px solid var(--border-subtle); padding-top:8px; font-size:0.8rem; color:var(--text-main); line-height:1.45;">
+          <strong style="color:var(--status-running); font-size:0.78rem; display:block; margin-bottom:3px;">Corrective Action SOP:</strong>
+          ${c.rcca}
+        </div>
       </div>
 
       <div style="background:var(--bg-surface); padding:14px 16px; border-radius:8px; border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
@@ -1339,7 +1805,7 @@
     if (events.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="6" style="text-align:center; padding:28px 16px; color:var(--text-muted); font-size:0.85rem;">
+          <td colspan="7" style="text-align:center; padding:28px 16px; color:var(--text-muted); font-size:0.85rem;">
             No breakdown signals found matching "${q || 'selection'}" in ${state.activePlantId}.
           </td>
         </tr>
@@ -1362,11 +1828,22 @@
         ? `<span class="live-downtime-ticker" id="streamTimer_${i}">⏱ ${formattedDuration}</span>`
         : `<span class="frozen-downtime-badge">${ev.downtimeDurationStr || formattedDuration}</span>`;
 
+      const whys = getEventFiveWhys(ev);
+      const rootCauseY5 = whys[whys.length - 1].text;
+
       return `
         <tr>
-          <td style="font-family:var(--font-mono)">${ev.timestamp}</td>
+          <td style="font-family:var(--font-mono); font-size:0.75rem;">${ev.timestamp}</td>
           <td>${codeStackHtml}</td>
           <td><strong>${ev.machineName}</strong><br><small style="color:var(--text-muted)">${ev.description}</small></td>
+          <td style="font-size:0.78rem; line-height:1.4;">
+            <div style="font-family:var(--font-mono); font-size:0.72rem; color:var(--cyan-primary); font-weight:800; margin-bottom:2px;">
+              <span style="background:rgba(2,132,199,0.12); padding:1px 6px; border-radius:3px; border:1px solid var(--border-accent);">Y5 Root Cause</span>
+            </div>
+            <div style="color:var(--text-main); font-size:0.76rem; font-weight:600; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" title="${rootCauseY5}">
+              ${rootCauseY5}
+            </div>
+          </td>
           <td style="text-align:center;">${downtimeBadge}</td>
           <td><span class="stream-status-pill ${ev.status.toLowerCase()}">${ev.status}</span></td>
           <td><button class="ai-remedy-btn" onclick="window.openEventRemedyModal('${ev.eventId || i}')">AI Remedy</button></td>
@@ -1474,8 +1951,8 @@
       </div>
 
       <div style="background:linear-gradient(135deg, rgba(2,132,199,0.06), rgba(15,23,42,0.05)); padding:16px; border-radius:8px; border:1px solid rgba(2,132,199,0.25); margin-top:12px;">
-        <h4 style="color:var(--cyan-primary); margin-bottom:6px;">Required Spare Parts</h4>
-        <p style="font-size:0.85rem; font-weight:600; color:var(--text-main);">${bd.sparesRequired || 'Standard overhaul kit'}</p>
+        <h4 style="color:var(--cyan-primary); margin-bottom:8px;">Spares and Stock</h4>
+        ${renderSparesStockBadge(bd.sparesRequired)}
       </div>
     `;
 
@@ -1490,6 +1967,7 @@
 
     const title = document.getElementById('modalTitle');
     const body = document.getElementById('modalContentBody');
+    const whys = getEventFiveWhys(ev);
 
     title.textContent = `Signal Diagnostic: ${ev.identifier}`;
     body.innerHTML = `
@@ -1499,18 +1977,39 @@
         <p style="margin-bottom:4px;"><strong>Timestamp:</strong> ${ev.timestamp}</p>
         <p style="margin-bottom:4px;"><strong>Machine:</strong> ${ev.machineName}</p>
         <p style="margin-bottom:4px;"><strong>Fault:</strong> ${ev.description}</p>
-        <p><strong>Root Cause:</strong> ${ev.reason}</p>
       </div>
 
-      <div style="background:var(--bg-surface); padding:16px; border-radius:8px; border:1px solid var(--border-subtle);">
-        <h4 style="color:var(--cyan-primary); margin-bottom:8px;">Remedy Procedure</h4>
+      <div style="background:var(--bg-surface); padding:16px; border-radius:8px; border:1px solid var(--border-subtle); margin-top:12px;">
+        <h4 style="color:var(--status-alarm); margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+          <span>Root Cause Analysis</span>
+          <span style="font-size:0.7rem; padding:2px 8px; border-radius:4px; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-weight:800;">5-WHYS</span>
+        </h4>
+        <div class="five-whys-container" style="display:flex; flex-direction:column; gap:8px;">
+          ${whys.map((w, idx) => `
+            <div style="display:flex; gap:10px; align-items:flex-start; background:var(--bg-card); padding:8px 12px; border-radius:6px; border-left:3px solid ${idx === whys.length - 1 ? '#ef4444' : 'var(--cyan-primary)'};">
+              <span style="font-family:var(--font-mono); font-weight:800; font-size:0.78rem; color:${idx === whys.length - 1 ? '#ef4444' : 'var(--cyan-primary)'}; min-width:24px;">${w.tag}:</span>
+              <div style="font-size:0.8rem; line-height:1.4;">
+                <strong style="color:var(--text-main); font-size:0.75rem;">${w.level}:</strong>
+                <span style="color:var(--text-muted);">${w.text}</span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div style="background:var(--bg-surface); padding:16px; border-radius:8px; border:1px solid var(--border-subtle); margin-top:12px;">
+        <h4 style="color:var(--cyan-primary); margin-bottom:8px;">Corrective Actions</h4>
         <pre style="white-space:pre-wrap; font-family:var(--font-sans); font-size:0.82rem; color:var(--text-main); margin-bottom:8px;">${ev.fullRemedy}</pre>
-        <div style="font-size:0.75rem; color:var(--cyan-primary); font-weight:700; background:rgba(2,132,199,0.1); padding:6px 10px; border-radius:4px; border:1px solid var(--border-accent);">
+        <div style="margin-top:8px; border-top:1px solid var(--border-subtle); padding-top:8px;">
+          <strong style="color:var(--cyan-primary); display:block; font-size:0.78rem; margin-bottom:4px;">Spares and Stock:</strong>
+          ${renderSparesStockBadge(ev.sparesRequired)}
+        </div>
+        <div style="font-size:0.75rem; color:var(--cyan-primary); font-weight:700; background:rgba(2,132,199,0.1); padding:6px 10px; border-radius:4px; border:1px solid var(--border-accent); margin-top:10px;">
           Manual Citation: ${ev.manualCitation || 'Bavius HBZ CC Operating Instructions, Chapter 9'}
         </div>
       </div>
 
-      <div style="background:var(--bg-surface); padding:16px; border-radius:8px; border:1px solid var(--border-subtle);">
+      <div style="background:var(--bg-surface); padding:16px; border-radius:8px; border:1px solid var(--border-subtle); margin-top:12px;">
         <h4 style="color:var(--status-idle); margin-bottom:8px;">Historical Breakdowns</h4>
         <p style="font-size:0.82rem; color:var(--text-muted);">${ev.historyPrecedent || 'N/A'}</p>
       </div>

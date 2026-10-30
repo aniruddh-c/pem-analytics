@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,7 +36,7 @@
     <div class="header-right">
       <div class="system-clock" id="systemClock">--:--:-- IST</div>
       <button class="theme-btn" id="themeToggleBtn" title="Toggle Light/Dark Theme">
-        <span id="themeToggleIcon">🌙</span> Theme
+        <span id="themeToggleIcon">☀️</span> Theme
       </button>
     </div>
   </header>
@@ -123,26 +123,26 @@
             <button class="back-to-machines-btn" id="backToMachinesBtn">&larr; Back to Health Matrix</button>
           </div>
 
-          <!-- Machine Sub-Tabs: Parameters vs Analysis -->
+          <!-- Machine Sub-Tabs: Analysis vs Parameters (Analysis default active) -->
           <div class="machine-subnav-tabs">
-            <button class="machine-tab-btn active" id="tabBtnParameters" onclick="window.switchMachineViewTab('parameters')">Parameters</button>
-            <button class="machine-tab-btn" id="tabBtnAnalysis" onclick="window.switchMachineViewTab('analysis')">Analysis</button>
+            <button class="machine-tab-btn active" id="tabBtnAnalysis" onclick="window.switchMachineViewTab('analysis')">Analysis</button>
+            <button class="machine-tab-btn" id="tabBtnParameters" onclick="window.switchMachineViewTab('parameters')">Parameters</button>
           </div>
 
-          <!-- Pane 1: Parameters Tab Pane -->
-          <div id="machineParamsPane">
+          <!-- Pane 1: Analysis Tab Pane (Default Active) -->
+          <div id="machineAnalysisPane" style="display: block;">
+            <div class="analysis-collapse-container" id="paramsAnomalySection">
+              <!-- Collapsible row cards rendered by app.js -->
+            </div>
+          </div>
+
+          <!-- Pane 2: Parameters Tab Pane -->
+          <div id="machineParamsPane" style="display: none;">
             <div style="margin-bottom: 14px; display: flex; justify-content: flex-end;">
               <input type="text" class="search-input" id="paramSearchInput" placeholder="Filter parameters by name..." style="width: 280px; background:var(--bg-card); border:1px solid var(--border-medium); color:var(--text-main); padding:8px 12px; border-radius:6px; font-size:0.8rem;">
             </div>
             <div id="paramsGroupsContainer" style="display: flex; flex-direction: column; gap: 16px;">
               <!-- Grouped parameters rendered by app.js -->
-            </div>
-          </div>
-
-          <!-- Pane 2: Analysis Tab Pane (Collapsible row cards) -->
-          <div id="machineAnalysisPane" style="display: none;">
-            <div class="analysis-collapse-container" id="paramsAnomalySection">
-              <!-- Collapsible row cards rendered by app.js -->
             </div>
           </div>
         </div>
@@ -231,7 +231,7 @@
                 <th style="width: 160px;">Equipment</th>
                 <th style="width: 120px;">Report Date</th>
                 <th>Red Parameters</th>
-                <th style="width: 220px;">Spares Required</th>
+                <th style="width: 220px;">Spares and Stock</th>
                 <th>Corrective Recommendation</th>
                 <th style="width: 110px; text-align: center;">Status</th>
               </tr>
@@ -399,12 +399,13 @@
           <table class="stream-table">
             <thead>
               <tr>
-                <th style="width: 150px;">Timestamp</th>
-                <th style="width: 130px; text-align: center;">ID</th>
+                <th style="width: 140px;">Timestamp</th>
+                <th style="width: 120px; text-align: center;">ID</th>
                 <th>Machine &amp; Message</th>
-                <th style="width: 170px; text-align: center;">Unplanned Downtime</th>
-                <th style="width: 120px;">Status</th>
-                <th style="width: 130px;">Control</th>
+                <th style="width: 260px;">Root Cause (Lean 5-Whys)</th>
+                <th style="width: 160px; text-align: center;">Unplanned Downtime</th>
+                <th style="width: 100px;">Status</th>
+                <th style="width: 110px;">Action</th>
               </tr>
             </thead>
             <tbody id="eventLogStreamBody">
